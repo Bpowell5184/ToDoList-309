@@ -1,0 +1,1 @@
+As a <type of user> I want <desired behavior/action> so that <benefit/justification/value>.
