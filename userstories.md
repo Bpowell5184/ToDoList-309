@@ -15,3 +15,9 @@ As a <type of user> I want <desired behavior/action> so that <benefit/justificat
 7. As a student, I want to be able to change the priority of the list by date and point value so that I can keep my schedule organized and do things in the order they are due.
 ---
 8. As a student, I want to be able to login to my account so that I can see my to do list, so that I can keep my tasks private and secure.
+---
+9. As a student, I want to be able to add up the point values of tasks each day, so that I can have a quantatative way of tracking my progress.
+---
+10. As a writer, I want to be able to have repeatable tasks, so that I can keep track of my writing progress every day without needing to create a new task.
+---
+11. As someone who plays video games, I want to be able to view past day's scores, so that I can gameify my tasks and enjoy doing my school work. 
