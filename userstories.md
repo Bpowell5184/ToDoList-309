@@ -1,6 +1,6 @@
-As a <type of user> I want <desired behavior/action> so that <benefit/justification/value>.
+As a <type of user> I want <desired behavior/action> so that <benefit/justification/value>. (Main Author)
 
-1. As a student, I want to add tasks to my to do list tracker so I can stay accountable and remember what homework I need to complete.
+1. As a student, I want to add tasks to my to do list tracker so I can stay accountable and remember what homework I need to complete. (Brandon)
 ---
 2. As a student, I want to be able to complete tasks on my to do list so I can keep track of uncompleted work and declutter my list.
 ---
@@ -16,8 +16,8 @@ As a <type of user> I want <desired behavior/action> so that <benefit/justificat
 ---
 8. As a student, I want to be able to login to my account so that I can see my to do list, so that I can keep my tasks private and secure.
 ---
-9. As a student, I want to be able to add up the point values of tasks each day, so that I can have a quantatative way of tracking my progress.
+9. As a student, I want to be able to add up the point values of tasks each day, so that I can have a quantatative way of tracking my progress. (Brandon)
 ---
-10. As a writer, I want to be able to have repeatable tasks, so that I can keep track of my writing progress every day without needing to create a new task.
+10. As a writer, I want to be able to have repeatable tasks, so that I can keep track of my writing progress every day without needing to create a new task. (Brandon)
 ---
-11. As someone who plays video games, I want to be able to view past day's scores, so that I can gameify my tasks and enjoy doing my school work. 
+11. As someone who plays video games, I want to be able to view past day's scores, so that I can gameify my tasks and enjoy doing my school work. (Brandon)
