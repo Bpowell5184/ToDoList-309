@@ -43,3 +43,5 @@ As a <type of user> I want <desired behavior/action> so that <benefit/justificat
 22. As a student, I want to be able to put tags on tasks so that I can seperate educational tasks from personal tasks. (Dylan)
 ---
 23. As a student, I want to be able to search (by name) for tasks so that I can quickly/easily find specific tasks. (Dylan)
+---
+24. As a student, I want to be able to see overdue tasks so that I can see which tasks I am behind on and mentally assign them higher priority. (Brandon)
