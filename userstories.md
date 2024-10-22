@@ -28,7 +28,7 @@ As a <type of user> I want <desired behavior/action> so that <benefit/justificat
 ---
 15. As a creative individual, I want to be able to add inspirational quotes to my to-do list tracker, so that I can stay motivated while completing my tasks. (Michael)
 ---
-16.As a student, I want to be able to categorize my tasks (work, school, etc.) so that I can differentiate the tasks I have to do.
+16. As a student, I want to be able to categorize my tasks (work, school, etc.) so that I can differentiate the tasks I have to do.
 ---
 17. As a student, I want to be able to filter my tasks by completed and pendings so that I can look at pending tasks more easily.
 ---
@@ -37,3 +37,9 @@ As a <type of user> I want <desired behavior/action> so that <benefit/justificat
 19. As a student, I want to be able to leave comments or notes on my tasks so that I can leave any information that I may need when I am completing the task.
 ---
 20. As a student, I want to be able to set deadlines on tasks so I know by when I need to finish my tasks.
+---
+21. As a student, I want to be able to filter my to-do list by date so that I can better understand how busy certain days will be. (Dylan)
+---
+22. As a student, I want to be able to put tags on tasks so that I can seperate educational tasks from personal tasks. (Dylan)
+---
+23. As a student, I want to be able to search (by name) for tasks so that I can quickly/easily find specific tasks. (Dylan)
