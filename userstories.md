@@ -21,3 +21,9 @@ As a <type of user> I want <desired behavior/action> so that <benefit/justificat
 10. As a writer, I want to be able to have repeatable tasks, so that I can keep track of my writing progress every day without needing to create a new task. (Brandon)
 ---
 11. As someone who plays video games, I want to be able to view past day's scores, so that I can gameify my tasks and enjoy doing my school work. (Brandon)
+---
+12. As an upcoming graduate, I want to be able to keep track of my interview schedule. (Michael)
+---
+14. As a student, I want a to do list that conveniently organizes tasks in a calendar/modular view. (Michael)
+---
+15. As a creative individual, I want to be able to add inspirational quotes to my to-do list tracker, so that I can stay motivated while completing my tasks. (Michael)
