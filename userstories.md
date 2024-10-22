@@ -10,11 +10,11 @@ As a <type of user> I want <desired behavior/action> so that <benefit/justificat
 ---
 5. As a student, I want to be able to edit my to do list so I can fix typos and correct silly mistakes.
 ---
-6. As a student, I want to be able to assign a point value to each task so that I can choose to prioritize certain tasks over others.
+6. As a student, I want to be able to assign a point value to each task so that I can choose to prioritize certain tasks over others. (Aiden)
 ---
-7. As a student, I want to be able to change the priority of the list by date and point value so that I can keep my schedule organized and do things in the order they are due.
+7. As a student, I want to be able to change the priority of the list by date and point value so that I can keep my schedule organized and do things in the order they are due. (Aiden)
 ---
-8. As a student, I want to be able to login to my account so that I can see my to do list, so that I can keep my tasks private and secure.
+8. As a student, I want to be able to login to my account so that I can see my to do list, so that I can keep my tasks private and secure. (Aiden)
 ---
 9. As a student, I want to be able to add up the point values of tasks each day, so that I can have a quantatative way of tracking my progress. (Brandon)
 ---
