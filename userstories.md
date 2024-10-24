@@ -1,4 +1,4 @@
-As a <type of user> I want <desired behavior/action> so that <benefit/justification/value>. (Main Author)
+Vision: Create a digital to do list that can add, delete, complete, and update tasks. 
 
 1. As a student, I want to add tasks to my to do list tracker so I can stay accountable and remember what homework I need to complete. (Brandon)
 ---
