@@ -1,0 +1,178 @@
+.large-heading {
+    font-size: 72px;
+    font-weight: bold;
+    color: #241d1d;
+    text-align: center;
+    margin: 20px 0;
+    padding-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+
+.logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 128px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.points_container {
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    background-color: rgb(180, 212, 190);
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 10px;
+}
+
+.points_text {
+    position: relative;
+    font-size:  22px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.title-divider {
+    width: 100%;
+    height: 10px;
+    background-color: #064123;
+    margin: 0;
+    padding: 0;
+}
+
+.sorts-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    background-color: rgb(149, 149, 168);
+    margin: 0;
+    padding: 0 0 px;
+}
+
+.sort_points {
+    display: flex;
+    font-size: 22px;
+    text-align: left;
+    margin-left: 5%;
+    vertical-align: center;
+}
+
+.sort_date {
+    display: flex;
+    align-items: center;
+    font-size: 22px;
+    text-align: right;
+    margin-left: auto;
+    margin-right: 2cm;
+}
+
+.sort-task {
+    display: flex;
+    font-size: 22px;
+    text-align: left;
+    margin-left: 5%;
+    vertical-align: center;
+}
+
+.sort-icon {
+    margin-left: 5px;
+    height: 30px;
+    width: auto;
+}
+
+.filter-icon {
+    display: flex;
+    margin-top: 4px;
+    height: 50px;
+    width: auto;
+    margin-right: 20px;
+}
+
+.list-view-icon {
+    display: flex;
+    margin-top: 4px;
+    height: 50px;
+    width: auto;
+}
+
+.task-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 200px;
+    background-color: rgba(231, 214, 116, 0.712);
+    margin: 0;
+    padding: 0 0 px;
+}
+
+.point-value {
+    display: flex;
+    font-size: 30px;
+    text-align: center;
+    margin-left: 5%;
+    vertical-align: center;
+    border: 4px solid black;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center; 
+    width: 60px;
+    height: 60px;
+}
+
+.task-name {
+    display: flex;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: left;
+    margin-left: 5%;
+    vertical-align: center;
+    justify-content: center;
+    align-items: center; 
+}
+
+.date {
+    display: flex;
+    align-items: center;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: right;
+    margin-left: auto;
+    margin-right: 10%;
+}
+
+.trash-icon {
+    display: flex;
+    height: 50px;
+    width: auto;
+    margin-right: 20px;
+}
+
+.options-icon {
+    display: flex;
+    height: auto;
+    width: 50px;
+    margin-right: 20px
+}
+
+.add-task-button {
+    display: inline-block;
+    width: 300px;
+    height: 100px;
+    border-radius: 80px;
+    background-color: #064123;
+    margin-top: 20px;
+}
+
+.add-task-button-text {
+    font-weight: bold;
+    font-size: 42px;
+    color: aliceblue;
+}
