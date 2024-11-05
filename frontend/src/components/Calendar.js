@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './Calendar.css';
+import { Link } from 'react-router-dom';
+import logo from '.././assets/logo.png';
+import calendar_view_icon from '.././assets/calendar_view_icon.png'
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -40,11 +43,15 @@ const Calendar = () => {
   return (
     <div className="calendar-container">
       <header>
-        <button onClick={handlePrevMonth}>Previous</button>
+        <img src={logo} alt="Logo" className="logo" />
         <h2>{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}</h2>
+        <button onClick={handlePrevMonth}>Previous</button>
         <button onClick={handleNextMonth}>Next</button>
+        <Link to ="/todomain">
+          <img src={calendar_view_icon} alt="calendar_view_icon" className='calendar-view-icon'/>
+        </Link>
       </header>
-      
+
       <div className="calendar-grid">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
           <div key={day} className="day-header">{day}</div>
@@ -56,7 +63,9 @@ const Calendar = () => {
         </div>
         ))}
       </div>
+
     </div>
+
   );
 };
 

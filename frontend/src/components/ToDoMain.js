@@ -36,7 +36,9 @@ function ToDoMain() {
           <img src={sort_carrot} alt="sort_carrot" className='sort-icon'/>
         </div>
         <img src={filter_icon} alt="filter_icon" className='filter-icon'/>
-        <img src={list_view_icon} alt="list_view_icon" className='list_view_icon'/>
+        <Link to ="/calendar">
+          <img src={list_view_icon} alt="list_view_icon" className='list_view_icon'/>
+        </Link>
       </div>
       <hr class="title-divider" /> 
 
