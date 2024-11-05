@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Calendar.css';
 import { Link } from 'react-router-dom';
 import logo from '.././assets/logo.png';
+import calendar_view_icon from '.././assets/calendar_view_icon.png'
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -46,6 +47,9 @@ const Calendar = () => {
         <h2>{currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}</h2>
         <button onClick={handlePrevMonth}>Previous</button>
         <button onClick={handleNextMonth}>Next</button>
+        <Link to ="/todomain">
+          <img src={calendar_view_icon} alt="calendar_view_icon" className='calendar-view-icon'/>
+        </Link>
       </header>
 
       <div className="calendar-grid">
@@ -60,9 +64,6 @@ const Calendar = () => {
         ))}
       </div>
 
-      <Link to="/todomain">
-        <button>Back To Main</button>
-      </Link>
     </div>
 
   );

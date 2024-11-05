@@ -12,6 +12,13 @@
     height: auto;
   }
 
+  .calendar-view-icon {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 50px;
+    width: auto;
+  }
   
   .header {
     display: flex;
