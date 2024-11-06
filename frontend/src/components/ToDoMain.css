@@ -176,3 +176,7 @@
     font-size: 42px;
     color: aliceblue;
 }
+
+.add-task-button:hover {
+    background-color: #30704c; /* Darker shade on hover */
+}

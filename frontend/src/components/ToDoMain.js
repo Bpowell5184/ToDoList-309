@@ -6,11 +6,17 @@ import filter_icon from '.././assets/filter_icon.png'
 import list_view_icon from '.././assets/list_view_icon.png'
 import trash_icon from '.././assets/trash_icon.png'
 import options from '.././assets/options.png'
+import Overlay from './';
 import './ToDoMain.css'
 
 function ToDoMain() {
 
   const [points, setPoints] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleOverlay = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
     <div>
@@ -57,10 +63,13 @@ function ToDoMain() {
       </div>
 
       <div>
-      <button className='add-task-button'>
+      <button onClick={toggleOverlay} className='add-task-button'>
         <div className='add-task-button-text'>
           Add Task
         </div>
+      <Overlay isOpen={isOpen} onClose={toggleOverlay}>
+        <h1>Content in Overlay</h1>
+      </Overlay>
       </button>
       </div>
       
