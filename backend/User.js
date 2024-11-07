@@ -5,6 +5,7 @@ class User{
         this.highScore = 0;
         this.UID;
         this.LID;
+        this.totalTasks = 0;
     }
     getUsername(){
        return this.username;

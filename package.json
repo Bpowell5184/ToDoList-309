@@ -6,17 +6,20 @@
   "scripts": {
     "start:frontend": "cd frontend && npm start",
     "start:backend": "cd backend && node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "format": "npx prettier . --write",
     "lint": "npx eslint ."
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "jest": "^29.7.0",
     "prettier": "3.3.3"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "eslint-config-standard": "^17.1.0",
+    "mongodb": "^6.10.0",
     "react-calendar": "^5.1.0"
   }
 }
