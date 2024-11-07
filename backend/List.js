@@ -69,4 +69,31 @@ class List {
         return sublist;
     }
 
+
+    // sort methods
+
+    sortbyPriorityAsc(){
+        this.taskList.sort((a,b) => a.getPriority() - b.getPriority());
+    }
+    sortbyPriorityDes(){
+        this.taskList.sort((a,b) => b.getPriority() - a.getPriority());
+    }
+    sortbyDateAsc(){
+        this.taskList.sort((a,b) => a.getPriority() - b.getPriority());
+    }
+    sortbyDateDes(){
+        this.taskList.sort((a,b) => a.getPriority() - b.getPriority());
+    }
+    sortbyPointsAsc(){
+        this.taskList.sort((a,b) => a.getPointValue() - b.getPointValue());
+    }
+    sortbyPointsDes(){
+        this.taskList.sort((a,b) => b.getPointValue() - a.getPointValue());
+    }
+
+
+
+
+
+
 }
