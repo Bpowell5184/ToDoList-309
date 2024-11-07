@@ -164,8 +164,10 @@ function ToDoMain() {
           />
           </div>
 
-          <button onClick={resetAddTaskState}>
-            Add Task
+          <button className='add-task-button' onClick={resetAddTaskState} style={{ width: "150px", height: '50px'}}>
+            <div className='add-task-button-text' style={{ fontSize: '24px'}}>
+              Add Task
+            </div>
           </button>
 
         </Overlay>
