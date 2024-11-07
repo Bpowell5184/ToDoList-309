@@ -1,5 +1,5 @@
 const User = require('./User');
-private class Data{
+class Data{
     constructor(){
         this.userList = [];
     }

@@ -1,4 +1,4 @@
-private class Tag{
+class Tag{
     constructor(tag){
         this.tag = tag;
         this.tagID;

@@ -1,4 +1,4 @@
-private class List {
+class List {
     constructor() {
         this.taskList = new Array();
         this.LID;

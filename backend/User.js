@@ -1,4 +1,4 @@
-private class User{
+class User{
     constructor(Username, Password){
         this.username = Username;
         this.password = Password;

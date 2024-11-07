@@ -1,4 +1,4 @@
-private class Task {
+class Task {
     constructor() {
         this.title = "";
         this.description = "";
