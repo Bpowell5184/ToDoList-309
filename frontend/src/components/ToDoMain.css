@@ -24,8 +24,8 @@
     top: 20px;
     right: 50px;
     margin-bottom: 20px;
-    border-radius: 15px;
     background-color: rgb(180, 212, 190);
+    border-radius: 20px;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
@@ -167,6 +167,8 @@
     width: 300px;
     height: 100px;
     border-radius: 80px;
+    border-color: black;
+    border-width: 5px;
     background-color: #064123;
     margin-top: 20px;
 }
@@ -179,4 +181,40 @@
 
 .add-task-button:hover {
     background-color: #30704c; /* Darker shade on hover */
+}
+
+.text-input {
+    width: 300px;
+    padding: 10px;
+    margin: 10px auto;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.text-input-description {
+    width: 300px;
+    padding: 10px;
+    margin: 10px auto;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    height: 100px;
+}
+
+.overlay-item-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay-text-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 24px;
+    margin: 20px;
 }
