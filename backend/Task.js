@@ -2,6 +2,7 @@ class Task {
     constructor() {
         this.title = "untitled";
         this.description = "description";
+        this.creationDate;
         this.dueDate;
         this.points = 5;
         this.priority = 5;
@@ -54,7 +55,7 @@ class Task {
         this.points = newPoints;
     }
     setPriority(newPriority) {
-        this.priority = newPoints;
+        this.priority = newPriority;
     }
     setCompletionStatus(newCompletionStatus) {
         this.completionSatus = newCompletionStatus;
