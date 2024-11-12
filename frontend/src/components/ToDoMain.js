@@ -112,9 +112,7 @@ function ToDoMain() {
           </div>
         </button>
 
-        {/* Define Overlay */}
-        <Overlay isOpen={isOpen} onClose={toggleOverlay}>
-          {/* Title */}
+        <Overlay isOpen={isOpenAddTask} onClose={toggleOverlayAddTask}>
           <div className='overlay-item-container'>
             <div className='overlay-text-container'>
               Title:
