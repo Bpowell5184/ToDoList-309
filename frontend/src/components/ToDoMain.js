@@ -12,11 +12,19 @@ import './ToDoMain.css'
 
 function ToDoMain() {
 
-  const [isOpen, setIsOpen] = useState(false);
   const [Points_Day] = useState('0')
-  const toggleOverlay = () => {
-    setIsOpen(!isOpen);
+  const [isOpenAddTask, setIsOpenAddTask] = useState(false);
+  const toggleOverlayAddTask = () => {
+    setIsOpenAddTask(!isOpenAddTask);
   };
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
+  const toggleOverlayFilter = () => {
+    setIsOpenFilter(!isOpenFilter);
+  };
+  const [dateComparitor, setDateComparitor] = useState('Time?')
+  const editDateComparitor = (change) => {
+    setDateComparitor(change)
+  }
 
   const [Title, setTitle] = useState('');
   const [Date, setDate] = useState('');
@@ -44,12 +52,13 @@ function ToDoMain() {
       setDescription(newDescription);
     };
   const resetAddTaskState = () => {
+
     setDate('');
     setDescription('');
     setPoints('');
     setPriority('');
     setTitle('');
-    toggleOverlay();
+    toggleOverlayAddTask();
   };
   
   return (
@@ -75,7 +84,7 @@ function ToDoMain() {
           Date 
           <img src={sort_carrot} alt="sort_carrot" className='sort-icon'/>
         </div>
-        <img src={filter_icon} alt="filter_icon" className='filter-icon'/>
+        <img src={filter_icon} onClick={toggleOverlayFilter} alt="filter_icon" className='filter-icon'/>
         <Link to ="/calendar">
           <img src={list_view_icon} alt="list_view_icon" className='list_view_icon'/>
         </Link>
@@ -97,13 +106,13 @@ function ToDoMain() {
       </div>
 
       <div>
-        <button onClick={toggleOverlay} className='add-task-button'>
+        <button onClick={toggleOverlayAddTask} className='add-task-button'>
           <div className='add-task-button-text'>
             Add Task
           </div>
         </button>
 
-        <Overlay isOpen={isOpen} onClose={toggleOverlay}>
+        <Overlay isOpen={isOpenAddTask} onClose={toggleOverlayAddTask}>
           <div className='overlay-item-container'>
             <div className='overlay-text-container'>
               Title:
@@ -172,6 +181,37 @@ function ToDoMain() {
 
         </Overlay>
       </div>
+
+      <Overlay isOpen={isOpenFilter} onClose={toggleOverlayFilter}>
+
+        <div className='overlay-item-container'>
+          <div className='overlay-text-container'>
+            Date
+          </div>
+          <div class="dropdown">
+          <span>{dateComparitor}</span>
+        <div class="dropdown-content">
+          <p onClick={() => editDateComparitor("Before")}>Before</p>
+          <p onClick={() => editDateComparitor("After")}>After</p>
+        </div>
+        </div>
+        <input
+          type="text"
+          className="text-input"
+          // value={}
+          // onChange={}
+        />
+
+
+
+        </div>
+          <div class="dropdown">
+            <span>Tags</span>
+          <div class="dropdown-content">
+            <p>Hello World!</p>
+          </div>
+          </div>
+      </Overlay>
 
       <Link to="/login">
         <button>Log Out</button>
