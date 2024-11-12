@@ -1,7 +1,7 @@
 class Task {
     constructor() {
-        this.title = "";
-        this.description = "";
+        this.title = "untitled";
+        this.description = "description";
         this.creationDate;
         this.dueDate;
         this.points = 5;
@@ -75,3 +75,4 @@ class Task {
     
 }
 
+module.exports = Task;

@@ -112,7 +112,9 @@ function ToDoMain() {
           </div>
         </button>
 
-        <Overlay isOpen={isOpenAddTask} onClose={toggleOverlayAddTask}>
+        {/* Define Overlay */}
+        <Overlay isOpen={isOpen} onClose={toggleOverlay}>
+          {/* Title */}
           <div className='overlay-item-container'>
             <div className='overlay-text-container'>
               Title:
@@ -124,7 +126,7 @@ function ToDoMain() {
               onChange={handleTitleChange}
             />
           </div>
-
+          {/* Date */}
           <div className='overlay-item-container'>
             <div className='overlay-text-container'>
               Date:
@@ -136,7 +138,7 @@ function ToDoMain() {
             onChange={handleDateChange}
           />
           </div>
-
+          {/* Points */}
           <div className='overlay-item-container'>
             <div className='overlay-text-container'>
               Points:
@@ -148,7 +150,7 @@ function ToDoMain() {
             onChange={handlePointsChange}
           />
           </div>
-
+          {/* Priority */}
           <div className='overlay-item-container'>
             <div className='overlay-text-container'>
               Priority:
@@ -160,7 +162,7 @@ function ToDoMain() {
             onChange={handlePriorityChange}
           />
           </div>
-
+          {/* Description */}
           <div className='overlay-item-container'>
             <div className='overlay-text-container'>
               Description:
@@ -172,7 +174,7 @@ function ToDoMain() {
             onChange={handleDescriptionChange}
           />
           </div>
-
+          {/* Overlay Add Task Button */}
           <button className='add-task-button' onClick={resetAddTaskState} style={{ width: "150px", height: '50px'}}>
             <div className='add-task-button-text' style={{ fontSize: '24px'}}>
               Add Task
@@ -201,8 +203,6 @@ function ToDoMain() {
           // value={}
           // onChange={}
         />
-
-
 
         </div>
           <div class="dropdown">
