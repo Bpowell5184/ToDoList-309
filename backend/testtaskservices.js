@@ -58,11 +58,6 @@ async function findTaskByTitle(title) {
   return await taskModel.find({ title: title });
 }
 
-async function findTaskById(taskId) {
-  const taskModel = getDbConnection().model("Task", TaskSchema);       
-  return await taskModel.find({ taskId: taskId });
-}
-
 module.exports = {
   getTasks,
   findTaskByTitle,
