@@ -1,10 +1,16 @@
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
 const userServices = require("./testuserservices.js");
+
 const app = express();
 const port = 8700;
 
 app.use(express.json());
+
+app.get("/test_env", (req, res) => {
+  res.send(`Process MONGODB_URI: ${process.env.MONGODB_URI}`);
+});
 
 app.get("/users", async (req, res) => {
   const name = req.query["name"];
