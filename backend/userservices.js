@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import userModel from "./user.js";
+import User from "./user.js";
 
 dotenv.config()
 
@@ -12,12 +12,12 @@ mongoose
   .catch((error) => console.log(error));
 
 function addUser(user) {
-  return userModel.findOne({ username: user.username })
+  return User.findOne({ username: user.username })
     .then(existingUser => {
       if (existingUser) {
         throw new Error('User already exists');
       } else {
-        const userToAdd = new userModel(user);
+        const userToAdd = new User(user);
         return userToAdd.save();
       }
     })
@@ -33,7 +33,7 @@ function addUser(user) {
 function getUsers(name) {
   let promise;
   if (name === undefined) {
-    promise = userModel.find();
+    promise = User.find();
   } else {
     promise = findUserByName(name);
   }
@@ -41,14 +41,14 @@ function getUsers(name) {
 }
 
 function findUserByName(name) {
-  return userModel.find({ name: name });
+  return User.find({ name: name });
 }
 
 function getUser(username, password) {
   let promise;
 
   if (username === undefined && password === undefined) {
-    promise = userModel.find();
+    promise = User.find();
   } else {
     promise = findUserByUsernameAndPassword(username, password);
   }
@@ -57,18 +57,18 @@ function getUser(username, password) {
 }
 
 function findUserByUsernameAndPassword(username, password) {
-  return userModel.findOne({ username, password })
+  return User.findOne({ username, password })
     .then((user) => {
       return user || null;
     });
 }
 
 function findUserById(id) {
-  return userModel.findById(id);
+  return User.findById(id);
 }
 
 function deleteUser(id){
-  return userModel.findOneAndDelete({ _id: id });
+  return User.findOneAndDelete({ _id: id });
 }
 
 export default {

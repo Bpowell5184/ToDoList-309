@@ -1,13 +1,13 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const TaskSchema = new mongoose.Schema({
     title: String,
     description: String,
-    creationDate: Date,
+    creationDate: {type: Date, default: Date.now},
     dueDate: Date,
     points: {type: Number, min:0, max:10},
     priority: {type: Number, min:0, max:10},
     tagsList: [],
     completionStatus: Boolean,
-    taskId: Number
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User'} 
 })
-module.exports = TaskSchema;
+export default mongoose.model('Task', TaskSchema);
