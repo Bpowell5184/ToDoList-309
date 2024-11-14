@@ -1,45 +1,38 @@
-class User{
-    constructor(Username, Password){
-        this.username = Username;
-        this.password = Password;
-        this.highScore = 0;
-        this.UID;
-        this.LID;
-        this.totalTasks = 0;
-    }
-    getUsername(){
-       return this.username;
-    }
-    getPassword(){
-        return this.password;
-    }
-    getUID(){
-        return this.UID;
-    }
-    getLID(){
-        return this.LID;
-    }
-    gethighScore(){
-        return this.highScore;
-    }
-    login(tryuser, trypass){
-        if(tryuser.equals(this.username)){
-            if(trypass.equals(this.username)){
-                return true;
-            }
-        }
-        return false;
-    }
-    setUsername(newUsername){
-       this.username = newUsername;
-    }
-    setPassword(newPassword){
-        this.password = newPassword;
-    }
-    highScorecheck(dayscore){
-        if(dayscore > this.highScore){
-            this.highScore = dayscore;
-        }
-    }
-}
-module.exports = User;
+import mongoose from "mongoose";
+
+const UserSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      trim: true,
+      validate(value) {
+        if (value.length < 2)
+          throw new Error("Username must be greater then 1 character");
+      },
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      validate(value) {
+        if (value.length < 2)
+          throw new Error("Name must be greater than 1 character");
+      },
+    },
+    password: {
+      type: String,
+      required: true,
+      trim: true,
+      validate(value) {
+        if (value.length < 2)
+          throw new Error("Password must be at least 2 characters");
+      },
+    },
+  },
+  { collection: "users" }
+);
+
+const User = mongoose.model("User", UserSchema);
+
+export default User;
