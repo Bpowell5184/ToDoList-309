@@ -31,40 +31,44 @@ app.post("/users", async (req, res) => {
     else res.status(500).send("User creation failed.");
   } catch (error) {
     console.log(error);
-    res.status(500).send("An error occurred while saving the user.");
+    res
+      .status(500)
+      .send("An error occurred while saving the user.");
   }
 });
 
 app.post("/users/:userid/tasks", async (req, res) => {
-    try{
-        const { userid } = req.params;
-        const user =await User.findById(userid).populate('tasks');
-        if (!user) {
-             return res.status(404).json({ error: 'User not found' });
-        }
-        const newTask = new Task({
-            title: req.body.title,
-            description: req.body.description,
-            dueDate: req.body.dueDate,
-            points: req.body.points,
-            priority: req.body.priority,
-            completionStatus: req.body.completed || false,
-            userId: user._id
+  try {
+    const { userid } = req.params;
+    const user = await User.findById(userid).populate("tasks");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    const newTask = new Task({
+      title: req.body.title,
+      description: req.body.description,
+      dueDate: req.body.dueDate,
+      points: req.body.points,
+      priority: req.body.priority,
+      completionStatus: req.body.completed || false,
+      userId: user._id
     });
     const savedTask = await newTask.save();
     user.tasks.push(savedTask._id);
     await user.save();
-    res.status(201).json({ message: 'Task added to user', task: savedTask });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
+    res
+      .status(201)
+      .json({ message: "Task added to user", task: savedTask });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 });
-app.get('/users/:userId', async (req, res) => {
+app.get("/users/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = await User.findById(userId).populate('tasks');
+    const user = await User.findById(userId).populate("tasks");
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
     res.json(user);
   } catch (error) {
@@ -76,7 +80,7 @@ app.get("/adduser", async (req, res) => {
   const testUser = {
     username: "testuser",
     name: "Test User",
-    password: "testpassword123",
+    password: "testpassword123"
   };
 
   try {
@@ -84,17 +88,21 @@ app.get("/adduser", async (req, res) => {
     if (savedUser) {
       res.status(201).send({
         message: "Test user added successfully",
-        user: savedUser,
+        user: savedUser
       });
     } else {
       res.status(500).send("Failed to add test user.");
     }
   } catch (error) {
     console.log(error);
-    res.status(500).send("An error occurred while adding the test user.");
+    res
+      .status(500)
+      .send("An error occurred while adding the test user.");
   }
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(
+    `Example app listening at http://localhost:${port}`
+  );
 });
