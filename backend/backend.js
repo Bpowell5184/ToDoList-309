@@ -23,6 +23,7 @@ app.get("/users", async (req, res) => {
   }
 });
 
+
 app.post("/users", async (req, res) => {
   const user = req.body;
   try {
