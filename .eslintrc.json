@@ -1,26 +1,21 @@
 {
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended"
-    ],
-    "env": {
-        "browser": true,
-        "es2023": true
-    },
-    "parserOptions": {
-        "ecmaFeatures":{
-            "jsx": true
-        },
-        "sourceType": "module"
-    },
-    "rules": {
-        "consistent-return": "error",
-        "eqeqeq": "warn",
-        "react/prop-types": 0
-    },
-    "settings":{
-        "react":{
-            "version": "detect"
-        }
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
     }
+  },
+  "plugins": ["react", "prettier"],
+  "rules": {
+    "prettier/prettier": "error"
+  }
 }

@@ -1,66 +1,67 @@
 .calendar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
 
-  .logo {
-    display: flex;
-    justify-content: space-between;
-    width: 128px;
-    height: auto;
-  }
+.logo {
+  display: flex;
+  justify-content: space-between;
+  width: 128px;
+  height: auto;
+}
 
-  .calendar-view-icon {
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    height: 50px;
-    width: auto;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  
-  .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-  }
-  
-  .day-header, .day-cell {
-    text-align: center;
-    padding: 12px;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-    min-width: 44px;
-  }
+.calendar-view-icon {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  height: 50px;
+  width: auto;
+}
 
-  .day-header {
-    margin-top: 20px;
-  }
-  
-  .day-cell {
-    position: relative;
-    height: 54px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .day-number {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    font-size: 0.6em;
-  }
-  
-  .day-cell:hover {
-    background-color: #e0e0e0;
-    cursor: pointer;
-  }
+.header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.day-header,
+.day-cell {
+  text-align: center;
+  padding: 12px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  min-width: 44px;
+}
+
+.day-header {
+  margin-top: 20px;
+}
+
+.day-cell {
+  position: relative;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day-number {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 0.6em;
+}
+
+.day-cell:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
