@@ -63,6 +63,7 @@ function ToDoMain() {
   
   return (
     <div>
+      {/* Logo */}
       <img src={logo} alt="Logo" className="logo" />
       <div className='points_container'>
         <div className='points_text'>
@@ -70,7 +71,7 @@ function ToDoMain() {
         </div>
       </div>
       <h1 className='large-heading'>To-Do</h1>
-
+      {/* Table Headers and Icons */}
       <div className='sorts-container'> 
         <div className='sort_points'> 
           Points 
@@ -91,19 +92,21 @@ function ToDoMain() {
       </div>
       <hr class="title-divider" /> 
 
-      <div className='task-container'>
-        <div className='point-value'>
-          +5
-        </div>
-        <div className='task-name'>
-          Homework from CS
-        </div>
-        <div className='date'> 
-          12/12/12
-        </div>
-        <img src={trash_icon} alt="trash_icon" className='trash-icon'/>
-        <img src={options} alt="options" className='options-icon'/>
-      </div>
+      <table className='task-table'>
+        <tbody>
+          <tr>
+            <td className='point-value'>+5</td>
+            <td className='task-name'>Homework from CS</td>
+            <td className='date'>12/12/12</td>
+            <td>
+              <button>
+               <img src={trash_icon} alt="trash_icon" className='trash-icon' />
+              </button>
+             </td>
+            <td><img src={options} alt="options" className='options-icon' /></td>
+          </tr>
+        </tbody>
+      </table>
 
       <div>
         <button onClick={toggleOverlayAddTask} className='add-task-button'>
