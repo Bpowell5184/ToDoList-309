@@ -7,19 +7,24 @@
     "start:frontend": "cd frontend && npm run dev",
     "start:backend": "cd backend && node backend.js",
     "test": "jest",
-    "format": "npx prettier . --write",
-    "lint": "npx eslint ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "jest": "^29.7.0",
-    "prettier": "3.3.3"
+    "prettier": "^3.3.3"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "eslint-config-standard": "^17.1.0",
+    "eslint-define-config": "^2.1.0",
     "express": "^4.21.1",
     "mongodb": "^6.10.0",
     "mongoose": "^8.8.1",

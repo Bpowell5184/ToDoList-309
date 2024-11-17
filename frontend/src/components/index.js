@@ -1,5 +1,5 @@
-import { Fragment } from "react";
-import "./Overlay.css";
+import { Fragment } from 'react';
+import './Overlay.css';
 
 export function Overlay({ isOpen, onClose, children }) {
   return (
