@@ -29,7 +29,6 @@ const UserSchema = new mongoose.Schema(
           throw new Error("Password must be at least 2 characters");
       },
     },
-    tasks: [{type: mongoose.Schema.Types.ObjectId, ref: 'Task' }]
   },
   { collection: "users" }
 );
