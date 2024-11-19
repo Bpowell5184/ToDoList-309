@@ -65,12 +65,12 @@ function ToDoMain() {
       <div className="points_container">
         <div className="points_text">Points: {Points_Day}</div>
       </div>
-      <h1 className="large-heading">To-Do</h1>
-
-      <div className="sorts-container">
-        <div className="sort_points">
-          Points
-          <img src={sort_carrot} alt="sort_carrot" className="sort-icon" />
+      <h1 className='large-heading'>To-Do</h1>
+      {/* main container of points, task name, etc*/}
+      <div className='sorts-container'> 
+        <div className='sort_points'> 
+          Points 
+          <img src={sort_carrot} alt="sort_carrot" className='sort-icon'/>
         </div>
         <div className="sort-task">
           Task Name
@@ -96,19 +96,28 @@ function ToDoMain() {
       </div>
       <hr class="title-divider" />
 
-      <div className="task-container">
-        <div className="point-value">+5</div>
-        <div className="task-name">Homework from CS</div>
-        <div className="date">12/12/12</div>
-        <img src={trash_icon} alt="trash_icon" className="trash-icon" />
-        <img src={options} alt="options" className="options-icon" />
+      {/* start of current implementation of a task */}
+      <div className='task-container'>
+        <div className='point-value'>
+          +5
+        </div>
+        <div className='task-name'>
+          Homework from CS
+        </div>
+        <div className='date'> 
+          12/12/12
+        </div>
+        <img src={trash_icon} alt="trash_icon" className='trash-icon'/>
+        <img src={options} alt="options" className='options-icon'/>
       </div>
 
+
+      {/* add task button */}
       <div>
         <button onClick={toggleOverlayAddTask} className="add-task-button">
           <div className="add-task-button-text">Add Task</div>
         </button>
-
+        {/* add task overlay */}
         <Overlay isOpen={isOpenAddTask} onClose={toggleOverlayAddTask}>
           <div className="overlay-item-container">
             <div className="overlay-text-container">Title:</div>
@@ -159,19 +168,15 @@ function ToDoMain() {
               onChange={handleDescriptionChange}
             />
           </div>
-          {/* Overlay Add Task Button */}
-          <button
-            className="add-task-button"
-            onClick={resetAddTaskState}
-            style={{ width: '150px', height: '50px' }}
-          >
-            <div className="add-task-button-text" style={{ fontSize: '24px' }}>
+          <button className='add-task-button' onClick={resetAddTaskState} style={{ width: "150px", height: '50px'}}>
+            <div className='add-task-button-text' style={{ fontSize: '24px'}}>
               Add Task
             </div>
           </button>
         </Overlay>
       </div>
 
+      {/* filter overlay */}
       <Overlay isOpen={isOpenFilter} onClose={toggleOverlayFilter}>
         <div className="overlay-item-container">
           <div className="overlay-text-container">Date</div>
@@ -197,6 +202,7 @@ function ToDoMain() {
         </div>
       </Overlay>
 
+      {/* logout button */}
       <Link to="/login">
         <button>Log Out</button>
       </Link>
