@@ -70,7 +70,7 @@ function ToDoMain() {
         </div>
       </div>
       <h1 className='large-heading'>To-Do</h1>
-
+      {/* main container of points, task name, etc*/}
       <div className='sorts-container'> 
         <div className='sort_points'> 
           Points 
@@ -91,6 +91,7 @@ function ToDoMain() {
       </div>
       <hr class="title-divider" /> 
 
+      {/* start of current implementation of a task */}
       <div className='task-container'>
         <div className='point-value'>
           +5
@@ -105,13 +106,15 @@ function ToDoMain() {
         <img src={options} alt="options" className='options-icon'/>
       </div>
 
+
+      {/* add task button */}
       <div>
         <button onClick={toggleOverlayAddTask} className='add-task-button'>
           <div className='add-task-button-text'>
             Add Task
           </div>
         </button>
-
+        {/* add task overlay */}
         <Overlay isOpen={isOpenAddTask} onClose={toggleOverlayAddTask}>
           <div className='overlay-item-container'>
             <div className='overlay-text-container'>
@@ -172,7 +175,6 @@ function ToDoMain() {
             onChange={handleDescriptionChange}
           />
           </div>
-          {/* Overlay Add Task Button */}
           <button className='add-task-button' onClick={resetAddTaskState} style={{ width: "150px", height: '50px'}}>
             <div className='add-task-button-text' style={{ fontSize: '24px'}}>
               Add Task
@@ -182,6 +184,7 @@ function ToDoMain() {
         </Overlay>
       </div>
 
+      {/* filter overlay */}
       <Overlay isOpen={isOpenFilter} onClose={toggleOverlayFilter}>
 
         <div className='overlay-item-container'>
@@ -211,6 +214,7 @@ function ToDoMain() {
           </div>
       </Overlay>
 
+      {/* logout button */}
       <Link to="/login">
         <button>Log Out</button>
       </Link>
