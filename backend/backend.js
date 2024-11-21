@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import taskServices from "./taskservices.js";
 import userServices from "./userservices.js";
 import mongoose from "mongoose";
 import User from "./User.js";
@@ -10,6 +11,10 @@ const port = 8700;
 app.use(express.json());
 app.use(cors());
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Not sure any of this works as it was from before updates to userservices and taskservices:
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get("/users", async (req, res) => {
   const name = req.query.name;
   const job = req.query.job;
@@ -75,7 +80,12 @@ app.get("/users/:userId", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-// Test to make sure database connection is working:
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Tests for current implementation:
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Test to add a user:
 app.get("/adduser", async (req, res) => {
   const testUser = {
     username: "testuser",
@@ -100,6 +110,31 @@ app.get("/adduser", async (req, res) => {
       .send("An error occurred while adding the test user.");
   }
 });
+
+// Test endpoint to add a task
+app.get("/addtask", async (req, res) => {
+
+  const testTask = {
+    userid: "64e8f0bfc1234c567890d12e",
+    task_name: "Sample Task",
+    task_due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    task_description: "This is a test task.",
+    task_tags: ["test", "sample"],
+    task_completed: "true",
+  };
+
+  try {
+    const savedTask = await taskServices.addTask(testTask);
+    res.status(201).send({
+      message: "Task added successfully",
+      task: savedTask,
+    });
+  } catch (error) {
+    console.error("Error adding task:", error);
+    res.status(500).send("An error occurred while adding the task.");
+  }
+});
+
 
 app.listen(port, () => {
   console.log(
