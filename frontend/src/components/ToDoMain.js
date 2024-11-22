@@ -4,22 +4,23 @@ import logo from '.././assets/logo.png';
 import sort_carrot from '.././assets/sort_carrot.png';
 import filter_icon from '.././assets/filter_icon.png';
 import list_view_icon from '.././assets/list_view_icon.png';
-import trash_icon from '.././assets/trash_icon.png';
-import options from '.././assets/options.png';
 import Overlay from './';
-// import Overlay from 'react-overlays/Overlay';
 import './ToDoMain.css';
+import ToDoTable from './ToDoTable';
 
 function ToDoMain() {
+
   const [Points_Day] = useState('0');
   const [isOpenAddTask, setIsOpenAddTask] = useState(false);
   const toggleOverlayAddTask = () => {
     setIsOpenAddTask(!isOpenAddTask);
   };
+
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const toggleOverlayFilter = () => {
     setIsOpenFilter(!isOpenFilter);
   };
+
   const [dateComparitor, setDateComparitor] = useState('Time?');
   const editDateComparitor = (change) => {
     setDateComparitor(change);
@@ -30,6 +31,7 @@ function ToDoMain() {
   const [Points, setPoints] = useState('');
   const [Priority, setPriority] = useState('');
   const [Description, setDescription] = useState('');
+
   const handleTitleChange = (event) => {
     const newTitle = event.target.value;
     setTitle(newTitle);
@@ -50,7 +52,28 @@ function ToDoMain() {
     const newDescription = event.target.value;
     setDescription(newDescription);
   };
+
+  /* Table */
+
+  const [tasks, setTasks] = useState([
+    { id: 1, title: 'Buy Groceries', points: 1, dueDate: '2024-11-20'},
+    { id: 2, title: 'CSC 308 Hwk', points: 5, dueDate: '2024-11-27'},
+    { id: 3, title: 'Practice Guitar', points: 1, dueDate: '2024-12-08'}
+  ]);
+
+  /* Adds task */ 
+  
   const resetAddTaskState = () => {
+      const newTask = {
+          id: Math.floor(Math.random() * 10000),
+          title: Title,
+          dueDate: Date,
+          points: Points,
+          //priority: Priority,
+          //description: Description
+      };
+      setTasks([...tasks, newTask]);
+
     setDate('');
     setDescription('');
     setPoints('');
@@ -59,6 +82,7 @@ function ToDoMain() {
     toggleOverlayAddTask();
   };
 
+  /* HTML */
   return (
     <div>
       {/* Logo */}
@@ -97,27 +121,16 @@ function ToDoMain() {
       </div>
       <hr class="title-divider" />
 
-      <table className='task-table'>
-        <tbody>
-          <tr>
-            <td className='point-value'>+5</td>
-            <td className='task-name'>Homework from CS</td>
-            <td className='date'>12/12/12</td>
-            <td>
-              <button>
-               <img src={trash_icon} alt="trash_icon" className='trash-icon' />
-              </button>
-             </td>
-            <td><img src={options} alt="options" className='options-icon' /></td>
-          </tr>
-        </tbody>
-      </table>
+      {/* Table */}
+      <ToDoTable tasks={tasks} setTasks={setTasks}/>      
 
+      {/* Add Task Button */}
       <div>
         <button onClick={toggleOverlayAddTask} className="add-task-button">
           <div className="add-task-button-text">Add Task</div>
         </button>
 
+      {/* Overlay */}
         <Overlay isOpen={isOpenAddTask} onClose={toggleOverlayAddTask}>
           <div className="overlay-item-container">
             <div className="overlay-text-container">Title:</div>
@@ -206,6 +219,7 @@ function ToDoMain() {
         </div>
       </Overlay>
 
+      {/* Log Out Button */}
       <Link to="/login">
         <button>Log Out</button>
       </Link>
