@@ -1,4 +1,5 @@
 import React, { useState, userRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import logo from '.././assets/logo.png';
 import sort_carrot from '.././assets/sort_carrot.png';
@@ -61,35 +62,34 @@ function ToDoMain() {
     toggleOverlayAddTask();
   };
 
-
+  const { state } = useLocation();  // Get the state passed from Login
+  const { username, password } = state || {};  // Destructure username and password
   useEffect(() => {
-    // Perform an axios GET request with query parameters for username and password
-    axios
-      .get('http://localhost:8700/getuser', {
-        params: {
-          username: 'Jane',
-          password: 'Doe'
-        }
-      })
-      .then((response) => {
-        console.log('Response:', response.data); // Log the response for debugging
-        if (response.data.message === 'User not found') {
-          // Handle the case where user is not found
-          setData(null);
-          setErrorMessage('User not found');
-        } else if (response.data.message === 'An error occurred while retrieving the user.'){
-          setData(null);
-          setErrorMessage('Serverside error');
-        } else{
-          setData(response.data.user);  // Set the user data if found
-          setErrorMessage(null);  // Clear any previous error message
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-        setErrorMessage('An error occurred while fetching the user data.');
-      });
-  }, []);
+    if (username && password) {
+      axios
+        .post('http://localhost:8700/getuser', {
+          username: username,
+          password: password
+        })
+        .then((response) => {
+          console.log('Response:', response.data);
+          if (response.data.message === 'User not found') {
+            setData(null);
+            setErrorMessage('User not found');
+          } else if (response.data.message === 'An error occurred while retrieving the user.') {
+            setData(null);
+            setErrorMessage('Server-side error');
+          } else {
+            setData(response.data.user);
+            setErrorMessage(null);
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+          setErrorMessage('An error occurred while fetching the user data.');
+        });
+    }
+  }, [username, password]);  // Run effect when username or password changes
 
 
   return (
@@ -99,6 +99,14 @@ function ToDoMain() {
         <div className="points_text">Points: {Points_Day}</div>
       </div>
       <h1 className='large-heading'>To-Do</h1>
+      {/* Display user data if available */}
+        {data ? (
+          <div className="data-container">
+            <p>Welcome {data.name}!</p>  {/* Display only the name */}
+          </div>
+        ) : (
+        <p>No data available.</p>
+      )}
       {/* main container of points, task name, etc*/}
       <div className='sorts-container'> 
         <div className='sort_points'> 
@@ -242,15 +250,6 @@ function ToDoMain() {
 
       {errorMessage && <div className="error-message">{errorMessage}</div>}
 
-      {/* Display user data if available */}
-      {data ? (
-        <div className="data-container">
-          <h3>Fetched Data</h3>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
-        </div>
-      ) : (
-        <p>No data available.</p>
-      )}
     </div>
 
     
