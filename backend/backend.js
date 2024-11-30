@@ -80,6 +80,85 @@ app.get("/users/:userId", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+//User Endpoints
+
+//add user
+app.post("/adduser", async (req, res) => {
+  const { username, name, password } = req.body;
+
+  if (!username || !name || !password) {
+    return res.status(400).send({ message: "Missing required fields" });
+  }
+
+  const user = { username, name, password };
+
+  try {
+    const savedUser = await userServices.addUser(user);
+    res.status(201).send({
+      message: "User added successfully",
+      user: savedUser,
+    });
+  } catch (error) {
+    console.error("Error adding user:", error);
+    res.status(500).send({ message: "An error occurred while adding the user." });
+  }
+});
+//get user by username and password
+app.get("/getuser", async (req, res) => {
+  const { username, password } = req.query
+
+  if (!username || !password) {
+    return res.status(400).send({ message: "Username & Password is required" });
+  }
+
+  try {
+    const user = await userServices.getUser(username, password);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    res.status(200).send({ message: "User retrieved successfully", user });
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    res.status(500).send({ message: "An error occurred while retrieving the user." });
+  }
+});
+//get user by id
+app.get("/finduser/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await userServices.findUserById(userId);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    res.status(200).send({
+      message: "User retrieved successfully",
+      user,
+    });
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    res.status(500).send({ message: "An error occurred while retrieving the user." });
+  }
+});
+
+// delete user
+app.delete("/deleteuser/:id", async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const deletedUser = await userServices.deleteUser(userId);
+    if (!deletedUser) {
+      return res.status(404).send({ message: "User not found" });
+    }
+    res.status(200).send({
+      message: "User deleted successfully",
+      user: deletedUser,
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).send({ message: "An error occurred while deleting the user." });
+  }
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Tests for current implementation:
