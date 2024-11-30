@@ -1,4 +1,4 @@
-import React, { useState, userRef } from 'react';
+import React, { useState, userRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '.././assets/logo.png';
 import sort_carrot from '.././assets/sort_carrot.png';
@@ -7,7 +7,7 @@ import list_view_icon from '.././assets/list_view_icon.png';
 import trash_icon from '.././assets/trash_icon.png';
 import options from '.././assets/options.png';
 import Overlay from './';
-// import Overlay from 'react-overlays/Overlay';
+import axios from 'axios';
 import './ToDoMain.css';
 
 function ToDoMain() {
@@ -30,6 +30,8 @@ function ToDoMain() {
   const [Points, setPoints] = useState('');
   const [Priority, setPriority] = useState('');
   const [Description, setDescription] = useState('');
+  const [data, setData] = useState(null); // State to store the response data
+  const [errorMessage, setErrorMessage] = useState(null);
   const handleTitleChange = (event) => {
     const newTitle = event.target.value;
     setTitle(newTitle);
@@ -58,6 +60,37 @@ function ToDoMain() {
     setTitle('');
     toggleOverlayAddTask();
   };
+
+
+  useEffect(() => {
+    // Perform an axios GET request with query parameters for username and password
+    axios
+      .get('http://localhost:8700/getuser', {
+        params: {
+          username: 'Jane',
+          password: 'Doe'
+        }
+      })
+      .then((response) => {
+        console.log('Response:', response.data); // Log the response for debugging
+        if (response.data.message === 'User not found') {
+          // Handle the case where user is not found
+          setData(null);
+          setErrorMessage('User not found');
+        } else if (response.data.message === 'An error occurred while retrieving the user.'){
+          setData(null);
+          setErrorMessage('Serverside error');
+        } else{
+          setData(response.data.user);  // Set the user data if found
+          setErrorMessage(null);  // Clear any previous error message
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setErrorMessage('An error occurred while fetching the user data.');
+      });
+  }, []);
+
 
   return (
     <div>
@@ -206,7 +239,23 @@ function ToDoMain() {
       <Link to="/login">
         <button>Log Out</button>
       </Link>
+
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
+
+      {/* Display user data if available */}
+      {data ? (
+        <div className="data-container">
+          <h3>Fetched Data</h3>
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
+      ) : (
+        <p>No data available.</p>
+      )}
     </div>
+
+    
+
+
   );
 }
 
