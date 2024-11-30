@@ -1,6 +1,5 @@
-import React, { useState, userRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import logo from '.././assets/logo.png';
 import sort_carrot from '.././assets/sort_carrot.png';
 import filter_icon from '.././assets/filter_icon.png';
@@ -14,45 +13,24 @@ import './ToDoMain.css';
 function ToDoMain() {
   const [Points_Day] = useState('0');
   const [isOpenAddTask, setIsOpenAddTask] = useState(false);
-  const toggleOverlayAddTask = () => {
-    setIsOpenAddTask(!isOpenAddTask);
-  };
   const [isOpenFilter, setIsOpenFilter] = useState(false);
-  const toggleOverlayFilter = () => {
-    setIsOpenFilter(!isOpenFilter);
-  };
   const [dateComparitor, setDateComparitor] = useState('Time?');
-  const editDateComparitor = (change) => {
-    setDateComparitor(change);
-  };
-
+  const [tasks, setTasks] = useState([]); // State to manage all tasks
   const [Title, setTitle] = useState('');
   const [Date, setDate] = useState('');
   const [Points, setPoints] = useState('');
   const [Priority, setPriority] = useState('');
   const [Description, setDescription] = useState('');
-  const [data, setData] = useState(null); // State to store the response data
+  const [data, setData] = useState(null); // Store user data
   const [errorMessage, setErrorMessage] = useState(null);
-  const handleTitleChange = (event) => {
-    const newTitle = event.target.value;
-    setTitle(newTitle);
-  };
-  const handleDateChange = (event) => {
-    const newDate = event.target.value;
-    setDate(newDate);
-  };
-  const handlePointsChange = (event) => {
-    const newPoints = event.target.value;
-    setPoints(newPoints);
-  };
-  const handlePriorityChange = (event) => {
-    const newPriority = event.target.value;
-    setPriority(newPriority);
-  };
-  const handleDescriptionChange = (event) => {
-    const newDescription = event.target.value;
-    setDescription(newDescription);
-  };
+
+  // Handle changes in input fields
+  const handleTitleChange = (event) => setTitle(event.target.value);
+  const handleDateChange = (event) => setDate(event.target.value);
+  const handlePointsChange = (event) => setPoints(event.target.value);
+  const handlePriorityChange = (event) => setPriority(event.target.value);
+  const handleDescriptionChange = (event) => setDescription(event.target.value);
+
   const resetAddTaskState = () => {
     setDate('');
     setDescription('');
@@ -62,17 +40,32 @@ function ToDoMain() {
     toggleOverlayAddTask();
   };
 
-  const { state } = useLocation();  // Get the state passed from Login
-  const { username, password } = state || {};  // Destructure username and password
+  // Toggle overlay visibility
+  const toggleOverlayAddTask = () => setIsOpenAddTask(!isOpenAddTask);
+  const toggleOverlayFilter = () => setIsOpenFilter(!isOpenFilter);
+
+  // Add a new task
+  const handleAddTask = () => {
+    const newTask = {
+      title: Title,
+      date: Date,
+      points: Points,
+      priority: Priority,
+      description: Description,
+    };
+
+    setTasks([...tasks, newTask]);  // Add new task to the tasks list
+    resetAddTaskState();  // Reset inputs and close overlay
+  };
+
+  // Fetch user data from backend using axios
+  const { state } = useLocation();
+  const { username, password } = state || {};
   useEffect(() => {
     if (username && password) {
       axios
-        .post('http://localhost:8700/getuser', {
-          username: username,
-          password: password
-        })
+        .post('http://localhost:8700/getuser', { username, password })
         .then((response) => {
-          console.log('Response:', response.data);
           if (response.data.message === 'User not found') {
             setData(null);
             setErrorMessage('User not found');
@@ -85,12 +78,10 @@ function ToDoMain() {
           }
         })
         .catch((error) => {
-          console.error('Error fetching data:', error);
           setErrorMessage('An error occurred while fetching the user data.');
         });
     }
-  }, [username, password]);  // Run effect when username or password changes
-
+  }, [username, password]);
 
   return (
     <div>
@@ -99,18 +90,20 @@ function ToDoMain() {
         <div className="points_text">Points: {Points_Day}</div>
       </div>
       <h1 className='large-heading'>To-Do</h1>
-      {/* Display user data if available */}
-        {data ? (
-          <div className="data-container">
-            <p>Welcome {data.name}!</p>  {/* Display only the name */}
-          </div>
-        ) : (
+
+      {/* Display user data */}
+      {data ? (
+        <div className="data-container">
+          <p>Welcome {data.name}!</p>
+        </div>
+      ) : (
         <p>No data available.</p>
       )}
-      {/* main container of points, task name, etc*/}
-      <div className='sorts-container'> 
-        <div className='sort_points'> 
-          Points 
+
+      {/* Sort and filter section */}
+      <div className='sorts-container'>
+        <div className='sort_points'>
+          Points
           <img src={sort_carrot} alt="sort_carrot" className='sort-icon'/>
         </div>
         <div className="sort-task">
@@ -135,30 +128,38 @@ function ToDoMain() {
           />
         </Link>
       </div>
-      <hr class="title-divider" />
+      <hr className="title-divider" />
 
-      {/* start of current implementation of a task */}
-      <div className='task-container'>
-        <div className='point-value'>
-          +5
-        </div>
-        <div className='task-name'>
-          Homework from CS
-        </div>
-        <div className='date'> 
-          12/12/12
-        </div>
-        <img src={trash_icon} alt="trash_icon" className='trash-icon'/>
-        <img src={options} alt="options" className='options-icon'/>
+      {/* Task List - Dynamically Render Tasks */}
+      <div>
+        {tasks.length > 0 ? (
+          tasks.map((task, index) => (
+            <div key={index}>
+              <div className="task-container">
+                <div className="point-value">+{task.points}</div>
+                <div className="task-name">{task.title}</div>
+                <div className="date">{task.date}</div>
+                <img src={trash_icon} alt="trash_icon" className="trash-icon" />
+                <img src={options} alt="options" className="options-icon" />
+              </div>
+
+              {/* Separator - outside the task-container */}
+              <div className="separator"></div>
+            </div>
+          ))
+        ) : (
+          <p>No tasks available.</p>
+        )}
       </div>
 
 
-      {/* add task button */}
+      {/* Add Task Button */}
       <div>
         <button onClick={toggleOverlayAddTask} className="add-task-button">
           <div className="add-task-button-text">Add Task</div>
         </button>
-        {/* add task overlay */}
+
+        {/* Add Task Overlay */}
         <Overlay isOpen={isOpenAddTask} onClose={toggleOverlayAddTask}>
           <div className="overlay-item-container">
             <div className="overlay-text-container">Title:</div>
@@ -209,52 +210,41 @@ function ToDoMain() {
               onChange={handleDescriptionChange}
             />
           </div>
-          <button className='add-task-button' onClick={resetAddTaskState} style={{ width: "150px", height: '50px'}}>
-            <div className='add-task-button-text' style={{ fontSize: '24px'}}>
+          <button className="add-task-button" onClick={handleAddTask} style={{ width: "150px", height: '50px' }}>
+            <div className="add-task-button-text" style={{ fontSize: '24px' }}>
               Add Task
             </div>
           </button>
         </Overlay>
       </div>
 
-      {/* filter overlay */}
+      {/* Filter Overlay */}
       <Overlay isOpen={isOpenFilter} onClose={toggleOverlayFilter}>
         <div className="overlay-item-container">
           <div className="overlay-text-container">Date</div>
-          <div class="dropdown">
+          <div className="dropdown">
             <span>{dateComparitor}</span>
-            <div class="dropdown-content">
-              <p onClick={() => editDateComparitor('Before')}>Before</p>
-              <p onClick={() => editDateComparitor('After')}>After</p>
+            <div className="dropdown-content">
+              <p onClick={() => setDateComparitor('Before')}>Before</p>
+              <p onClick={() => setDateComparitor('After')}>After</p>
             </div>
           </div>
           <input
             type="text"
             className="text-input"
-            // value={}
-            // onChange={}
+            // value={dateComparitor} // Handle value change if needed
+            // onChange={handleFilterChange}
           />
-        </div>
-        <div class="dropdown">
-          <span>Tags</span>
-          <div class="dropdown-content">
-            <p>Hello World!</p>
-          </div>
         </div>
       </Overlay>
 
-      {/* logout button */}
+      {/* Logout Button */}
       <Link to="/login">
         <button>Log Out</button>
       </Link>
 
       {errorMessage && <div className="error-message">{errorMessage}</div>}
-
     </div>
-
-    
-
-
   );
 }
 
