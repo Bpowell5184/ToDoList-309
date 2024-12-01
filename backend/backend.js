@@ -160,6 +160,90 @@ app.delete("/deleteuser/:id", async (req, res) => {
   }
 });
 
+
+/// Task endpoints
+app.post("/tasks", async (req, res) => {
+  const { userid, task_name, task_due_date, task_description, task_tags } = req.body;
+
+  if (!userid || !task_name || !task_due_date) {
+    return res.status(400).send({ message: "userid, task_name, and task_due_date are required." });
+  }
+
+  try {
+    const newTask = {
+      userid,
+      task_name,
+      task_due_date: new Date(task_due_date),
+      task_description: task_description || "",
+      task_tags: task_tags || [],
+      task_completed: false,
+    };
+
+    const savedTask = await taskServices.addTask(newTask);
+
+    res.status(201).send({
+      message: "Task added successfully.",
+      task: savedTask,
+    });
+  } catch (error) {
+    console.error("Error adding task:", error);
+    res.status(500).send({ message: "An error occurred while adding
+
+
+//get tasks by usreid
+app.get("/tasks/:userid", async (req, res) => {
+  const { userid } = req.params;
+
+  try {
+    const tasks = await taskServices.getTask(userid);
+    if (tasks.length === 0) {
+      return res.status(404).send({ message: "No tasks found for this user." });
+    }
+    res.status(200).send({ message: "Tasks retrieved successfully", tasks });
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    res.status(500).send({ message: "An error occurred while fetching tasks." });
+  }
+});
+// set task completed
+app.put("/tasks/:taskid/complete", async (req, res) => {
+  const { taskid } = req.params;
+
+  try {
+    const updatedTask = await taskServices.setTaskTrue(taskid);
+    if (!updatedTask) {
+      return res.status(404).send({ message: "Task not found." });
+    }
+
+    res.status(200).send({
+      message: "Task marked as completed successfully.",
+      task: updatedTask,
+    });
+  } catch (error) {
+    console.error("Error marking task as completed:", error);
+    res.status(500).send({ message: "An error occurred while updating the task status." });
+  }
+});
+//set task incomplete
+app.put("/tasks/:taskid/incomplete", async (req, res) => {
+  const { taskid } = req.params;
+
+  try {
+    const updatedTask = await taskServices.setTaskFalse(taskid);
+    if (!updatedTask) {
+      return res.status(404).send({ message: "Task not found." });
+    }
+
+    res.status(200).send({
+      message: "Task marked as incomplete successfully.",
+      task: updatedTask,
+    });
+  } catch (error) {
+    console.error("Error marking task as incomplete:", error);
+    res.status(500).send({ message: "An error occurred while updating the task status." });
+  }
+});
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Tests for current implementation:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
