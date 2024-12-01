@@ -1,19 +1,47 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';  // Add useNavigate hook
+import axios from 'axios';
 import logo from '.././assets/logo.png';
 import './Login-Signup.css';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const navigate = useNavigate(); // Initialize the navigate hook
+
   const handleUsernameChange = (event) => {
-    const newUsername = event.target.value;
-    setUsername(newUsername);
+    setUsername(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
-    const newPassword = event.target.value;
-    setPassword(newPassword);
+    setPassword(event.target.value);
+  };
+
+  const handleLogin = () => {
+    // Send POST request to login
+    axios
+      .post('http://localhost:8700/getuser', {
+        username: username,
+        password: password
+      })
+      .then((response) => {
+        console.log('Response:', response.data);
+        if (response.data.message.includes('User retrieved successfully')) {
+          setSuccessMessage('Success!');
+          setErrorMessage(null);
+          navigate('/todomain', { state: { username, password } });
+        } else {
+          setSuccessMessage(null);
+          setErrorMessage(response.data.message || 'An error occurred.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error logging in user:', error);
+        setSuccessMessage(null);
+        setErrorMessage('An error occurred while logging in.');
+      });
   };
 
   return (
@@ -30,16 +58,18 @@ function Login() {
         onChange={handleUsernameChange}
       />
       <input
-        type="text"
+        type="password"  // Updated to "password" type for security
         placeholder="Enter your password"
         className="text-input"
         value={password}
         onChange={handlePasswordChange}
       />
+
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
+      {successMessage && <div className="success-message">{successMessage}</div>}
+
       <div>
-        <Link to="/todomain">
-          <button className="button">Log In</button>
-        </Link>
+        <button className="button" onClick={handleLogin}>Log In</button>
       </div>
       <div>
         <Link to="/signup">

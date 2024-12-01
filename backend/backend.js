@@ -11,10 +11,13 @@ const port = 8700;
 app.use(express.json());
 app.use(cors());
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Not sure any of this works as it was from before updates to userservices and taskservices:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+app.get("/", async (req, res) => {
+  res.status(200).send("Welcome to the Backend");
+});
+
 app.get("/users", async (req, res) => {
   const name = req.query.name;
   const job = req.query.job;
@@ -103,9 +106,10 @@ app.post("/adduser", async (req, res) => {
     res.status(500).send({ message: "An error occurred while adding the user." });
   }
 });
-//get user by username and password
-app.get("/getuser", async (req, res) => {
-  const { username, password } = req.query
+
+// get user by username and password
+app.post("/getuser", async (req, res) => {
+  const { username, password } = req.body;
 
   if (!username || !password) {
     return res.status(400).send({ message: "Username & Password is required" });
@@ -122,6 +126,7 @@ app.get("/getuser", async (req, res) => {
     res.status(500).send({ message: "An error occurred while retrieving the user." });
   }
 });
+
 //get user by id
 app.get("/finduser/:id", async (req, res) => {
   const userId = req.params.id;
