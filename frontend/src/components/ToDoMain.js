@@ -12,15 +12,23 @@ import './ToDoMain.css';
 
 function ToDoMain() {
   const [Points_Day] = useState('0');
-  const [isOpenAddTask, setIsOpenAddTask] = useState(false);
+
+  const [currentDescription, setIsCurrentDescription] = useState('');
+
+  const [isOpenDealWithTask, setIsOpenDealWithTask] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
+  const [isOpenDescription, setIsOpenDescription] = useState(false);
+
   const [taskDateComparitor, setTaskDateComparitor] = useState('Time?');
+
   const [tasks, setTasks] = useState([]); // State to manage all tasks
+
   const [Title, setTitle] = useState('');
   const [TaskDate, setTaskDate] = useState('');
   const [Points, setPoints] = useState('');
   const [Priority, setPriority] = useState('');
   const [Description, setDescription] = useState('');
+  const [dealWithTaskText, setDealWithTaskText] = useState('')
   const [data, setData] = useState(null); // Store user data
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -37,13 +45,27 @@ function ToDoMain() {
     setPoints('');
     setPriority('');
     setTitle('');
-    toggleOverlayAddTask();
+    toggleOverlayDealWithTask();
   };
 
   // Toggle overlay visibility
-  const toggleOverlayAddTask = () => setIsOpenAddTask(!isOpenAddTask);
+  const toggleOverlayDealWithTask = (option, task) => {
+    setDealWithTaskText(option)
+    setIsOpenDealWithTask(!isOpenDealWithTask)
+    if (option === 'Edit Task') {
+      setTaskDate(task.task_due_date);
+      setDescription(task.task_description);
+      setPoints('');
+      setPriority('');
+      setTitle(task.task_name);
+    }
+  }
   const toggleOverlayFilter = () => setIsOpenFilter(!isOpenFilter);
-
+  const toggleOverlayDescription = (desc) => {
+    setIsOpenDescription(!isOpenDescription);
+    setIsCurrentDescription(desc);
+  };
+  
 // Add a new task
 async function handleAddTask() {
   try {
@@ -64,7 +86,7 @@ async function handleAddTask() {
         task_due_date: TaskDate,
         points: Points,
         priority: Priority,
-        description: Description,
+        task_description: Description,
         task_name: Title,
       };
     
@@ -215,10 +237,10 @@ async function handleAddTask() {
               <div className="task-container">
                 {/* Temp implementation */}
                 <div className="point-value">+{99}</div> 
-                <div className="task-name">{task.task_name}</div>
+                <div className="task-name" onClick={() => toggleOverlayDescription(task.task_description)}>{task.task_name}</div>
                 <div className="date">{task.task_due_date ? new Date(task.task_due_date).toLocaleDateString() : '?'}</div>
                 <img src={trash_icon} alt="trash_icon" /*onClick={handleDeleteTask(task._id)}*/ className="trash-icon" />
-                <img src={options} alt="options" className="options-icon" />
+                <img src={options} alt="options" onClick={() => toggleOverlayDealWithTask('Edit Task', task)} className="options-icon" />
               </div>
 
               <div className="separator"></div>
@@ -229,15 +251,23 @@ async function handleAddTask() {
         )}
       </div>
 
+      {/* Description Overlay */}
+      <Overlay isOpen={isOpenDescription} onClose={toggleOverlayDescription}>
+        <div className="overlay-item-container">
+          <div className="overlay-text-container">{currentDescription}</div>
+        </div>
+      </Overlay>
+
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
 
       {/* Add Task Button */}
       <div>
-        <button onClick={toggleOverlayAddTask} className="add-task-button">
+        <button onClick={() => toggleOverlayDealWithTask('Add Task')} className="add-task-button">
           <div className="add-task-button-text">Add Task</div>
         </button>
-
+ 
         {/* Add Task Overlay */}
-        <Overlay isOpen={isOpenAddTask} onClose={toggleOverlayAddTask}>
+        <Overlay isOpen={isOpenDealWithTask} onClose={toggleOverlayDealWithTask}>
           <div className="overlay-item-container">
             <div className="overlay-text-container">Title:</div>
             <input
@@ -289,7 +319,7 @@ async function handleAddTask() {
           </div>
           <button className="add-task-button" onClick={handleAddTask} style={{ width: "150px", height: '50px' }}>
             <div className="add-task-button-text" style={{ fontSize: '24px' }}>
-              Add Task
+              {dealWithTaskText}
             </div>
           </button>
         </Overlay>
@@ -320,7 +350,6 @@ async function handleAddTask() {
         <button>Log Out</button>
       </Link>
 
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
     </div>
   );
 }
