@@ -57,9 +57,8 @@ async function handleAddTask() {
 
     console.log('Response:', response.data);
 
-    if (response.data.message.includes('Task retrieved successfully')) {
+    if (response.data.message.includes('Task added successfully.')) {
       setErrorMessage(null);
-
       const newTask = {
         title: Title,
         taskdate: TaskDate,
@@ -68,10 +67,8 @@ async function handleAddTask() {
         description: Description,
         task_name: Title,
       };
-
-      // Update the tasks list with the new task
-      //setTasks(prevTasks => [...prevTasks, newTask]);
-      
+    
+      setTasks(prevTasks => [...prevTasks, newTask]);
     } else {
       setErrorMessage(response.data.message || 'An error occurred upon adding a task.');
     }
@@ -80,7 +77,10 @@ async function handleAddTask() {
     setErrorMessage('An error occurred while adding task.');
   }
 
-  resetAddTaskState();  // Reset inputs and close overlay
+  console.log(errorMessage)
+
+
+  resetAddTaskState();
 }
   
   
@@ -213,7 +213,7 @@ async function handleAddTask() {
                 {/* Temp implementation */}
                 <div className="point-value">+{99}</div> 
                 <div className="task-name">{task.task_name}</div>
-                <div className="date">{new Date(task.task_due_date).toLocaleDateString()}</div>
+                <div className="date">{task.task_due_date ? new Date(task.task_due_date).toLocaleDateString() : '?'}</div>
                 <img src={trash_icon} alt="trash_icon" /*onClick={handleDeleteTask(task._id)}*/ className="trash-icon" />
                 <img src={options} alt="options" className="options-icon" />
               </div>
