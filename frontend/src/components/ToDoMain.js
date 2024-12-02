@@ -14,10 +14,10 @@ function ToDoMain() {
   const [Points_Day] = useState('0');
   const [isOpenAddTask, setIsOpenAddTask] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
-  const [dateComparitor, setDateComparitor] = useState('Time?');
+  const [taskDateComparitor, setTaskDateComparitor] = useState('Time?');
   const [tasks, setTasks] = useState([]); // State to manage all tasks
   const [Title, setTitle] = useState('');
-  const [Date, setDate] = useState('');
+  const [TaskDate, setTaskDate] = useState('');
   const [Points, setPoints] = useState('');
   const [Priority, setPriority] = useState('');
   const [Description, setDescription] = useState('');
@@ -26,13 +26,13 @@ function ToDoMain() {
 
   // Handle changes in input fields
   const handleTitleChange = (event) => setTitle(event.target.value);
-  const handleDateChange = (event) => setDate(event.target.value);
+  const handleTaskDateChange = (event) => setTaskDate(event.target.value);
   const handlePointsChange = (event) => setPoints(event.target.value);
   const handlePriorityChange = (event) => setPriority(event.target.value);
   const handleDescriptionChange = (event) => setDescription(event.target.value);
 
   const resetAddTaskState = () => {
-    setDate('');
+    setTaskDate('');
     setDescription('');
     setPoints('');
     setPriority('');
@@ -44,23 +44,86 @@ function ToDoMain() {
   const toggleOverlayAddTask = () => setIsOpenAddTask(!isOpenAddTask);
   const toggleOverlayFilter = () => setIsOpenFilter(!isOpenFilter);
 
-  // Add a new task
-  const handleAddTask = () => {
-    const newTask = {
-      title: Title,
-      date: Date,
-      points: Points,
-      priority: Priority,
-      description: Description,
-    };
+// Add a new task
+async function handleAddTask() {
+  try {
+    const response = await axios.post('http://localhost:8700/tasks', {
+      userid: data?._id,
+      task_name: Title,
+      task_due_date: '2024-11-15T22:25:30.000+00:00',
+      task_description: 'None',
+      task_tags: []
+    });
 
-    setTasks([...tasks, newTask]);  // Add new task to the tasks list
-    resetAddTaskState();  // Reset inputs and close overlay
+    console.log('Response:', response.data);
+
+    if (response.data.message.includes('Task retrieved successfully')) {
+      setErrorMessage(null);
+
+      const newTask = {
+        title: Title,
+        taskdate: TaskDate,
+        points: Points,
+        priority: Priority,
+        description: Description,
+        task_name: Title,
+      };
+
+      // Update the tasks list with the new task
+      //setTasks(prevTasks => [...prevTasks, newTask]);
+      
+    } else {
+      setErrorMessage(response.data.message || 'An error occurred upon adding a task.');
+    }
+  } catch (error) {
+    console.error('Error adding task to user:', error);
+    setErrorMessage('An error occurred while adding task.');
+  }
+
+  resetAddTaskState();  // Reset inputs and close overlay
+}
+  
+  
+  async function handleDeleteTask(user_id){
+    console.log("no implementation now :(")
+  //   axios
+  //   .post('http://localhost:8700/tasks', {
+  //     userid: data?._id,
+  //     task_name: Title,
+  //     task_due_date: '2024-11-15T22:25:30.000+00:00',
+  //     task_description: 'None',
+  //     task_tags: []
+  //   })
+  //   .then((response) => {
+  //     console.log('Response:', response.data);
+  //     if (response.data.message.includes('Task retrieved successfully')) {
+  //       setErrorMessage(null);
+  //     } else {
+  //       setErrorMessage(response.data.message || 'An error occurred upon adding a task.');
+  //     }
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error adding task to user:', error);
+  //     setErrorMessage('An error occurred while adding task.');
+  //   });
+
+  //   if (errorMessage === null) {
+  //   const newTask = {
+  //     title: Title,
+  //     taskdate: TaskDate,
+  //     points: Points,
+  //     priority: Priority,
+  //     description: Description,
+  //   };
+
+  //   setTasks([...tasks, newTask]);  // Add new task to the tasks list
+  // }
+  //   resetAddTaskState();  // Reset inputs and close overlay
   };
 
-  // Fetch user data from backend using axios
   const { state } = useLocation();
   const { username, password } = state || {};
+
   useEffect(() => {
     if (username && password) {
       axios
@@ -69,19 +132,30 @@ function ToDoMain() {
           if (response.data.message === 'User not found') {
             setData(null);
             setErrorMessage('User not found');
-          } else if (response.data.message === 'An error occurred while retrieving the user.') {
+          } else if (response.data.message.includes('error')) {
             setData(null);
             setErrorMessage('Server-side error');
           } else {
-            setData(response.data.user);
+            setData(response.data.user); // Use the user data directly
             setErrorMessage(null);
           }
         })
-        .catch((error) => {
-          setErrorMessage('An error occurred while fetching the user data.');
-        });
+        .catch(() => setErrorMessage('An error occurred while fetching the user data.'));
     }
   }, [username, password]);
+  
+  useEffect(() => {
+    if (data?._id) {
+      axios
+        .get(`http://localhost:8700/tasks/${data._id}`)
+        .then((response) => {
+          console.log(response.data)
+          setTasks(response.data.tasks || []); // Default to an empty array if no tasks
+        })
+        .catch(() => setErrorMessage('An error occurred while fetching tasks.'));
+    }
+  }, [data?._id]);
+  
 
   return (
     <div>
@@ -130,20 +204,20 @@ function ToDoMain() {
       </div>
       <hr className="title-divider" />
 
-      {/* Task List - Dynamically Render Tasks */}
+      {/* Dynamically Render Tasks */}
       <div>
         {tasks.length > 0 ? (
           tasks.map((task, index) => (
             <div key={index}>
               <div className="task-container">
-                <div className="point-value">+{task.points}</div>
-                <div className="task-name">{task.title}</div>
-                <div className="date">{task.date}</div>
-                <img src={trash_icon} alt="trash_icon" className="trash-icon" />
+                {/* Temp implementation */}
+                <div className="point-value">+{99}</div> 
+                <div className="task-name">{task.task_name}</div>
+                <div className="date">{new Date(task.task_due_date).toLocaleDateString()}</div>
+                <img src={trash_icon} alt="trash_icon" /*onClick={handleDeleteTask(task._id)}*/ className="trash-icon" />
                 <img src={options} alt="options" className="options-icon" />
               </div>
 
-              {/* Separator - outside the task-container */}
               <div className="separator"></div>
             </div>
           ))
@@ -176,8 +250,8 @@ function ToDoMain() {
             <input
               type="text"
               className="text-input"
-              value={Date}
-              onChange={handleDateChange}
+              value={TaskDate}
+              onChange={handleTaskDateChange}
             />
           </div>
           {/* Points */}
@@ -223,10 +297,10 @@ function ToDoMain() {
         <div className="overlay-item-container">
           <div className="overlay-text-container">Date</div>
           <div className="dropdown">
-            <span>{dateComparitor}</span>
+            <span>{taskDateComparitor}</span>
             <div className="dropdown-content">
-              <p onClick={() => setDateComparitor('Before')}>Before</p>
-              <p onClick={() => setDateComparitor('After')}>After</p>
+              <p onClick={() => setTaskDateComparitor('Before')}>Before</p>
+              <p onClick={() => setTaskDateComparitor('After')}>After</p>
             </div>
           </div>
           <input

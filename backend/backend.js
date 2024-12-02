@@ -192,10 +192,12 @@ app.post("/tasks", async (req, res) => {
     });
   } catch (error) {
     console.error("Error adding task:", error);
-    res.status(500).send({ message: "An error occurred while adding
+    res.status(500).send({ message: "An error occurred while adding the task." });
+  }
+});
 
 
-//get tasks by usreid
+//get tasks by userid
 app.get("/tasks/:userid", async (req, res) => {
   const { userid } = req.params;
 
@@ -210,6 +212,7 @@ app.get("/tasks/:userid", async (req, res) => {
     res.status(500).send({ message: "An error occurred while fetching tasks." });
   }
 });
+
 // set task completed
 app.put("/tasks/:taskid/complete", async (req, res) => {
   const { taskid } = req.params;
