@@ -50,8 +50,8 @@ async function handleAddTask() {
     const response = await axios.post('http://localhost:8700/tasks', {
       userid: data?._id,
       task_name: Title,
-      task_due_date: '2024-11-15T22:25:30.000+00:00',
-      task_description: 'None',
+      task_due_date: TaskDate,
+      task_description: Description,
       task_tags: []
     });
 
@@ -61,7 +61,7 @@ async function handleAddTask() {
       setErrorMessage(null);
       const newTask = {
         title: Title,
-        taskdate: TaskDate,
+        task_due_date: TaskDate,
         points: Points,
         priority: Priority,
         description: Description,
@@ -76,9 +76,6 @@ async function handleAddTask() {
     console.error('Error adding task to user:', error);
     setErrorMessage('An error occurred while adding task.');
   }
-
-  console.log(errorMessage)
-
 
   resetAddTaskState();
 }
@@ -152,7 +149,13 @@ async function handleAddTask() {
           console.log(response.data)
           setTasks(response.data.tasks || []); // Default to an empty array if no tasks
         })
-        .catch(() => setErrorMessage('An error occurred while fetching tasks.'));
+        .catch((error) => {
+          // Only set error message if it's not a 404
+          if (error.response && error.response.status !== 404) {
+            setErrorMessage('An error occurred while fetching the user data.');
+          }
+          // 404 means user has no tasks (yet)
+        });
     }
   }, [data?._id]);
   
