@@ -1,5 +1,5 @@
-import React, { useState, userRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import logo from '.././assets/logo.png';
 import sort_carrot from '.././assets/sort_carrot.png';
 import filter_icon from '.././assets/filter_icon.png';
@@ -7,57 +7,193 @@ import list_view_icon from '.././assets/list_view_icon.png';
 import trash_icon from '.././assets/trash_icon.png';
 import options from '.././assets/options.png';
 import Overlay from './';
-// import Overlay from 'react-overlays/Overlay';
+import axios from 'axios';
 import './ToDoMain.css';
 
 function ToDoMain() {
   const [Points_Day] = useState('0');
-  const [isOpenAddTask, setIsOpenAddTask] = useState(false);
-  const toggleOverlayAddTask = () => {
-    setIsOpenAddTask(!isOpenAddTask);
-  };
-  const [isOpenFilter, setIsOpenFilter] = useState(false);
-  const toggleOverlayFilter = () => {
-    setIsOpenFilter(!isOpenFilter);
-  };
-  const [dateComparitor, setDateComparitor] = useState('Time?');
-  const editDateComparitor = (change) => {
-    setDateComparitor(change);
-  };
 
+  const [currentDescription, setIsCurrentDescription] = useState('');
+
+  const [isOpenDealWithTask, setIsOpenDealWithTask] = useState(false);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
+  const [isOpenDescription, setIsOpenDescription] = useState(false);
+
+  const [taskDateComparitor, setTaskDateComparitor] = useState('Time?');
+
+  const [tasks, setTasks] = useState([]); // State to manage all tasks
+
+  const [TaskId, setTaskId] = useState('');
   const [Title, setTitle] = useState('');
-  const [Date, setDate] = useState('');
+  const [TaskDate, setTaskDate] = useState('');
   const [Points, setPoints] = useState('');
   const [Priority, setPriority] = useState('');
   const [Description, setDescription] = useState('');
-  const handleTitleChange = (event) => {
-    const newTitle = event.target.value;
-    setTitle(newTitle);
-  };
-  const handleDateChange = (event) => {
-    const newDate = event.target.value;
-    setDate(newDate);
-  };
-  const handlePointsChange = (event) => {
-    const newPoints = event.target.value;
-    setPoints(newPoints);
-  };
-  const handlePriorityChange = (event) => {
-    const newPriority = event.target.value;
-    setPriority(newPriority);
-  };
-  const handleDescriptionChange = (event) => {
-    const newDescription = event.target.value;
-    setDescription(newDescription);
-  };
+  const [dealWithTaskText, setDealWithTaskText] = useState('')
+  const [data, setData] = useState(null); // Store user data
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  // Handle changes in input fields
+  const handleTitleChange = (event) => setTitle(event.target.value);
+  const handleTaskDateChange = (event) => setTaskDate(event.target.value);
+  const handlePointsChange = (event) => setPoints(event.target.value);
+  const handlePriorityChange = (event) => setPriority(event.target.value);
+  const handleDescriptionChange = (event) => setDescription(event.target.value);
+
   const resetAddTaskState = () => {
-    setDate('');
+    setTaskDate('');
     setDescription('');
     setPoints('');
     setPriority('');
     setTitle('');
-    toggleOverlayAddTask();
+    toggleOverlayDealWithTask();
   };
+
+  // Toggle overlay visibility
+  const toggleOverlayDealWithTask = (option, task) => {
+    setDealWithTaskText(option)
+    setIsOpenDealWithTask(!isOpenDealWithTask)
+    if (option === 'Edit Task') {
+      setTaskDate(task.task_due_date);
+      setDescription(task.task_description);
+      setPoints(task.Points);
+      setPriority('');
+      setTitle(task.task_name);
+      setTaskId(task._id)
+    }
+  }
+  const toggleOverlayFilter = () => setIsOpenFilter(!isOpenFilter);
+  const toggleOverlayDescription = (desc) => {
+    setIsOpenDescription(!isOpenDescription);
+    setIsCurrentDescription(desc);
+  };
+  
+// Deal with task change, in edit or addition
+async function handleTaskAction() {
+  if (dealWithTaskText === 'Add Task') {
+    try {
+      const response = await axios.post('http://localhost:8700/tasks', {
+        userid: data?._id,
+        task_name: Title,
+        task_due_date: TaskDate,
+        points: Points,
+        task_description: Description,
+        task_tags: []
+      });
+
+      console.log('Response:', response.data);
+
+      if (response.data.message.includes('Task added successfully.')) {
+        setErrorMessage(null);
+        const newTask = {
+          _id: response.data.task._id,
+          title: Title,
+          task_due_date: TaskDate,
+          points: Points,
+          priority: Priority,
+          task_description: Description,
+          task_name: Title,
+        };
+
+        setTasks(prevTasks => [...prevTasks, newTask]);
+      } else {
+        setErrorMessage(response.data.message || 'An error occurred upon adding a task.');
+      }
+    } catch (error) {
+      console.error('Error adding task to user:', error);
+      setErrorMessage('An error occurred while adding task.');
+    }
+
+    resetAddTaskState();
+  } else if (dealWithTaskText === 'Edit Task') {
+    try {
+      const response = await axios.put(`http://localhost:8700/tasks/${TaskId}`, {
+        task_name: Title,
+        task_due_date: TaskDate,
+        points: Points,
+        task_description: Description,
+        task_tags: []
+      });
+
+      console.log('Response:', response.data);
+
+      if (response.data.message.includes('Task updated successfully')) {
+        setErrorMessage(null);
+        setTasks(prevTasks =>
+          prevTasks.map(task => (task._id === TaskId ? response.data.task : task))
+        );
+      } else {
+        setErrorMessage(response.data.message || 'An error occurred upon updating a task.');
+      }
+    } catch (error) {
+      console.error('Error updating task:', error);
+      setErrorMessage('An error occurred while updating task.');
+    }
+
+    resetAddTaskState();
+  }
+}
+  
+  
+  async function handleDeleteTask(task_id){
+    try {
+      const response = await axios.delete(`http://localhost:8700/tasks/${task_id}`);
+  
+      console.log('Response:', response.data);
+  
+      if (response.data.message.includes('Task deleted successfully')) {
+        setErrorMessage(null);
+        setTasks(prevTasks => prevTasks.filter(task => task._id !== task_id));
+      } else {
+        setErrorMessage(response.data.message || 'An error occurred upon deleting a task.');
+      }
+    } catch (error) {
+      console.error('Error deleting task', error);
+      setErrorMessage('An error occurred while deleting task.');
+    }
+  };
+
+  const { state } = useLocation();
+  const { username, password } = state || {};
+
+  useEffect(() => {
+    if (username && password) {
+      axios
+        .post('http://localhost:8700/getuser', { username, password })
+        .then((response) => {
+          if (response.data.message === 'User not found') {
+            setData(null);
+            setErrorMessage('User not found');
+          } else if (response.data.message.includes('error')) {
+            setData(null);
+            setErrorMessage('Server-side error');
+          } else {
+            setData(response.data.user); // Use the user data directly
+            setErrorMessage(null);
+          }
+        })
+        .catch(() => setErrorMessage('An error occurred while fetching the user data.'));
+    }
+  }, [username, password]);
+  
+  useEffect(() => {
+    if (data?._id) {
+      axios
+        .get(`http://localhost:8700/tasks/${data._id}`)
+        .then((response) => {
+          console.log(response.data)
+          setTasks(response.data.tasks || []); // Default to an empty array if no tasks
+        })
+        .catch((error) => {
+          // Only set error message if it's not a 404
+          if (error.response && error.response.status !== 404) {
+            setErrorMessage('An error occurred while fetching the user data.');
+          }
+          // 404 means user has no tasks (yet)
+        });
+    }
+  }, [data?._id]);
+  
 
   return (
     <div>
@@ -66,10 +202,20 @@ function ToDoMain() {
         <div className="points_text">Points: {Points_Day}</div>
       </div>
       <h1 className='large-heading'>To-Do</h1>
-      {/* main container of points, task name, etc*/}
-      <div className='sorts-container'> 
-        <div className='sort_points'> 
-          Points 
+
+      {/* Display user data */}
+      {data ? (
+        <div className="data-container">
+          <p>Welcome {data.name}!</p>
+        </div>
+      ) : (
+        <p>No data available.</p>
+      )}
+
+      {/* Sort and filter section */}
+      <div className='sorts-container'>
+        <div className='sort_points'>
+          Points
           <img src={sort_carrot} alt="sort_carrot" className='sort-icon'/>
         </div>
         <div className="sort-task">
@@ -94,31 +240,47 @@ function ToDoMain() {
           />
         </Link>
       </div>
-      <hr class="title-divider" />
+      <hr className="title-divider" />
 
-      {/* start of current implementation of a task */}
-      <div className='task-container'>
-        <div className='point-value'>
-          +5
-        </div>
-        <div className='task-name'>
-          Homework from CS
-        </div>
-        <div className='date'> 
-          12/12/12
-        </div>
-        <img src={trash_icon} alt="trash_icon" className='trash-icon'/>
-        <img src={options} alt="options" className='options-icon'/>
+      {/* Dynamically Render Tasks */}
+      <div>
+        {tasks.length > 0 ? (
+          tasks.map((task, index) => (
+            <div key={index}>
+              <div className="task-container">
+                {/* Temp implementation */}
+                <div className="point-value">+{task.points}</div> 
+                <div className="task-name" onClick={() => toggleOverlayDescription(task.task_description)}>{task.task_name}</div>
+                <div className="date">{task.task_due_date ? new Date(task.task_due_date).toLocaleDateString() : '?'}</div>
+                <img src={trash_icon} alt="trash_icon" onClick={() => handleDeleteTask(task._id)} className="trash-icon" />
+                <img src={options} alt="options" onClick={() => toggleOverlayDealWithTask('Edit Task', task)} className="options-icon" />
+              </div>
+
+              <div className="separator"></div>
+            </div>
+          ))
+        ) : (
+          <p>No tasks available.</p>
+        )}
       </div>
 
+      {/* Description Overlay */}
+      <Overlay isOpen={isOpenDescription} onClose={toggleOverlayDescription}>
+        <div className="overlay-item-container">
+          <div className="overlay-text-container">{currentDescription}</div>
+        </div>
+      </Overlay>
 
-      {/* add task button */}
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
+
+      {/* Add/Edit Task Button */}
       <div>
-        <button onClick={toggleOverlayAddTask} className="add-task-button">
+        <button onClick={() => toggleOverlayDealWithTask('Add Task')} className="add-task-button">
           <div className="add-task-button-text">Add Task</div>
         </button>
-        {/* add task overlay */}
-        <Overlay isOpen={isOpenAddTask} onClose={toggleOverlayAddTask}>
+ 
+        {/* Add Task Overlay */}
+        <Overlay isOpen={isOpenDealWithTask} onClose={toggleOverlayDealWithTask}>
           <div className="overlay-item-container">
             <div className="overlay-text-container">Title:</div>
             <input
@@ -134,8 +296,8 @@ function ToDoMain() {
             <input
               type="text"
               className="text-input"
-              value={Date}
-              onChange={handleDateChange}
+              value={TaskDate}
+              onChange={handleTaskDateChange}
             />
           </div>
           {/* Points */}
@@ -168,44 +330,39 @@ function ToDoMain() {
               onChange={handleDescriptionChange}
             />
           </div>
-          <button className='add-task-button' onClick={resetAddTaskState} style={{ width: "150px", height: '50px'}}>
-            <div className='add-task-button-text' style={{ fontSize: '24px'}}>
-              Add Task
+          <button className="add-task-button" onClick={handleTaskAction} style={{ width: "150px", height: '50px' }}>
+            <div className="add-task-button-text" style={{ fontSize: '24px' }}>
+              {dealWithTaskText}
             </div>
           </button>
         </Overlay>
       </div>
 
-      {/* filter overlay */}
+      {/* Filter Overlay */}
       <Overlay isOpen={isOpenFilter} onClose={toggleOverlayFilter}>
         <div className="overlay-item-container">
           <div className="overlay-text-container">Date</div>
-          <div class="dropdown">
-            <span>{dateComparitor}</span>
-            <div class="dropdown-content">
-              <p onClick={() => editDateComparitor('Before')}>Before</p>
-              <p onClick={() => editDateComparitor('After')}>After</p>
+          <div className="dropdown">
+            <span>{taskDateComparitor}</span>
+            <div className="dropdown-content">
+              <p onClick={() => setTaskDateComparitor('Before')}>Before</p>
+              <p onClick={() => setTaskDateComparitor('After')}>After</p>
             </div>
           </div>
           <input
             type="text"
             className="text-input"
-            // value={}
-            // onChange={}
+            // value={dateComparitor} // Handle value change if needed
+            // onChange={handleFilterChange}
           />
-        </div>
-        <div class="dropdown">
-          <span>Tags</span>
-          <div class="dropdown-content">
-            <p>Hello World!</p>
-          </div>
         </div>
       </Overlay>
 
-      {/* logout button */}
+      {/* Logout Button */}
       <Link to="/login">
         <button>Log Out</button>
       </Link>
+
     </div>
   );
 }

@@ -11,10 +11,13 @@ const port = 8700;
 app.use(express.json());
 app.use(cors());
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Not sure any of this works as it was from before updates to userservices and taskservices:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+app.get("/", async (req, res) => {
+  res.status(200).send("Welcome to the Backend");
+});
+
 app.get("/users", async (req, res) => {
   const name = req.query.name;
   const job = req.query.job;
@@ -103,9 +106,10 @@ app.post("/adduser", async (req, res) => {
     res.status(500).send({ message: "An error occurred while adding the user." });
   }
 });
-//get user by username and password
-app.get("/getuser", async (req, res) => {
-  const { username, password } = req.query
+
+// get user by username and password
+app.post("/getuser", async (req, res) => {
+  const { username, password } = req.body;
 
   if (!username || !password) {
     return res.status(400).send({ message: "Username & Password is required" });
@@ -122,6 +126,7 @@ app.get("/getuser", async (req, res) => {
     res.status(500).send({ message: "An error occurred while retrieving the user." });
   }
 });
+
 //get user by id
 app.get("/finduser/:id", async (req, res) => {
   const userId = req.params.id;
@@ -157,6 +162,136 @@ app.delete("/deleteuser/:id", async (req, res) => {
   } catch (error) {
     console.error("Error deleting user:", error);
     res.status(500).send({ message: "An error occurred while deleting the user." });
+  }
+});
+
+
+/// Task endpoints
+app.post("/tasks", async (req, res) => {
+  const { userid, task_name, task_due_date, task_description, task_tags } = req.body;
+
+  if (!userid || !task_name || !task_due_date) {
+    return res.status(400).send({ message: "userid, task_name, and task_due_date are required." });
+  }
+
+  try {
+    const newTask = {
+      userid,
+      task_name,
+      task_due_date: new Date(task_due_date),
+      task_description: task_description || "",
+      task_tags: task_tags || [],
+      task_completed: false,
+    };
+
+    const savedTask = await taskServices.addTask(newTask);
+
+    res.status(201).send({
+      message: "Task added successfully.",
+      task: savedTask,
+    });
+  } catch (error) {
+    console.error("Error adding task:", error);
+    res.status(500).send({ message: "An error occurred while adding the task." });
+  }
+});
+
+//task edit
+app.put('/tasks/:id', async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body; 
+  try {
+    const updatedTask = await Task.findByIdAndUpdate(id, updates, {
+      new: true, 
+      runValidators: true,
+    });
+
+    if (!updatedTask) {
+      return res.status(404).send({ message: 'Task not found' });
+    }
+
+    res.status(200).send({
+      message: 'Task updated successfully',
+      task: updatedTask,
+    });
+  } catch (error) {
+    console.error('Error updating task:', error);
+    res.status(500).send({ message: 'An error occurred while updating the task' });
+  }
+});
+
+//task delete 
+app.delete('/tasks/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedTask = await Task.findByIdAndDelete(id);
+
+    if (!deletedTask) {
+      return res.status(404).send({ message: 'Task not found' });
+    }
+
+    res.status(200).send({
+      message: 'Task deleted successfully',
+      task: deletedTask,
+    });
+  } catch (error) {
+    res.status(500).send({ message: 'An error occurred while deleting the task' });
+  }
+});
+
+//get tasks by userid
+app.get("/tasks/:userid", async (req, res) => {
+  const { userid } = req.params;
+
+  try {
+    const tasks = await taskServices.getTask(userid);
+    if (tasks.length === 0) {
+      return res.status(404).send({ message: "No tasks found for this user." });
+    }
+    res.status(200).send({ message: "Tasks retrieved successfully", tasks });
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    res.status(500).send({ message: "An error occurred while fetching tasks." });
+  }
+});
+
+// set task completed
+app.put("/tasks/:taskid/complete", async (req, res) => {
+  const { taskid } = req.params;
+
+  try {
+    const updatedTask = await taskServices.setTaskTrue(taskid);
+    if (!updatedTask) {
+      return res.status(404).send({ message: "Task not found." });
+    }
+
+    res.status(200).send({
+      message: "Task marked as completed successfully.",
+      task: updatedTask,
+    });
+  } catch (error) {
+    console.error("Error marking task as completed:", error);
+    res.status(500).send({ message: "An error occurred while updating the task status." });
+  }
+});
+//set task incomplete
+app.put("/tasks/:taskid/incomplete", async (req, res) => {
+  const { taskid } = req.params;
+
+  try {
+    const updatedTask = await taskServices.setTaskFalse(taskid);
+    if (!updatedTask) {
+      return res.status(404).send({ message: "Task not found." });
+    }
+
+    res.status(200).send({
+      message: "Task marked as incomplete successfully.",
+      task: updatedTask,
+    });
+  } catch (error) {
+    console.error("Error marking task as incomplete:", error);
+    res.status(500).send({ message: "An error occurred while updating the task status." });
   }
 });
 

@@ -38,15 +38,27 @@ const TaskSchema = new mongoose.Schema(
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: 'Tag', // Reference to the 'Tag' collection
     // }],
+    points: {
+        type: Number,
+        required: false,
+        default: 5
+    },
     task_completed: {
       type: Boolean,
       required: true,
       default: false,
     },
+    task_id: { type: String },
   },
   { collection: "tasks" } // Define the collection name
 );
 
+TaskSchema.pre('save', function (next) {
+  if (!this.task_id) {
+    this.task_id = this._id.toString();
+  }
+  next();
+});
 const Task = mongoose.model("Task", TaskSchema);
 
 export default Task;
