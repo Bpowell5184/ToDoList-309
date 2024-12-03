@@ -26,9 +26,3 @@ test('Does Task Schema Work?', () => {
   expect(result.task_description).toMatch('Hi.');
   expect(result.task_completed).toBeFalsy();
 });
-
-test('test_name', () => {
-  const result = 0;
-
-  expect(result).toBe(0);
-});
