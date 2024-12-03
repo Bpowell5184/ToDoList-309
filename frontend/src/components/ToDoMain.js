@@ -23,6 +23,7 @@ function ToDoMain() {
 
   const [tasks, setTasks] = useState([]); // State to manage all tasks
 
+  const [TaskId, setTaskId] = useState('');
   const [Title, setTitle] = useState('');
   const [TaskDate, setTaskDate] = useState('');
   const [Points, setPoints] = useState('');
@@ -55,9 +56,10 @@ function ToDoMain() {
     if (option === 'Edit Task') {
       setTaskDate(task.task_due_date);
       setDescription(task.task_description);
-      setPoints('');
+      setPoints(task.Points);
       setPriority('');
       setTitle(task.task_name);
+      setTaskId(task._id)
     }
   }
   const toggleOverlayFilter = () => setIsOpenFilter(!isOpenFilter);
@@ -66,40 +68,70 @@ function ToDoMain() {
     setIsCurrentDescription(desc);
   };
   
-// Add a new task
-async function handleAddTask() {
-  try {
-    const response = await axios.post('http://localhost:8700/tasks', {
-      userid: data?._id,
-      task_name: Title,
-      task_due_date: TaskDate,
-      task_description: Description,
-      task_tags: []
-    });
-
-    console.log('Response:', response.data);
-
-    if (response.data.message.includes('Task added successfully.')) {
-      setErrorMessage(null);
-      const newTask = {
-        title: Title,
+// Deal with task change, in edit or addition
+async function handleTaskAction() {
+  if (dealWithTaskText === 'Add Task') {
+    try {
+      const response = await axios.post('http://localhost:8700/tasks', {
+        userid: data?._id,
+        task_name: Title,
         task_due_date: TaskDate,
         points: Points,
-        priority: Priority,
         task_description: Description,
-        task_name: Title,
-      };
-    
-      setTasks(prevTasks => [...prevTasks, newTask]);
-    } else {
-      setErrorMessage(response.data.message || 'An error occurred upon adding a task.');
-    }
-  } catch (error) {
-    console.error('Error adding task to user:', error);
-    setErrorMessage('An error occurred while adding task.');
-  }
+        task_tags: []
+      });
 
-  resetAddTaskState();
+      console.log('Response:', response.data);
+
+      if (response.data.message.includes('Task added successfully.')) {
+        setErrorMessage(null);
+        const newTask = {
+          _id: response.data.task._id,
+          title: Title,
+          task_due_date: TaskDate,
+          points: Points,
+          priority: Priority,
+          task_description: Description,
+          task_name: Title,
+        };
+
+        setTasks(prevTasks => [...prevTasks, newTask]);
+      } else {
+        setErrorMessage(response.data.message || 'An error occurred upon adding a task.');
+      }
+    } catch (error) {
+      console.error('Error adding task to user:', error);
+      setErrorMessage('An error occurred while adding task.');
+    }
+
+    resetAddTaskState();
+  } else if (dealWithTaskText === 'Edit Task') {
+    try {
+      const response = await axios.put(`http://localhost:8700/tasks/${TaskId}`, {
+        task_name: Title,
+        task_due_date: TaskDate,
+        points: Points,
+        task_description: Description,
+        task_tags: []
+      });
+
+      console.log('Response:', response.data);
+
+      if (response.data.message.includes('Task updated successfully')) {
+        setErrorMessage(null);
+        setTasks(prevTasks =>
+          prevTasks.map(task => (task._id === TaskId ? response.data.task : task))
+        );
+      } else {
+        setErrorMessage(response.data.message || 'An error occurred upon updating a task.');
+      }
+    } catch (error) {
+      console.error('Error updating task:', error);
+      setErrorMessage('An error occurred while updating task.');
+    }
+
+    resetAddTaskState();
+  }
 }
   
   
@@ -111,6 +143,7 @@ async function handleAddTask() {
   
       if (response.data.message.includes('Task deleted successfully')) {
         setErrorMessage(null);
+        setTasks(prevTasks => prevTasks.filter(task => task._id !== task_id));
       } else {
         setErrorMessage(response.data.message || 'An error occurred upon deleting a task.');
       }
@@ -216,10 +249,10 @@ async function handleAddTask() {
             <div key={index}>
               <div className="task-container">
                 {/* Temp implementation */}
-                <div className="point-value">+{99}</div> 
+                <div className="point-value">+{task.points}</div> 
                 <div className="task-name" onClick={() => toggleOverlayDescription(task.task_description)}>{task.task_name}</div>
                 <div className="date">{task.task_due_date ? new Date(task.task_due_date).toLocaleDateString() : '?'}</div>
-                <img src={trash_icon} alt="trash_icon" onClick={() => handleDeleteTask(task.task_id)} className="trash-icon" />
+                <img src={trash_icon} alt="trash_icon" onClick={() => handleDeleteTask(task._id)} className="trash-icon" />
                 <img src={options} alt="options" onClick={() => toggleOverlayDealWithTask('Edit Task', task)} className="options-icon" />
               </div>
 
@@ -240,7 +273,7 @@ async function handleAddTask() {
 
       {errorMessage && <div className="error-message">{errorMessage}</div>}
 
-      {/* Add Task Button */}
+      {/* Add/Edit Task Button */}
       <div>
         <button onClick={() => toggleOverlayDealWithTask('Add Task')} className="add-task-button">
           <div className="add-task-button-text">Add Task</div>
@@ -297,7 +330,7 @@ async function handleAddTask() {
               onChange={handleDescriptionChange}
             />
           </div>
-          <button className="add-task-button" onClick={handleAddTask} style={{ width: "150px", height: '50px' }}>
+          <button className="add-task-button" onClick={handleTaskAction} style={{ width: "150px", height: '50px' }}>
             <div className="add-task-button-text" style={{ fontSize: '24px' }}>
               {dealWithTaskText}
             </div>
