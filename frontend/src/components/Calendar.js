@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Calendar.css';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import logo from '.././assets/logo.png';
 import calendar_view_icon from '.././assets/calendar_view_icon.png';
 import axios from 'axios';
@@ -9,9 +9,53 @@ const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [daysInMonth, setDaysInMonth] = useState([]);
 
+  const [data, setData] = useState(null); // Store user data
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const { state } = useLocation();
+  const { username, password } = state || {};
+
   useEffect(() => {
     generateCalendar(currentDate);
   }, [currentDate]);
+
+  useEffect(() => {
+    if (username && password) {
+      axios
+        .post('http://localhost:8700/getuser', { username, password })
+        .then((response) => {
+          if (response.data.message === 'User not found') {
+            setData(null);
+            setErrorMessage('User not found');
+          } else if (response.data.message.includes('error')) {
+            setData(null);
+            setErrorMessage('Server-side error');
+          } else {
+            setData(response.data.user); // Use the user data directly
+            setErrorMessage(null);
+          }
+        })
+        .catch(() => setErrorMessage('An error occurred while fetching the user data.'));
+    }
+  }, [username, password]);
+  
+  useEffect(() => {
+    if (data?._id) {
+      axios
+        .get(`http://localhost:8700/tasks/${data._id}`)
+        .then((response) => {
+          console.log(response.data)
+          //setTasks(response.data.tasks || []); // Default to an empty array if no tasks
+        })
+        .catch((error) => {
+          // Only set error message if it's not a 404
+          if (error.response && error.response.status !== 404) {
+            setErrorMessage('An error occurred while fetching the user data.');
+          }
+          // 404 means user has no tasks (yet)
+        });
+    }
+  }, [data?._id]);
 
   const generateCalendar = (date) => {
     const year = date.getFullYear();
@@ -55,7 +99,7 @@ const Calendar = () => {
         </h2>
         <button onClick={handlePrevMonth}>Previous</button>
         <button onClick={handleNextMonth}>Next</button>
-        <Link to="/todomain">
+        <Link to="/todomain" state={{ username, password }}>
           <img
             src={calendar_view_icon}
             alt="calendar_view_icon"
@@ -77,6 +121,7 @@ const Calendar = () => {
           </div>
         ))}
       </div>
+      {errorMessage && <div className="error-message">{errorMessage}</div>}
     </div>
   );
 };

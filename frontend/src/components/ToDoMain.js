@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, /*useNavigate*/ } from 'react-router-dom';
 import logo from '.././assets/logo.png';
 import sort_carrot from '.././assets/sort_carrot.png';
 import filter_icon from '.././assets/filter_icon.png';
@@ -26,6 +26,8 @@ function ToDoMain() {
   const [taskDateComparitor, setTaskDateComparitor] = useState('Time?');
 
   const [tasks, setTasks] = useState([]); // State to manage all tasks
+
+  //const navigate = useNavigate();
 
   const [TaskId, setTaskId] = useState('');
   const [Title, setTitle] = useState('');
@@ -71,7 +73,7 @@ function ToDoMain() {
     setIsOpenDescription(!isOpenDescription);
     setIsCurrentDescription(desc);
   };
-
+  
   const sortByParam = (param) => {
     if (param === 'Date') {
       setSortDescDate(!sortDescDate);
@@ -100,8 +102,6 @@ function ToDoMain() {
             : b.points - a.points
         )
       );
-
-      console.log("pointssort")
     }
   };
   
@@ -270,7 +270,7 @@ async function handleTaskAction() {
           alt="filter_icon"
           className="filter-icon"
         />
-        <Link to="/calendar">
+        <Link to="/calendar" state={{ username, password }}>
           <img
             src={list_view_icon}
             alt="list_view_icon"
