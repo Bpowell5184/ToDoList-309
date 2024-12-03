@@ -233,6 +233,49 @@ app.delete('/tasks/:id', async (req, res) => {
     res.status(500).send({ message: 'An error occurred while deleting the task' });
   }
 });
+//task edit
+app.put('/tasks/:id', async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body; 
+  try {
+    const updatedTask = await Task.findByIdAndUpdate(id, updates, {
+      new: true, 
+      runValidators: true,
+    });
+
+    if (!updatedTask) {
+      return res.status(404).send({ message: 'Task not found' });
+    }
+
+    res.status(200).send({
+      message: 'Task updated successfully',
+      task: updatedTask,
+    });
+  } catch (error) {
+    console.error('Error updating task:', error);
+    res.status(500).send({ message: 'An error occurred while updating the task' });
+  }
+});
+
+//task delete 
+app.delete('/tasks/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedTask = await Task.findByIdAndDelete(id);
+
+    if (!deletedTask) {
+      return res.status(404).send({ message: 'Task not found' });
+    }
+
+    res.status(200).send({
+      message: 'Task deleted successfully',
+      task: deletedTask,
+    });
+  } catch (error) {
+    res.status(500).send({ message: 'An error occurred while deleting the task' });
+  }
+});
 
 //get tasks by userid
 app.get("/tasks/:userid", async (req, res) => {
