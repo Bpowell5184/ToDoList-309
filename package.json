@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:frontend": "cd frontend && npm run dev",
+    "start:frontend": "cd frontend && npm start",
     "start:backend": "cd backend && node backend.js",
     "test": "jest",
     "lint": "eslint .",
