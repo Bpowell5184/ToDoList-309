@@ -19,6 +19,10 @@ function ToDoMain() {
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [isOpenDescription, setIsOpenDescription] = useState(false);
 
+  const [sortDescDate, setSortDescDate] = useState(false);
+  const [sortDescPoints, setSortDescPoints] = useState(false);
+  const [sortDescTask, setSortDescTask] = useState(false);
+
   const [taskDateComparitor, setTaskDateComparitor] = useState('Time?');
 
   const [tasks, setTasks] = useState([]); // State to manage all tasks
@@ -56,7 +60,7 @@ function ToDoMain() {
     if (option === 'Edit Task') {
       setTaskDate(task.task_due_date);
       setDescription(task.task_description);
-      setPoints(task.Points);
+      setPoints(task.points);
       setPriority('');
       setTitle(task.task_name);
       setTaskId(task._id)
@@ -67,6 +71,40 @@ function ToDoMain() {
     setIsOpenDescription(!isOpenDescription);
     setIsCurrentDescription(desc);
   };
+
+  const sortByParam = (param) => {
+    if (param === 'Date') {
+      setSortDescDate(!sortDescDate);
+      setTasks((prevTasks) =>
+        [...prevTasks].sort((a, b) =>
+          sortDescDate
+            ? new Date(a.task_due_date) - new Date(b.task_due_date) // Ascending
+            : new Date(b.task_due_date) - new Date(a.task_due_date) // Descending
+        )
+      );
+    } else if (param === 'Task Name') {
+      setSortDescTask(!sortDescTask);
+      setTasks((prevTasks) =>
+        [...prevTasks].sort((a, b) =>
+          sortDescTask
+            ? a.task_name.localeCompare(b.task_name) // Ascending order
+            : b.task_name.localeCompare(a.task_name) // Descending order
+        )
+      );
+    } else { //param is points
+      setSortDescPoints(!sortDescPoints);
+      setTasks((prevTasks) =>
+        [...prevTasks].sort((a, b) =>
+          sortDescPoints
+            ? a.points - b.points
+            : b.points - a.points
+        )
+      );
+
+      console.log("pointssort")
+    }
+  };
+  
   
 // Deal with task change, in edit or addition
 async function handleTaskAction() {
@@ -216,15 +254,15 @@ async function handleTaskAction() {
       <div className='sorts-container'>
         <div className='sort_points'>
           Points
-          <img src={sort_carrot} alt="sort_carrot" className='sort-icon'/>
+          <img src={sort_carrot} onClick={() => sortByParam('Points')} alt="sort_carrot" className='sort-icon'/>
         </div>
         <div className="sort-task">
           Task Name
-          <img src={sort_carrot} alt="sort_carrot" className="sort-icon" />
+          <img src={sort_carrot} onClick={() => sortByParam('Task Name')} alt="sort_carrot" className="sort-icon" />
         </div>
         <div className="sort_date">
           Date
-          <img src={sort_carrot} alt="sort_carrot" className="sort-icon" />
+          <img src={sort_carrot} onClick={() => sortByParam('Date')} alt="sort_carrot" className="sort-icon" />
         </div>
         <img
           src={filter_icon}

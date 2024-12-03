@@ -168,7 +168,7 @@ app.delete("/deleteuser/:id", async (req, res) => {
 
 /// Task endpoints
 app.post("/tasks", async (req, res) => {
-  const { userid, task_name, task_due_date, task_description, task_tags } = req.body;
+  const { userid, task_name, task_due_date, points, task_description, task_tags } = req.body;
 
   if (!userid || !task_name || !task_due_date) {
     return res.status(400).send({ message: "userid, task_name, and task_due_date are required." });
@@ -179,6 +179,7 @@ app.post("/tasks", async (req, res) => {
       userid,
       task_name,
       task_due_date: new Date(task_due_date),
+      points,
       task_description: task_description || "",
       task_tags: task_tags || [],
       task_completed: false,
