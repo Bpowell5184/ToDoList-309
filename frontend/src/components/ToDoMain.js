@@ -103,41 +103,21 @@ async function handleAddTask() {
 }
   
   
-  async function handleDeleteTask(user_id){
-    console.log("no implementation now :(")
-  //   axios
-  //   .post('http://localhost:8700/tasks', {
-  //     userid: data?._id,
-  //     task_name: Title,
-  //     task_due_date: '2024-11-15T22:25:30.000+00:00',
-  //     task_description: 'None',
-  //     task_tags: []
-  //   })
-  //   .then((response) => {
-  //     console.log('Response:', response.data);
-  //     if (response.data.message.includes('Task retrieved successfully')) {
-  //       setErrorMessage(null);
-  //     } else {
-  //       setErrorMessage(response.data.message || 'An error occurred upon adding a task.');
-  //     }
-  //   })
-  //   .catch((error) => {
-  //     console.error('Error adding task to user:', error);
-  //     setErrorMessage('An error occurred while adding task.');
-  //   });
-
-  //   if (errorMessage === null) {
-  //   const newTask = {
-  //     title: Title,
-  //     taskdate: TaskDate,
-  //     points: Points,
-  //     priority: Priority,
-  //     description: Description,
-  //   };
-
-  //   setTasks([...tasks, newTask]);  // Add new task to the tasks list
-  // }
-  //   resetAddTaskState();  // Reset inputs and close overlay
+  async function handleDeleteTask(task_id){
+    try {
+      const response = await axios.delete(`http://localhost:8700/tasks/${task_id}`);
+  
+      console.log('Response:', response.data);
+  
+      if (response.data.message.includes('Task deleted successfully')) {
+        setErrorMessage(null);
+      } else {
+        setErrorMessage(response.data.message || 'An error occurred upon deleting a task.');
+      }
+    } catch (error) {
+      console.error('Error deleting task', error);
+      setErrorMessage('An error occurred while deleting task.');
+    }
   };
 
   const { state } = useLocation();
@@ -239,7 +219,7 @@ async function handleAddTask() {
                 <div className="point-value">+{99}</div> 
                 <div className="task-name" onClick={() => toggleOverlayDescription(task.task_description)}>{task.task_name}</div>
                 <div className="date">{task.task_due_date ? new Date(task.task_due_date).toLocaleDateString() : '?'}</div>
-                <img src={trash_icon} alt="trash_icon" /*onClick={handleDeleteTask(task._id)}*/ className="trash-icon" />
+                <img src={trash_icon} alt="trash_icon" onClick={() => handleDeleteTask(task.task_id)} className="trash-icon" />
                 <img src={options} alt="options" onClick={() => toggleOverlayDealWithTask('Edit Task', task)} className="options-icon" />
               </div>
 

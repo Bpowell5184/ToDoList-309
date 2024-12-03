@@ -195,6 +195,7 @@ app.post("/tasks", async (req, res) => {
     res.status(500).send({ message: "An error occurred while adding the task." });
   }
 });
+
 //task edit
 app.put('/tasks/:id', async (req, res) => {
   const { id } = req.params;
