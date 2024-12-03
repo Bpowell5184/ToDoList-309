@@ -142,6 +142,10 @@
   align-items: center;
 }
 
+.task-name:hover {
+  background-color: rgba(194, 176, 74, 0.712)
+}
+
 .date {
   display: flex;
   align-items: center;
