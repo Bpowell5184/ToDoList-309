@@ -12,6 +12,9 @@ const Calendar = () => {
   const [data, setData] = useState(null); // Store user data
   const [errorMessage, setErrorMessage] = useState(null);
 
+  const [tasks, setTasks] = useState([]);
+  const [tasksByDate, setTasksByDate] = useState({});
+
   const { state } = useLocation();
   const { username, password } = state || {};
 
@@ -31,7 +34,7 @@ const Calendar = () => {
             setData(null);
             setErrorMessage('Server-side error');
           } else {
-            setData(response.data.user); // Use the user data directly
+            setData(response.data.user);
             setErrorMessage(null);
           }
         })
@@ -44,18 +47,37 @@ const Calendar = () => {
       axios
         .get(`http://localhost:8700/tasks/${data._id}`)
         .then((response) => {
-          console.log(response.data)
-          //setTasks(response.data.tasks || []); // Default to an empty array if no tasks
+          const fetchedTasks = response.data.tasks || [];
+  
+          const taskMap = {};
+          fetchedTasks.forEach(task => {
+            if (task.task_due_date) {
+              const taskDate = new Date(task.task_due_date);
+              
+              if (
+                taskDate.getFullYear() === currentDate.getFullYear() && 
+                taskDate.getMonth() === currentDate.getMonth()
+              ) {
+                const dateKey = taskDate.getDate();
+  
+                if (!taskMap[dateKey]) {
+                  taskMap[dateKey] = [];
+                }
+                taskMap[dateKey].push(task);
+              }
+            }
+          });
+  
+          setTasksByDate(taskMap);
+          setTasks(fetchedTasks);
         })
         .catch((error) => {
-          // Only set error message if it's not a 404
           if (error.response && error.response.status !== 404) {
             setErrorMessage('An error occurred while fetching the user data.');
           }
-          // 404 means user has no tasks (yet)
         });
     }
-  }, [data?._id]);
+  }, [data?._id, currentDate]);
 
   const generateCalendar = (date) => {
     const year = date.getFullYear();
@@ -97,8 +119,12 @@ const Calendar = () => {
           {currentDate.toLocaleString('default', { month: 'long' })}{' '}
           {currentDate.getFullYear()}
         </h2>
-        <button onClick={handlePrevMonth}>Previous</button>
-        <button onClick={handleNextMonth}>Next</button>
+        <button className='next-previous-button' onClick={handlePrevMonth}>
+          <div className='next-previous-button-text'>Previous</div>
+        </button>
+        <button className='next-previous-button' onClick={handleNextMonth}>
+          <div className='next-previous-button-text'>Next</div>
+        </button>
         <Link to="/todomain" state={{ username, password }}>
           <img
             src={calendar_view_icon}
@@ -115,11 +141,32 @@ const Calendar = () => {
           </div>
         ))}
 
-        {daysInMonth.map((day, index) => (
-          <div key={index} className="day-cell">
-            {day && <div className="day-number">{day}</div>}
-          </div>
-        ))}
+        {daysInMonth.map((day, index) => {
+          // Determine if the date is in the past
+          const isPastDate = day && new Date(currentDate.getFullYear(), currentDate.getMonth(), day) < new Date().setHours(0, 0, 0, 0);
+
+          return (
+            <div 
+              key={index} 
+              className={`day-cell ${isPastDate ? 'past-date' : ''}`}
+            >
+              {day && (
+                <>
+                  <div className="day-number">{day}</div>
+                  {tasksByDate[day] && (
+                    <div className="day-tasks">
+                      {tasksByDate[day].map((task, taskIndex) => (
+                        <div key={taskIndex} className="task-item">
+                          {task.task_name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })}
       </div>
       {errorMessage && <div className="error-message">{errorMessage}</div>}
     </div>

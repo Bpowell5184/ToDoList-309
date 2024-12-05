@@ -15,7 +15,7 @@
 .calendar-view-icon {
   position: absolute;
   right: 0px;
-  top: 0px;
+  top: 92px;
   height: 50px;
   width: auto;
 }
@@ -42,13 +42,23 @@
   min-width: 44px;
 }
 
+.day-cell.past-date {
+  text-align: center;
+  padding: 12px;
+  background-color: #e2c1c1;
+  border: 1px solid #ddd;
+  min-width: 44px;
+  color: #888;
+}
+
 .day-header {
   margin-top: 20px;
 }
 
 .day-cell {
   position: relative;
-  height: 54px;
+  height: 84px;
+  width: 98px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -64,4 +74,40 @@
 .day-cell:hover {
   background-color: #e0e0e0;
   cursor: pointer;
+}
+
+.day-tasks {
+  margin-top: 5px;
+  font-size: 0.7em;
+  max-height: 50px;
+  overflow-y: auto;
+}
+
+.task-item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+  padding: 2px;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+}
+
+.next-previous-button {
+  display: inline-block;
+  width: 130px;
+  height: 46px;
+  border-radius: 0px;
+  border-color: black;
+  border-width: 3px;
+  background-color: #064123;
+  margin-top: 20px;
+}
+
+.next-previous-button-text {
+  font-size: 24px;
+  color: rgb(223, 224, 226);
+}
+
+.next-previous-button:hover {
+  background-color: #30704c; /* Darker shade on hover */
 }
