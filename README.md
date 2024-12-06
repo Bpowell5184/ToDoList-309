@@ -12,6 +12,12 @@ https://docs.google.com/drawings/d/1sufKCg-sA2esR90CcY4nOiyUYuu2NAfnO3BuAO6XuNw/
 Register Diagram:
 https://docs.google.com/drawings/d/1wJkfgg_zWE-xhloRhXzXMs_wp3DDSY6yLpAbwE6pMFY/edit
 
+Demo:
+
+Part 1: https://youtu.be/gw8wkCHcZ0E
+
+Part 2: https://youtu.be/J1RxGgqMdyo
+
 Prettier/Eslint Setup
 Note that default settings are used for prettier/eslint here.
 Frontend:
