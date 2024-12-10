@@ -1,12 +1,3 @@
-jest.unstable_mockModule('./User', () => ({
-  findOne: jest.fn(),
-  find: jest.fn(),
-  findById: jest.fn(),
-  findOneAndDelete: jest.fn(),
-  create: jest.fn(),
-  save: jest.fn(),
-}));
-
 import userservices from './userservices.js';
 import User from './User.js';
 import { jest } from '@jest/globals';
@@ -16,6 +7,15 @@ test('Is Jest working at all???', () => {
 
   expect(yes).toBeTruthy();
 });
+
+jest.unstable_mockModule('./User', () => ({
+  findOne: jest.fn(),
+  find: jest.fn(),
+  findById: jest.fn(),
+  findOneAndDelete: jest.fn(),
+  create: jest.fn(),
+  save: jest.fn(),
+}));
 
 describe('User Service', () => {
   afterEach(() => {
