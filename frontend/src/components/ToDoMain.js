@@ -38,6 +38,7 @@ function ToDoMain() {
   const [dealWithTaskText, setDealWithTaskText] = useState('')
   const [data, setData] = useState(null); // Store user data
   const [errorMessage, setErrorMessage] = useState(null);
+  const [pointsHovered, setPointsHovered] = useState(false);
 
   // Handle changes in input fields
   const handleTitleChange = (event) => setTitle(event.target.value);
@@ -45,6 +46,15 @@ function ToDoMain() {
   const handlePointsChange = (event) => setPoints(event.target.value);
   const handlePriorityChange = (event) => setPriority(event.target.value);
   const handleDescriptionChange = (event) => setDescription(event.target.value);
+
+  // Handle dynamic rendering
+  const handlePointsMouseOn = () => {
+    setPointsHovered(true);
+  };
+
+  const handlePointsMouseOut = () => {
+    setPointsHovered(false);
+  };
 
   const resetAddTaskState = () => {
     setTaskDate('');
@@ -287,7 +297,12 @@ async function handleTaskAction() {
             <div key={index}>
               <div className="task-container">
                 {/* Temp implementation */}
-                <div className="point-value">+{task.points}</div> 
+                <div 
+                className="point-value" 
+                onMouseOver={handlePointsMouseOn} 
+                onMouseOut={handlePointsMouseOut}>
+                  {pointsHovered ? '✓' : `+${task.points}`}
+                </div> 
                 <div className="task-name" onClick={() => toggleOverlayDescription(task.task_description)}>{task.task_name}</div>
                 <div className="date">{task.task_due_date ? new Date(task.task_due_date).toLocaleDateString() : '?'}</div>
                 <img src={trash_icon} alt="trash_icon" onClick={() => handleDeleteTask(task._id)} className="trash-icon" />
