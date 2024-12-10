@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import User from "./User.js";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import User from './User.js';
 
-dotenv.config()
+dotenv.config();
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -13,7 +13,7 @@ mongoose
 
 function addUser(user) {
   return User.findOne({ username: user.username })
-    .then(existingUser => {
+    .then((existingUser) => {
       if (existingUser) {
         throw new Error('User already exists');
       } else {
@@ -21,10 +21,10 @@ function addUser(user) {
         return userToAdd.save();
       }
     })
-    .then(result => {
+    .then((result) => {
       return result;
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
       throw error;
     });
@@ -57,17 +57,16 @@ function getUser(username, password) {
 }
 
 function findUserByUsernameAndPassword(username, password) {
-  return User.findOne({ username, password })
-    .then((user) => {
-      return user || null;
-    });
+  return User.findOne({ username, password }).then((user) => {
+    return user || null;
+  });
 }
 
 function findUserById(id) {
   return User.findById(id);
 }
 
-function deleteUser(id){
+function deleteUser(id) {
   return User.findOneAndDelete({ _id: id });
 }
 
@@ -76,5 +75,5 @@ export default {
   getUsers,
   getUser,
   findUserById,
-  deleteUser
+  deleteUser,
 };

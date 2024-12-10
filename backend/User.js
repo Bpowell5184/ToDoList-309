@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema(
   {
@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema(
       trim: true,
       validate(value) {
         if (value.length < 2)
-          throw new Error("Username must be greater then 1 character");
+          throw new Error('Username must be greater then 1 character');
       },
     },
     name: {
@@ -17,7 +17,7 @@ const UserSchema = new mongoose.Schema(
       trim: true,
       validate(value) {
         if (value.length < 2)
-          throw new Error("Name must be greater than 1 character");
+          throw new Error('Name must be greater than 1 character');
       },
     },
     password: {
@@ -26,11 +26,11 @@ const UserSchema = new mongoose.Schema(
       trim: true,
       validate(value) {
         if (value.length < 2)
-          throw new Error("Password must be at least 2 characters");
+          throw new Error('Password must be at least 2 characters');
       },
     },
   },
-  { collection: "users" }
+  { collection: 'users' },
 );
 const User = mongoose.models.User || mongoose.model('User', UserSchema);
 export default User;

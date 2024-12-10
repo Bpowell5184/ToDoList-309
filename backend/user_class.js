@@ -1,57 +1,56 @@
 class User {
-    constructor(username, password) {
-        this.username = username;
-        this.password = password;
-        this.highScore = 0;
-        this.UID = null;
-        this.LID = null;
-        this.totalTasks = 0;
-    }
+  constructor(username, password) {
+    this.username = username;
+    this.password = password;
+    this.highScore = 0;
+    this.UID = null;
+    this.LID = null;
+    this.totalTasks = 0;
+  }
 
-    getUsername() {
-        return this.username;
-    }
+  getUsername() {
+    return this.username;
+  }
 
-    getPassword() {
-        return this.password;
-    }
+  getPassword() {
+    return this.password;
+  }
 
-    getUID() {
-        return this.UID;
-    }
+  getUID() {
+    return this.UID;
+  }
 
-    getLID() {
-        return this.LID;
-    }
+  getLID() {
+    return this.LID;
+  }
 
-    getHighScore() {
-        return this.highScore;
-    }
+  getHighScore() {
+    return this.highScore;
+  }
 
-    setUID(uid) {
-        this.UID = uid;
-    }
+  setUID(uid) {
+    this.UID = uid;
+  }
 
-    setLID(lid) {
-        this.LID = lid;
-    }
+  setLID(lid) {
+    this.LID = lid;
+  }
 
-    login(tryUser, tryPass) {
-        return tryUser === this.username && tryPass === this.password;
-    }
+  login(tryUser, tryPass) {
+    return tryUser === this.username && tryPass === this.password;
+  }
 
-    setUsername(newUsername) {
-        this.username = newUsername;
-    }
+  setUsername(newUsername) {
+    this.username = newUsername;
+  }
 
-    setPassword(newPassword) {
-        this.password = newPassword;
-    }
+  setPassword(newPassword) {
+    this.password = newPassword;
+  }
 
-    highScoreCheck(dayScore) {
-        if (dayScore > this.highScore) {
-            this.highScore = dayScore;
-        }
+  highScoreCheck(dayScore) {
+    if (dayScore > this.highScore) {
+      this.highScore = dayScore;
     }
+  }
 }
-

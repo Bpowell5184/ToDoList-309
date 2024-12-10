@@ -1,10 +1,10 @@
-import express from "express";
-import cors from "cors";
-import taskServices from "./taskservices.js";
-import userServices from "./userservices.js";
-import mongoose from "mongoose";
-import User from "./User.js";
-import Task from "./Task.js";
+import express from 'express';
+import cors from 'cors';
+import taskServices from './taskservices.js';
+import userServices from './userservices.js';
+import mongoose from 'mongoose';
+import User from './User.js';
+import Task from './Task.js';
 const app = express();
 const port = 8700;
 
@@ -14,11 +14,11 @@ app.use(cors());
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Not sure any of this works as it was from before updates to userservices and taskservices:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-app.get("/", async (req, res) => {
-  res.status(200).send("Welcome to the Backend");
+app.get('/', async (req, res) => {
+  res.status(200).send('Welcome to the Backend');
 });
 
-app.get("/users", async (req, res) => {
+app.get('/users', async (req, res) => {
   const name = req.query.name;
   const job = req.query.job;
 
@@ -27,30 +27,28 @@ app.get("/users", async (req, res) => {
     res.send({ users_list: result });
   } catch (error) {
     console.log(error);
-    res.status(500).send("An error occurred on the server.");
+    res.status(500).send('An error occurred on the server.');
   }
 });
 
-app.post("/users", async (req, res) => {
+app.post('/users', async (req, res) => {
   const user = req.body;
   try {
     const savedUser = await userServices.addUser(user);
     if (savedUser) res.status(201).send(savedUser);
-    else res.status(500).send("User creation failed.");
+    else res.status(500).send('User creation failed.');
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .send("An error occurred while saving the user.");
+    res.status(500).send('An error occurred while saving the user.');
   }
 });
 
-app.post("/users/:userid/tasks", async (req, res) => {
+app.post('/users/:userid/tasks', async (req, res) => {
   try {
     const { userid } = req.params;
-    const user = await User.findById(userid).populate("tasks");
+    const user = await User.findById(userid).populate('tasks');
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: 'User not found' });
     }
     const newTask = new Task({
       title: req.body.title,
@@ -59,24 +57,22 @@ app.post("/users/:userid/tasks", async (req, res) => {
       points: req.body.points,
       priority: req.body.priority,
       completionStatus: req.body.completed || false,
-      userId: user._id
+      userId: user._id,
     });
     const savedTask = await newTask.save();
     user.tasks.push(savedTask._id);
     await user.save();
-    res
-      .status(201)
-      .json({ message: "Task added to user", task: savedTask });
+    res.status(201).json({ message: 'Task added to user', task: savedTask });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 });
-app.get("/users/:userId", async (req, res) => {
+app.get('/users/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = await User.findById(userId).populate("tasks");
+    const user = await User.findById(userId).populate('tasks');
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: 'User not found' });
     }
     res.json(user);
   } catch (error) {
@@ -86,11 +82,11 @@ app.get("/users/:userId", async (req, res) => {
 //User Endpoints
 
 //add user
-app.post("/adduser", async (req, res) => {
+app.post('/adduser', async (req, res) => {
   const { username, name, password } = req.body;
 
   if (!username || !name || !password) {
-    return res.status(400).send({ message: "Missing required fields" });
+    return res.status(400).send({ message: 'Missing required fields' });
   }
 
   const user = { username, name, password };
@@ -98,80 +94,96 @@ app.post("/adduser", async (req, res) => {
   try {
     const savedUser = await userServices.addUser(user);
     res.status(201).send({
-      message: "User added successfully",
+      message: 'User added successfully',
       user: savedUser,
     });
   } catch (error) {
-    console.error("Error adding user:", error);
-    res.status(500).send({ message: "An error occurred while adding the user." });
+    console.error('Error adding user:', error);
+    res
+      .status(500)
+      .send({ message: 'An error occurred while adding the user.' });
   }
 });
 
 // get user by username and password
-app.post("/getuser", async (req, res) => {
+app.post('/getuser', async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res.status(400).send({ message: "Username & Password is required" });
+    return res.status(400).send({ message: 'Username & Password is required' });
   }
 
   try {
     const user = await userServices.getUser(username, password);
     if (!user) {
-      return res.status(404).send({ message: "User not found" });
+      return res.status(404).send({ message: 'User not found' });
     }
-    res.status(200).send({ message: "User retrieved successfully", user });
+    res.status(200).send({ message: 'User retrieved successfully', user });
   } catch (error) {
-    console.error("Error retrieving user:", error);
-    res.status(500).send({ message: "An error occurred while retrieving the user." });
+    console.error('Error retrieving user:', error);
+    res
+      .status(500)
+      .send({ message: 'An error occurred while retrieving the user.' });
   }
 });
 
 //get user by id
-app.get("/finduser/:id", async (req, res) => {
+app.get('/finduser/:id', async (req, res) => {
   const userId = req.params.id;
 
   try {
     const user = await userServices.findUserById(userId);
     if (!user) {
-      return res.status(404).send({ message: "User not found" });
+      return res.status(404).send({ message: 'User not found' });
     }
     res.status(200).send({
-      message: "User retrieved successfully",
+      message: 'User retrieved successfully',
       user,
     });
   } catch (error) {
-    console.error("Error retrieving user:", error);
-    res.status(500).send({ message: "An error occurred while retrieving the user." });
+    console.error('Error retrieving user:', error);
+    res
+      .status(500)
+      .send({ message: 'An error occurred while retrieving the user.' });
   }
 });
 
 // delete user
-app.delete("/deleteuser/:id", async (req, res) => {
+app.delete('/deleteuser/:id', async (req, res) => {
   const userId = req.params.id;
 
   try {
     const deletedUser = await userServices.deleteUser(userId);
     if (!deletedUser) {
-      return res.status(404).send({ message: "User not found" });
+      return res.status(404).send({ message: 'User not found' });
     }
     res.status(200).send({
-      message: "User deleted successfully",
+      message: 'User deleted successfully',
       user: deletedUser,
     });
   } catch (error) {
-    console.error("Error deleting user:", error);
-    res.status(500).send({ message: "An error occurred while deleting the user." });
+    console.error('Error deleting user:', error);
+    res
+      .status(500)
+      .send({ message: 'An error occurred while deleting the user.' });
   }
 });
 
-
 /// Task endpoints
-app.post("/tasks", async (req, res) => {
-  const { userid, task_name, task_due_date, points, task_description, task_tags } = req.body;
+app.post('/tasks', async (req, res) => {
+  const {
+    userid,
+    task_name,
+    task_due_date,
+    points,
+    task_description,
+    task_tags,
+  } = req.body;
 
   if (!userid || !task_name || !task_due_date) {
-    return res.status(400).send({ message: "userid, task_name, and task_due_date are required." });
+    return res
+      .status(400)
+      .send({ message: 'userid, task_name, and task_due_date are required.' });
   }
 
   try {
@@ -180,7 +192,7 @@ app.post("/tasks", async (req, res) => {
       task_name,
       task_due_date: new Date(task_due_date),
       points,
-      task_description: task_description || "",
+      task_description: task_description || '',
       task_tags: task_tags || [],
       task_completed: false,
     };
@@ -188,22 +200,24 @@ app.post("/tasks", async (req, res) => {
     const savedTask = await taskServices.addTask(newTask);
 
     res.status(201).send({
-      message: "Task added successfully.",
+      message: 'Task added successfully.',
       task: savedTask,
     });
   } catch (error) {
-    console.error("Error adding task:", error);
-    res.status(500).send({ message: "An error occurred while adding the task." });
+    console.error('Error adding task:', error);
+    res
+      .status(500)
+      .send({ message: 'An error occurred while adding the task.' });
   }
 });
 
 //task edit
 app.put('/tasks/:id', async (req, res) => {
   const { id } = req.params;
-  const updates = req.body; 
+  const updates = req.body;
   try {
     const updatedTask = await Task.findByIdAndUpdate(id, updates, {
-      new: true, 
+      new: true,
       runValidators: true,
     });
 
@@ -217,11 +231,13 @@ app.put('/tasks/:id', async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating task:', error);
-    res.status(500).send({ message: 'An error occurred while updating the task' });
+    res
+      .status(500)
+      .send({ message: 'An error occurred while updating the task' });
   }
 });
 
-//task delete 
+//task delete
 app.delete('/tasks/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -237,62 +253,70 @@ app.delete('/tasks/:id', async (req, res) => {
       task: deletedTask,
     });
   } catch (error) {
-    res.status(500).send({ message: 'An error occurred while deleting the task' });
+    res
+      .status(500)
+      .send({ message: 'An error occurred while deleting the task' });
   }
 });
 
 //get tasks by userid
-app.get("/tasks/:userid", async (req, res) => {
+app.get('/tasks/:userid', async (req, res) => {
   const { userid } = req.params;
 
   try {
     const tasks = await taskServices.getTask(userid);
     if (tasks.length === 0) {
-      return res.status(404).send({ message: "No tasks found for this user." });
+      return res.status(404).send({ message: 'No tasks found for this user.' });
     }
-    res.status(200).send({ message: "Tasks retrieved successfully", tasks });
+    res.status(200).send({ message: 'Tasks retrieved successfully', tasks });
   } catch (error) {
-    console.error("Error fetching tasks:", error);
-    res.status(500).send({ message: "An error occurred while fetching tasks." });
+    console.error('Error fetching tasks:', error);
+    res
+      .status(500)
+      .send({ message: 'An error occurred while fetching tasks.' });
   }
 });
 
 // set task completed
-app.put("/tasks/:taskid/complete", async (req, res) => {
+app.put('/tasks/:taskid/complete', async (req, res) => {
   const { taskid } = req.params;
 
   try {
     const updatedTask = await taskServices.setTaskTrue(taskid);
     if (!updatedTask) {
-      return res.status(404).send({ message: "Task not found." });
+      return res.status(404).send({ message: 'Task not found.' });
     }
 
     res.status(200).send({
-      message: "Task marked as completed successfully.",
+      message: 'Task marked as completed successfully.',
       task: updatedTask,
     });
   } catch (error) {
-    console.error("Error marking task as completed:", error);
-    res.status(500).send({ message: "An error occurred while updating the task status." });
+    console.error('Error marking task as completed:', error);
+    res
+      .status(500)
+      .send({ message: 'An error occurred while updating the task status.' });
   }
 });
 //set task incomplete
-app.put("/tasks/:taskid/incomplete", async (req, res) => {
+app.put('/tasks/:taskid/incomplete', async (req, res) => {
   const { taskid } = req.params;
 
   try {
     const updatedTask = await taskServices.setTaskFalse(taskid);
     if (!updatedTask) {
-      return res.status(404).send({ message: "Task not found." });
+      return res.status(404).send({ message: 'Task not found.' });
     }
 
     res.status(200).send({
-      message: "Task marked as incomplete successfully.",
+      message: 'Task marked as incomplete successfully.',
       task: updatedTask,
     });
   } catch (error) {
-    console.error("Error marking task as incomplete:", error);
-    res.status(500).send({ message: "An error occurred while updating the task status." });
+    console.error('Error marking task as incomplete:', error);
+    res
+      .status(500)
+      .send({ message: 'An error occurred while updating the task status.' });
   }
 });
 
@@ -301,58 +325,52 @@ app.put("/tasks/:taskid/incomplete", async (req, res) => {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Test to add a user:
-app.get("/adduser", async (req, res) => {
+app.get('/adduser', async (req, res) => {
   const testUser = {
-    username: "testuser",
-    name: "Test User",
-    password: "testpassword123"
+    username: 'testuser',
+    name: 'Test User',
+    password: 'testpassword123',
   };
 
   try {
     const savedUser = await userServices.addUser(testUser);
     if (savedUser) {
       res.status(201).send({
-        message: "Test user added successfully",
-        user: savedUser
+        message: 'Test user added successfully',
+        user: savedUser,
       });
     } else {
-      res.status(500).send("Failed to add test user.");
+      res.status(500).send('Failed to add test user.');
     }
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .send("An error occurred while adding the test user.");
+    res.status(500).send('An error occurred while adding the test user.');
   }
 });
 
 // Test endpoint to add a task
-app.get("/addtask", async (req, res) => {
-
+app.get('/addtask', async (req, res) => {
   const testTask = {
-    userid: "64e8f0bfc1234c567890d12e",
-    task_name: "Sample Task",
+    userid: '64e8f0bfc1234c567890d12e',
+    task_name: 'Sample Task',
     task_due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    task_description: "This is a test task.",
-    task_tags: ["test", "sample"],
-    task_completed: "true",
+    task_description: 'This is a test task.',
+    task_tags: ['test', 'sample'],
+    task_completed: 'true',
   };
 
   try {
     const savedTask = await taskServices.addTask(testTask);
     res.status(201).send({
-      message: "Task added successfully",
+      message: 'Task added successfully',
       task: savedTask,
     });
   } catch (error) {
-    console.error("Error adding task:", error);
-    res.status(500).send("An error occurred while adding the task.");
+    console.error('Error adding task:', error);
+    res.status(500).send('An error occurred while adding the task.');
   }
 });
 
-
 app.listen(port, () => {
-  console.log(
-    `Example app listening at http://localhost:${port}`
-  );
+  console.log(`Example app listening at http://localhost:${port}`);
 });

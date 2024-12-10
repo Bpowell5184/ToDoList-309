@@ -60,18 +60,26 @@ function ToDoMain() {
   // Define method to remove task from frontend and call backend
   const handleCompleteTask = async (taskId) => {
     try {
-      const response = await axios.put(`http://localhost:8700/tasks/${taskId}`, {
-        task_completed: true,
-    });
+      const response = await axios.put(
+        `http://localhost:8700/tasks/${taskId}`,
+        {
+          task_completed: true,
+        },
+      );
       if (response.status === 200) {
         // Update frontend state to remove the task
-        setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+        setTasks((prevTasks) =>
+          prevTasks.filter((task) => task._id !== taskId),
+        );
         console.log(`Task with ID ${taskId} marked as complete.`);
       } else {
         console.error('Unexpected response status:', response.status);
       }
     } catch (error) {
-      console.error('Error sending task complete request to the backend:', error);
+      console.error(
+        'Error sending task complete request to the backend:',
+        error,
+      );
     }
   };
 
@@ -342,48 +350,50 @@ function ToDoMain() {
       {/* Dynamically Render Tasks */}
       <div>
         {tasks.length > 0 ? (
-          tasks.filter((task) => !task.task_completed)
-          .map((task, index) => (
-            <div key={index}>
-              <div className="task-container">
-                {/* Temp implementation */}
-                <div 
-                className="point-value" 
-                onMouseOver={() => handlePointsMouseOn(task._id)} 
-                onMouseOut={handlePointsMouseOut}
-                onClick={()=>handleCompleteTask(task._id)}>
-                  {hoveredTaskId === task._id ? '✓' : `+${task.points}`}
+          tasks
+            .filter((task) => !task.task_completed)
+            .map((task, index) => (
+              <div key={index}>
+                <div className="task-container">
+                  {/* Temp implementation */}
+                  <div
+                    className="point-value"
+                    onMouseOver={() => handlePointsMouseOn(task._id)}
+                    onMouseOut={handlePointsMouseOut}
+                    onClick={() => handleCompleteTask(task._id)}
+                  >
+                    {hoveredTaskId === task._id ? '✓' : `+${task.points}`}
+                  </div>
+                  <div
+                    className="task-name"
+                    onClick={() =>
+                      toggleOverlayDescription(task.task_description)
+                    }
+                  >
+                    {task.task_name}
+                  </div>
+                  <div className="date">
+                    {task.task_due_date
+                      ? new Date(task.task_due_date).toLocaleDateString()
+                      : '?'}
+                  </div>
+                  <img
+                    src={trash_icon}
+                    alt="trash_icon"
+                    onClick={() => handleDeleteTask(task._id)}
+                    className="trash-icon"
+                  />
+                  <img
+                    src={options}
+                    alt="options"
+                    onClick={() => toggleOverlayDealWithTask('Edit Task', task)}
+                    className="options-icon"
+                  />
                 </div>
-                <div
-                  className="task-name"
-                  onClick={() =>
-                    toggleOverlayDescription(task.task_description)
-                  }
-                >
-                  {task.task_name}
-                </div>
-                <div className="date">
-                  {task.task_due_date
-                    ? new Date(task.task_due_date).toLocaleDateString()
-                    : '?'}
-                </div>
-                <img
-                  src={trash_icon}
-                  alt="trash_icon"
-                  onClick={() => handleDeleteTask(task._id)}
-                  className="trash-icon"
-                />
-                <img
-                  src={options}
-                  alt="options"
-                  onClick={() => toggleOverlayDealWithTask('Edit Task', task)}
-                  className="options-icon"
-                />
-              </div>
 
-              <div className="separator"></div>
-            </div>
-          ))
+                <div className="separator"></div>
+              </div>
+            ))
         ) : (
           <p>No tasks available.</p>
         )}
