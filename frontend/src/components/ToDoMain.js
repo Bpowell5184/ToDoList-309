@@ -38,7 +38,8 @@ function ToDoMain() {
   const [dealWithTaskText, setDealWithTaskText] = useState('');
   const [data, setData] = useState(null); // Store user data
   const [errorMessage, setErrorMessage] = useState(null);
-  const [pointsHovered, setPointsHovered] = useState(false);
+
+  const [hoveredTaskId, setHoveredTaskId] = useState(null); // Meant to manage which task is being 'hovered'
 
   // Handle changes in input fields
   const handleTitleChange = (event) => setTitle(event.target.value);
@@ -48,12 +49,12 @@ function ToDoMain() {
   const handleDescriptionChange = (event) => setDescription(event.target.value);
 
   // Handle dynamic rendering
-  const handlePointsMouseOn = () => {
-    setPointsHovered(true);
+  const handlePointsMouseOn = (taskId) => {
+    setHoveredTaskId(taskId);
   };
 
   const handlePointsMouseOut = () => {
-    setPointsHovered(false);
+    setHoveredTaskId(null);
   };
 
   const resetAddTaskState = () => {
@@ -329,9 +330,9 @@ function ToDoMain() {
                 {/* Temp implementation */}
                 <div 
                 className="point-value" 
-                onMouseOver={handlePointsMouseOn} 
+                onMouseOver={() => handlePointsMouseOn(task._id)} 
                 onMouseOut={handlePointsMouseOut}>
-                  {pointsHovered ? '✓' : `+${task.points}`}
+                  {hoveredTaskId === task._id ? '✓' : `+${task.points}`}
                 </div>
                 <div
                   className="task-name"
