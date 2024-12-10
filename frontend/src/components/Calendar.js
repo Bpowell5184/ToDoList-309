@@ -162,7 +162,13 @@ const Calendar = () => {
                   {tasksByDate[day] && (
                     <div className="day-tasks">
                       {tasksByDate[day].map((task, taskIndex) => (
-                        <div key={taskIndex} className="task-item">
+                        <div
+                          key={taskIndex}
+                          style={{
+                            color: task.task_completed ? 'green' : 'black',
+                          }}
+                          className="task-item"
+                        >
                           {task.task_name}
                         </div>
                       ))}
