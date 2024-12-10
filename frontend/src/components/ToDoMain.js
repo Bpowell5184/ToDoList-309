@@ -57,6 +57,12 @@ function ToDoMain() {
     setHoveredTaskId(null);
   };
 
+  // Define method to remove task from frontend and call backend
+  const handleCompleteTask = (taskId) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+    console.log(`Task with ID ${taskId} marked as complete.`);
+  };
+
   const resetAddTaskState = () => {
     setTaskDate('');
     setDescription('');
@@ -331,7 +337,8 @@ function ToDoMain() {
                 <div 
                 className="point-value" 
                 onMouseOver={() => handlePointsMouseOn(task._id)} 
-                onMouseOut={handlePointsMouseOut}>
+                onMouseOut={handlePointsMouseOut}
+                onClick={()=>handleCompleteTask(task._id)}>
                   {hoveredTaskId === task._id ? '✓' : `+${task.points}`}
                 </div>
                 <div
