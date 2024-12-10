@@ -451,7 +451,7 @@ function ToDoMain() {
               onChange={handlePointsChange}
             />
           </div>
-          {/* Priority */}
+          {/* Priority
           <div className="overlay-item-container">
             <div className="overlay-text-container">Priority:</div>
             <input
@@ -460,7 +460,7 @@ function ToDoMain() {
               value={Priority}
               onChange={handlePriorityChange}
             />
-          </div>
+          </div> */}
           {/* Description */}
           <div className="overlay-item-container">
             <div className="overlay-text-container">Description:</div>
