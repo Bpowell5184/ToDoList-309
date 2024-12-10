@@ -21,3 +21,18 @@ test('Does User Schema Work?', () => {
   expect(result.name).toMatch('John Johnson');
   expect(result.password).toMatch('GoodGooglyMoogly!');
 });
+
+test('Does User Schema validation Work?', () => {
+  const mockUser = {
+    username: 'a',
+    name: 'b',
+    password: 'c',
+  };
+  const result = new User(mockUser);
+
+  expect(result).toBeTruthy();
+
+  expect(result.username).not.toMatch('c');
+  expect(result.name).not.toMatch('a');
+  expect(result.password).not.toMatch('b');
+});
