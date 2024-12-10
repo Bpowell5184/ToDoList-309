@@ -342,7 +342,8 @@ function ToDoMain() {
       {/* Dynamically Render Tasks */}
       <div>
         {tasks.length > 0 ? (
-          tasks.map((task, index) => (
+          tasks.filter((task) => !task.task_completed)
+          .map((task, index) => (
             <div key={index}>
               <div className="task-container">
                 {/* Temp implementation */}
