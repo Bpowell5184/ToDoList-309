@@ -1,5 +1,6 @@
 import taskservices from './taskservices.js';
 import Task from './Task.js';
+import { jest } from '@jest/globals';
 
 test('Is Jest working at all???', () => {
   const yes = true;
@@ -10,7 +11,7 @@ test('Is Jest working at all???', () => {
 import taskService from './taskservices';
 import taskModel from './Task';
 
-jest.mock('./Task', () => ({
+jest.unstable_mockModule('./Task', () => ({
   // Mock the Task model
   find: jest.fn(),
   findById: jest.fn(),
