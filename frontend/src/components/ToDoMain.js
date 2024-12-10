@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link, /*useNavigate*/ } from 'react-router-dom';
+import { useLocation, Link /*useNavigate*/ } from 'react-router-dom';
 import logo from '.././assets/logo.png';
 import sort_carrot from '.././assets/sort_carrot.png';
 import filter_icon from '.././assets/filter_icon.png';
@@ -35,7 +35,7 @@ function ToDoMain() {
   const [Points, setPoints] = useState('');
   const [Priority, setPriority] = useState('');
   const [Description, setDescription] = useState('');
-  const [dealWithTaskText, setDealWithTaskText] = useState('')
+  const [dealWithTaskText, setDealWithTaskText] = useState('');
   const [data, setData] = useState(null); // Store user data
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -57,139 +57,153 @@ function ToDoMain() {
 
   // Toggle overlay visibility
   const toggleOverlayDealWithTask = (option, task) => {
-    setDealWithTaskText(option)
-    setIsOpenDealWithTask(!isOpenDealWithTask)
+    setDealWithTaskText(option);
+    setIsOpenDealWithTask(!isOpenDealWithTask);
     if (option === 'Edit Task') {
       setTaskDate(task.task_due_date);
       setDescription(task.task_description);
       setPoints(task.points);
       setPriority('');
       setTitle(task.task_name);
-      setTaskId(task._id)
+      setTaskId(task._id);
     }
-  }
+  };
   const toggleOverlayFilter = () => setIsOpenFilter(!isOpenFilter);
   const toggleOverlayDescription = (desc) => {
     setIsOpenDescription(!isOpenDescription);
     setIsCurrentDescription(desc);
   };
-  
+
   const sortByParam = (param) => {
     if (param === 'Date') {
       setSortDescDate(!sortDescDate);
       setTasks((prevTasks) =>
-        [...prevTasks].sort((a, b) =>
-          sortDescDate
-            ? new Date(a.task_due_date) - new Date(b.task_due_date) // Ascending
-            : new Date(b.task_due_date) - new Date(a.task_due_date) // Descending
-        )
+        [...prevTasks].sort(
+          (a, b) =>
+            sortDescDate
+              ? new Date(a.task_due_date) - new Date(b.task_due_date) // Ascending
+              : new Date(b.task_due_date) - new Date(a.task_due_date), // Descending
+        ),
       );
     } else if (param === 'Task Name') {
       setSortDescTask(!sortDescTask);
       setTasks((prevTasks) =>
-        [...prevTasks].sort((a, b) =>
-          sortDescTask
-            ? a.task_name.localeCompare(b.task_name) // Ascending order
-            : b.task_name.localeCompare(a.task_name) // Descending order
-        )
+        [...prevTasks].sort(
+          (a, b) =>
+            sortDescTask
+              ? a.task_name.localeCompare(b.task_name) // Ascending order
+              : b.task_name.localeCompare(a.task_name), // Descending order
+        ),
       );
-    } else { //param is points
+    } else {
+      //param is points
       setSortDescPoints(!sortDescPoints);
       setTasks((prevTasks) =>
         [...prevTasks].sort((a, b) =>
-          sortDescPoints
-            ? a.points - b.points
-            : b.points - a.points
-        )
+          sortDescPoints ? a.points - b.points : b.points - a.points,
+        ),
       );
     }
   };
-  
-  
-// Deal with task change, in edit or addition
-async function handleTaskAction() {
-  if (dealWithTaskText === 'Add Task') {
-    try {
-      const response = await axios.post('http://localhost:8700/tasks', {
-        userid: data?._id,
-        task_name: Title,
-        task_due_date: TaskDate,
-        points: Points,
-        task_description: Description,
-        task_tags: []
-      });
 
-      console.log('Response:', response.data);
-
-      if (response.data.message.includes('Task added successfully.')) {
-        setErrorMessage(null);
-        const newTask = {
-          _id: response.data.task._id,
-          title: Title,
+  // Deal with task change, in edit or addition
+  async function handleTaskAction() {
+    if (dealWithTaskText === 'Add Task') {
+      try {
+        const response = await axios.post('http://localhost:8700/tasks', {
+          userid: data?._id,
+          task_name: Title,
           task_due_date: TaskDate,
           points: Points,
-          priority: Priority,
           task_description: Description,
-          task_name: Title,
-        };
+          task_tags: [],
+        });
 
-        setTasks(prevTasks => [...prevTasks, newTask]);
-      } else {
-        setErrorMessage(response.data.message || 'An error occurred upon adding a task.');
+        console.log('Response:', response.data);
+
+        if (response.data.message.includes('Task added successfully.')) {
+          setErrorMessage(null);
+          const newTask = {
+            _id: response.data.task._id,
+            title: Title,
+            task_due_date: TaskDate,
+            points: Points,
+            priority: Priority,
+            task_description: Description,
+            task_name: Title,
+          };
+
+          setTasks((prevTasks) => [...prevTasks, newTask]);
+        } else {
+          setErrorMessage(
+            response.data.message || 'An error occurred upon adding a task.',
+          );
+        }
+      } catch (error) {
+        console.error('Error adding task to user:', error);
+        setErrorMessage('An error occurred while adding task.');
       }
-    } catch (error) {
-      console.error('Error adding task to user:', error);
-      setErrorMessage('An error occurred while adding task.');
-    }
 
-    resetAddTaskState();
-  } else if (dealWithTaskText === 'Edit Task') {
-    try {
-      const response = await axios.put(`http://localhost:8700/tasks/${TaskId}`, {
-        task_name: Title,
-        task_due_date: TaskDate,
-        points: Points,
-        task_description: Description,
-        task_tags: []
-      });
-
-      console.log('Response:', response.data);
-
-      if (response.data.message.includes('Task updated successfully')) {
-        setErrorMessage(null);
-        setTasks(prevTasks =>
-          prevTasks.map(task => (task._id === TaskId ? response.data.task : task))
+      resetAddTaskState();
+    } else if (dealWithTaskText === 'Edit Task') {
+      try {
+        const response = await axios.put(
+          `http://localhost:8700/tasks/${TaskId}`,
+          {
+            task_name: Title,
+            task_due_date: TaskDate,
+            points: Points,
+            task_description: Description,
+            task_tags: [],
+          },
         );
-      } else {
-        setErrorMessage(response.data.message || 'An error occurred upon updating a task.');
-      }
-    } catch (error) {
-      console.error('Error updating task:', error);
-      setErrorMessage('An error occurred while updating task.');
-    }
 
-    resetAddTaskState();
+        console.log('Response:', response.data);
+
+        if (response.data.message.includes('Task updated successfully')) {
+          setErrorMessage(null);
+          setTasks((prevTasks) =>
+            prevTasks.map((task) =>
+              task._id === TaskId ? response.data.task : task,
+            ),
+          );
+        } else {
+          setErrorMessage(
+            response.data.message || 'An error occurred upon updating a task.',
+          );
+        }
+      } catch (error) {
+        console.error('Error updating task:', error);
+        setErrorMessage('An error occurred while updating task.');
+      }
+
+      resetAddTaskState();
+    }
   }
-}
-  
-  
-  async function handleDeleteTask(task_id){
+
+  async function handleDeleteTask(task_id) {
     try {
-      const response = await axios.delete(`http://localhost:8700/tasks/${task_id}`);
-  
+      const response = await axios.delete(
+        `http://localhost:8700/tasks/${task_id}`,
+      );
+
       console.log('Response:', response.data);
-  
+
       if (response.data.message.includes('Task deleted successfully')) {
         setErrorMessage(null);
-        setTasks(prevTasks => prevTasks.filter(task => task._id !== task_id));
+        setTasks((prevTasks) =>
+          prevTasks.filter((task) => task._id !== task_id),
+        );
       } else {
-        setErrorMessage(response.data.message || 'An error occurred upon deleting a task.');
+        setErrorMessage(
+          response.data.message || 'An error occurred upon deleting a task.',
+        );
       }
     } catch (error) {
       console.error('Error deleting task', error);
       setErrorMessage('An error occurred while deleting task.');
     }
-  };
+  }
 
   const { state } = useLocation();
   const { username, password } = state || {};
@@ -210,16 +224,18 @@ async function handleTaskAction() {
             setErrorMessage(null);
           }
         })
-        .catch(() => setErrorMessage('An error occurred while fetching the user data.'));
+        .catch(() =>
+          setErrorMessage('An error occurred while fetching the user data.'),
+        );
     }
   }, [username, password]);
-  
+
   useEffect(() => {
     if (data?._id) {
       axios
         .get(`http://localhost:8700/tasks/${data._id}`)
         .then((response) => {
-          console.log(response.data)
+          console.log(response.data);
           setTasks(response.data.tasks || []); // Default to an empty array if no tasks
         })
         .catch((error) => {
@@ -231,7 +247,6 @@ async function handleTaskAction() {
         });
     }
   }, [data?._id]);
-  
 
   return (
     <div>
@@ -239,7 +254,7 @@ async function handleTaskAction() {
       <div className="points_container">
         <div className="points_text">Points: {Points_Day}</div>
       </div>
-      <h1 className='large-heading'>To-Do</h1>
+      <h1 className="large-heading">To-Do</h1>
 
       {/* Display user data */}
       {data ? (
@@ -251,18 +266,33 @@ async function handleTaskAction() {
       )}
 
       {/* Sort and filter section */}
-      <div className='sorts-container'>
-        <div className='sort_points'>
+      <div className="sorts-container">
+        <div className="sort_points">
           Points
-          <img src={sort_carrot} onClick={() => sortByParam('Points')} alt="sort_carrot" className='sort-icon'/>
+          <img
+            src={sort_carrot}
+            onClick={() => sortByParam('Points')}
+            alt="sort_carrot"
+            className="sort-icon"
+          />
         </div>
         <div className="sort-task">
           Task Name
-          <img src={sort_carrot} onClick={() => sortByParam('Task Name')} alt="sort_carrot" className="sort-icon" />
+          <img
+            src={sort_carrot}
+            onClick={() => sortByParam('Task Name')}
+            alt="sort_carrot"
+            className="sort-icon"
+          />
         </div>
         <div className="sort_date">
           Date
-          <img src={sort_carrot} onClick={() => sortByParam('Date')} alt="sort_carrot" className="sort-icon" />
+          <img
+            src={sort_carrot}
+            onClick={() => sortByParam('Date')}
+            alt="sort_carrot"
+            className="sort-icon"
+          />
         </div>
         <img
           src={filter_icon}
@@ -287,11 +317,32 @@ async function handleTaskAction() {
             <div key={index}>
               <div className="task-container">
                 {/* Temp implementation */}
-                <div className="point-value">+{task.points}</div> 
-                <div className="task-name" onClick={() => toggleOverlayDescription(task.task_description)}>{task.task_name}</div>
-                <div className="date">{task.task_due_date ? new Date(task.task_due_date).toLocaleDateString() : '?'}</div>
-                <img src={trash_icon} alt="trash_icon" onClick={() => handleDeleteTask(task._id)} className="trash-icon" />
-                <img src={options} alt="options" onClick={() => toggleOverlayDealWithTask('Edit Task', task)} className="options-icon" />
+                <div className="point-value">+{task.points}</div>
+                <div
+                  className="task-name"
+                  onClick={() =>
+                    toggleOverlayDescription(task.task_description)
+                  }
+                >
+                  {task.task_name}
+                </div>
+                <div className="date">
+                  {task.task_due_date
+                    ? new Date(task.task_due_date).toLocaleDateString()
+                    : '?'}
+                </div>
+                <img
+                  src={trash_icon}
+                  alt="trash_icon"
+                  onClick={() => handleDeleteTask(task._id)}
+                  className="trash-icon"
+                />
+                <img
+                  src={options}
+                  alt="options"
+                  onClick={() => toggleOverlayDealWithTask('Edit Task', task)}
+                  className="options-icon"
+                />
               </div>
 
               <div className="separator"></div>
@@ -313,12 +364,18 @@ async function handleTaskAction() {
 
       {/* Add/Edit Task Button */}
       <div>
-        <button onClick={() => toggleOverlayDealWithTask('Add Task')} className="add-task-button">
+        <button
+          onClick={() => toggleOverlayDealWithTask('Add Task')}
+          className="add-task-button"
+        >
           <div className="add-task-button-text">Add Task</div>
         </button>
- 
+
         {/* Add Task Overlay */}
-        <Overlay isOpen={isOpenDealWithTask} onClose={toggleOverlayDealWithTask}>
+        <Overlay
+          isOpen={isOpenDealWithTask}
+          onClose={toggleOverlayDealWithTask}
+        >
           <div className="overlay-item-container">
             <div className="overlay-text-container">Title:</div>
             <input
@@ -368,7 +425,11 @@ async function handleTaskAction() {
               onChange={handleDescriptionChange}
             />
           </div>
-          <button className="add-task-button" onClick={handleTaskAction} style={{ width: "150px", height: '50px' }}>
+          <button
+            className="add-task-button"
+            onClick={handleTaskAction}
+            style={{ width: '150px', height: '50px' }}
+          >
             <div className="add-task-button-text" style={{ fontSize: '24px' }}>
               {dealWithTaskText}
             </div>
@@ -400,7 +461,6 @@ async function handleTaskAction() {
       <Link to="/login">
         <button>Log Out</button>
       </Link>
-
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import { Fragment } from 'react';
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 import './Overlay.css';
 
 export function Overlay({ isOpen, onClose, children }) {
@@ -22,5 +23,15 @@ export function Overlay({ isOpen, onClose, children }) {
     </Fragment>
   );
 }
+
+Overlay.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.node,
+};
+
+Overlay.defaultProps = {
+  children: null,
+};
 
 export default Overlay;

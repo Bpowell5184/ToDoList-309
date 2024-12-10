@@ -12,6 +12,7 @@ const Calendar = () => {
   const [data, setData] = useState(null); // Store user data
   const [errorMessage, setErrorMessage] = useState(null);
 
+  // eslint-disable-next-line no-unused-vars
   const [tasks, setTasks] = useState([]);
   const [tasksByDate, setTasksByDate] = useState({});
 
@@ -38,28 +39,30 @@ const Calendar = () => {
             setErrorMessage(null);
           }
         })
-        .catch(() => setErrorMessage('An error occurred while fetching the user data.'));
+        .catch(() =>
+          setErrorMessage('An error occurred while fetching the user data.'),
+        );
     }
   }, [username, password]);
-  
+
   useEffect(() => {
     if (data?._id) {
       axios
         .get(`http://localhost:8700/tasks/${data._id}`)
         .then((response) => {
           const fetchedTasks = response.data.tasks || [];
-  
+
           const taskMap = {};
-          fetchedTasks.forEach(task => {
+          fetchedTasks.forEach((task) => {
             if (task.task_due_date) {
               const taskDate = new Date(task.task_due_date);
-              
+
               if (
-                taskDate.getFullYear() === currentDate.getFullYear() && 
+                taskDate.getFullYear() === currentDate.getFullYear() &&
                 taskDate.getMonth() === currentDate.getMonth()
               ) {
                 const dateKey = taskDate.getDate();
-  
+
                 if (!taskMap[dateKey]) {
                   taskMap[dateKey] = [];
                 }
@@ -67,7 +70,7 @@ const Calendar = () => {
               }
             }
           });
-  
+
           setTasksByDate(taskMap);
           setTasks(fetchedTasks);
         })
@@ -119,11 +122,11 @@ const Calendar = () => {
           {currentDate.toLocaleString('default', { month: 'long' })}{' '}
           {currentDate.getFullYear()}
         </h2>
-        <button className='next-previous-button' onClick={handlePrevMonth}>
-          <div className='next-previous-button-text'>Previous</div>
+        <button className="next-previous-button" onClick={handlePrevMonth}>
+          <div className="next-previous-button-text">Previous</div>
         </button>
-        <button className='next-previous-button' onClick={handleNextMonth}>
-          <div className='next-previous-button-text'>Next</div>
+        <button className="next-previous-button" onClick={handleNextMonth}>
+          <div className="next-previous-button-text">Next</div>
         </button>
         <Link to="/todomain" state={{ username, password }}>
           <img
@@ -143,11 +146,14 @@ const Calendar = () => {
 
         {daysInMonth.map((day, index) => {
           // Determine if the date is in the past
-          const isPastDate = day && new Date(currentDate.getFullYear(), currentDate.getMonth(), day) < new Date().setHours(0, 0, 0, 0);
+          const isPastDate =
+            day &&
+            new Date(currentDate.getFullYear(), currentDate.getMonth(), day) <
+              new Date().setHours(0, 0, 0, 0);
 
           return (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`day-cell ${isPastDate ? 'past-date' : ''}`}
             >
               {day && (

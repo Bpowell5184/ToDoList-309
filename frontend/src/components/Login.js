@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';  // Add useNavigate hook
+import { Link, useNavigate } from 'react-router-dom'; // Add useNavigate hook
 import axios from 'axios';
 import logo from '.././assets/logo.png';
 import './Login-Signup.css';
@@ -24,7 +24,7 @@ function Login() {
     axios
       .post('http://localhost:8700/getuser', {
         username: username,
-        password: password
+        password: password,
       })
       .then((response) => {
         console.log('Response:', response.data);
@@ -58,7 +58,7 @@ function Login() {
         onChange={handleUsernameChange}
       />
       <input
-        type="password"  // Updated to "password" type for security
+        type="password" // Updated to "password" type for security
         placeholder="Enter your password"
         className="text-input"
         value={password}
@@ -66,10 +66,14 @@ function Login() {
       />
 
       {errorMessage && <div className="error-message">{errorMessage}</div>}
-      {successMessage && <div className="success-message">{successMessage}</div>}
+      {successMessage && (
+        <div className="success-message">{successMessage}</div>
+      )}
 
       <div>
-        <button className="button" onClick={handleLogin}>Log In</button>
+        <button className="button" onClick={handleLogin}>
+          Log In
+        </button>
       </div>
       <div>
         <Link to="/signup">
