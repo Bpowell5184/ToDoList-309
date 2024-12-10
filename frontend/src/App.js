@@ -3,7 +3,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link,
+  /*Link,*/
   Navigate,
 } from 'react-router-dom';
 import './App.css';

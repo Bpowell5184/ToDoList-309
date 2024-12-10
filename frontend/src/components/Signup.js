@@ -29,7 +29,7 @@ function Signup() {
       .post('http://localhost:8700/adduser', {
         username: username,
         name: name,
-        password: password
+        password: password,
       })
       .then((response) => {
         console.log('Response:', response.data);
@@ -78,7 +78,9 @@ function Signup() {
 
       {/* Display success or error message */}
       {errorMessage && <div className="error-message">{errorMessage}</div>}
-      {successMessage && <div className="success-message">{successMessage}</div>}
+      {successMessage && (
+        <div className="success-message">{successMessage}</div>
+      )}
 
       <div>
         <Link to="/login">
@@ -86,7 +88,9 @@ function Signup() {
         </Link>
       </div>
       <div>
-        <button className="button" onClick={handleSignup}>Create Account</button>
+        <button className="button" onClick={handleSignup}>
+          Create Account
+        </button>
       </div>
     </div>
   );
