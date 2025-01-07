@@ -101,6 +101,7 @@
   border-width: 3px;
   background-color: #064123;
   margin-top: 20px;
+  cursor: pointer;
 }
 
 .next-previous-button-text {
