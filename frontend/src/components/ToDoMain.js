@@ -94,16 +94,16 @@ function ToDoMain() {
 
   // Toggle overlay visibility
   const toggleOverlayDealWithTask = (option, task) => {
-    setDealWithTaskText(option);
-    setIsOpenDealWithTask(!isOpenDealWithTask);
-    if (option === 'Edit Task') {
-      setTaskDate(task.task_due_date);
-      setDescription(task.task_description);
-      setPoints(task.points);
-      setPriority('');
-      setTitle(task.task_name);
-      setTaskId(task._id);
-    }
+      setDealWithTaskText(option);
+      setIsOpenDealWithTask(!isOpenDealWithTask);
+      if (option === 'Edit Task') {
+        setTaskDate(task.task_due_date);
+        setDescription(task.task_description);
+        setPoints(task.points);
+        setPriority('');
+        setTitle(task.task_name);
+        setTaskId(task._id);
+      }
   };
   const toggleOverlayFilter = () => setIsOpenFilter(!isOpenFilter);
   const toggleOverlayDescription = (desc) => {
@@ -435,7 +435,7 @@ function ToDoMain() {
           <div className="overlay-item-container">
             <div className="overlay-text-container">Date:</div>
             <input
-              type="text"
+              type="date"
               className="text-input"
               value={TaskDate}
               onChange={handleTaskDateChange}
@@ -445,12 +445,15 @@ function ToDoMain() {
           <div className="overlay-item-container">
             <div className="overlay-text-container">Points:</div>
             <input
-              type="text"
+              type="number"
               className="text-input"
+              min="0"
+              max="20"
               value={Points}
               onChange={handlePointsChange}
             />
           </div>
+          
           {/* Priority
           <div className="overlay-item-container">
             <div className="overlay-text-container">Priority:</div>
