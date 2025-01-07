@@ -8,7 +8,7 @@ test('Is Jest working at all???', () => {
   expect(yes).toBeTruthy();
 });
 
-jest.unstable_mockModule('./User', () => ({
+jest.mock('./User', () => ({
   findOne: jest.fn(),
   find: jest.fn(),
   findById: jest.fn(),
