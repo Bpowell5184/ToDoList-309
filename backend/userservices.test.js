@@ -1,6 +1,8 @@
 import userservices from './userservices.js';
 import User from './User.js';
 import { jest } from '@jest/globals';
+import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
 
 test('Is Jest working at all???', () => {
   const yes = true;
@@ -8,7 +10,42 @@ test('Is Jest working at all???', () => {
   expect(yes).toBeTruthy();
 });
 
-jest.mock('./User', () => ({
+
+describe('inserting without addUser()', () => {
+  let connection;
+  let db;
+
+  beforeAll(async () => {
+    connection = await MongoClient.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    db = await connection.db('LearnByToDoing');
+  });
+
+  afterAll(async () => {
+    await connection.close();
+  });
+
+  it('should insert a doc into collection', async () => {
+    const users = db.collection('users');
+
+    const mockUser = {
+      username: 'UnitTestUsername',
+      name: 'UnitTestName',
+      password: 'UnitTestPassword',
+    };
+    await users.insertOne(mockUser);
+
+    const insertedUser = await users.findOne({ username: 'UnitTestUsername' });
+    expect(insertedUser).toEqual(mockUser);
+  });
+});
+
+//////////////////////////
+//tests using mock objects
+//////////////////////////
+jest.unstable_mockModule('./User', () => ({
   findOne: jest.fn(),
   find: jest.fn(),
   findById: jest.fn(),
@@ -23,7 +60,11 @@ describe('User Service', () => {
   });
 
   test('should add a new user successfully', async () => {
-    const mockUser = { username: 'testuser', password: 'password' };
+    const mockUser = {
+      username: 'testuser',
+      name: 'testname',
+      password: 'password',
+    };
 
     User.findOne.mockResolvedValue(null); // No existing user
     const mockSave = jest.fn().mockResolvedValue({ id: '123', ...mockUser });
@@ -36,7 +77,11 @@ describe('User Service', () => {
   });
 
   test('should throw an error if user already exists', async () => {
-    const mockUser = { username: 'existinguser', password: 'password' };
+    const mockUser = {
+      username: 'existinguser',
+      name: 'existingname',
+      password: 'existingpassword',
+    };
 
     User.findOne.mockResolvedValue(mockUser); // User already exists
 
@@ -48,8 +93,8 @@ describe('User Service', () => {
 
   test('should retrieve all users', async () => {
     const mockUsers = [
-      { username: 'user1', password: 'pass1' },
-      { username: 'user2', password: 'pass2' },
+      { username: 'user1', name: 'name1', password: 'pass1' },
+      { username: 'user2', name: 'name2', password: 'pass2' },
     ];
 
     User.find.mockResolvedValue(mockUsers);
