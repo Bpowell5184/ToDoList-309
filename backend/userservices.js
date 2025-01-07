@@ -75,5 +75,7 @@ export default {
   getUsers,
   getUser,
   findUserById,
+  findUserByName,
+  findUserByUsernameAndPassword,
   deleteUser,
 };
