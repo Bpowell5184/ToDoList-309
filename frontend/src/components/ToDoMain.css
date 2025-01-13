@@ -273,3 +273,14 @@
   padding: 8px;
   box-sizing: border-box;
 }
+
+.completed-task {
+  opacity: 0.6;
+  text-decoration: line-through;
+  cursor: default;
+}
+
+.past-due {
+  color: red;
+  font-weight: bold;
+}
