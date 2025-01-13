@@ -18,6 +18,7 @@ function ToDoMain() {
   const [isOpenDealWithTask, setIsOpenDealWithTask] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [isOpenDescription, setIsOpenDescription] = useState(false);
+  const [isCheckedViewCompletedTasks, setIsCheckedViewCompletedTasks] = useState(false);
 
   const [sortDescDate, setSortDescDate] = useState(false);
   const [sortDescPoints, setSortDescPoints] = useState(false);
@@ -240,6 +241,19 @@ function ToDoMain() {
       console.error('Error deleting task', error);
       setErrorMessage('An error occurred while deleting task.');
     }
+  }
+
+  const toggleViewCompletedTasks = () => {
+    setIsCheckedViewCompletedTasks(!isCheckedViewCompletedTasks);
+    // add more here for functionality
+    if (isCheckedViewCompletedTasks === false) {
+      setTasks((prevTasks) =>
+        [...prevTasks].sort(
+          (a, b) =>
+              new Date(a.task_due_date) - new Date(b.task_due_date) // Ascending
+        ),
+      );
+    } else {}
   }
 
   const { state } = useLocation();
@@ -504,6 +518,24 @@ function ToDoMain() {
             // onChange={handleFilterChange}
           />
         </div>
+        <div>
+        <label>
+          Enable Viewing of Completed Tasks?
+          <input
+            type="checkbox"
+            checked={isCheckedViewCompletedTasks}
+            onChange={toggleViewCompletedTasks}
+          />
+        </label>
+        </div>
+        <label>
+          Prioritize Overdue?
+          <input
+            type="checkbox"
+            //checked={isChecked}
+            //onChange={handleCheckboxChange}
+          />
+        </label>
       </Overlay>
 
       {/* Logout Button */}
