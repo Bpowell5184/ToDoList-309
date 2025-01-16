@@ -45,9 +45,8 @@ function ToDoMain() {
 
   // Handle changes in input fields
   const handleTitleChange = (event) => setTitle(event.target.value);
-  const handleTaskDateChange = (event) => setTaskDate(event.target.value);
   const handlePointsChange = (event) => setPoints(event.target.value);
-  const handlePriorityChange = (event) => setPriority(event.target.value);
+  //const handlePriorityChange = (event) => setPriority(event.target.value);
   const handleDescriptionChange = (event) => setDescription(event.target.value);
 
   // Handle dynamic rendering
@@ -57,6 +56,10 @@ function ToDoMain() {
 
   const handlePointsMouseOut = () => {
     setHoveredTaskId(null);
+  };
+
+  const handleTaskDateChange = (event) => {
+    setTaskDate(event.target.value);
   };
 
   // Define method to remove task from frontend and call backend
@@ -281,7 +284,7 @@ function ToDoMain() {
           console.log(response.data);
           // Sort tasks by date before setting them so user can see immediately due tasks
           const sortedTasks = (response.data.tasks || []).sort((a, b) => {
-            return new Date(a.task_due_date) - new Date(b.task_due_date); 
+            return new Date(a.task_due_date) - new Date(b.task_due_date);
           });
           setTasks(sortedTasks); // Set sorted tasks
         })
@@ -294,7 +297,6 @@ function ToDoMain() {
         });
     }
   }, [data?._id]);
-  
 
   return (
     <div>
@@ -415,7 +417,6 @@ function ToDoMain() {
                       ? new Date(task.task_due_date).toLocaleDateString()
                       : '?'}
                   </div>
-
                   <img
                     src={trash_icon}
                     alt="trash_icon"
@@ -474,7 +475,7 @@ function ToDoMain() {
           <div className="overlay-item-container">
             <div className="overlay-text-container">Date:</div>
             <input
-              type="date"
+              type="datetime-local"
               className="text-input"
               value={TaskDate}
               onChange={handleTaskDateChange}

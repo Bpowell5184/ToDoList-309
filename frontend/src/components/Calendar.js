@@ -144,65 +144,69 @@ const Calendar = () => {
           </div>
         ))}
 
-{daysInMonth.map((day, index) => {
-  // Determine if the date is in the past
-  const isPastDate =
-    day &&
-    new Date(currentDate.getFullYear(), currentDate.getMonth(), day) < new Date().setHours(0, 0, 0, 0);
+        {daysInMonth.map((day, index) => {
+          // Determine if the date is in the past
+          const isPastDate =
+            day &&
+            new Date(currentDate.getFullYear(), currentDate.getMonth(), day) <
+              new Date().setHours(0, 0, 0, 0);
 
-  return (
-    <div
-      key={index}
-      className={`day-cell ${isPastDate ? 'past-date' : ''}`}
-    >
-      {day && (
-        <>
-          <div className="day-number">{day}</div>
-          {tasksByDate[day] && (
-            <div className="day-tasks">
-              {tasksByDate[day].map((task, taskIndex) => {
-                // Check if the task is overdue and incomplete
-                const taskDate = new Date(task.task_due_date);
-                const isOverdue = taskDate < new Date() && !task.task_completed;
+          return (
+            <div
+              key={index}
+              className={`day-cell ${isPastDate ? 'past-date' : ''}`}
+            >
+              {day && (
+                <>
+                  <div className="day-number">{day}</div>
+                  {tasksByDate[day] && (
+                    <div className="day-tasks">
+                      {tasksByDate[day].map((task, taskIndex) => {
+                        // Check if the task is overdue and incomplete
+                        const taskDate = new Date(task.task_due_date);
+                        const isOverdue =
+                          taskDate < new Date() && !task.task_completed;
 
-                return (
-                  <div
-                    key={taskIndex}
-                    className="task-item"
-                    style={{
-                      color: isOverdue ? 'red' : task.task_completed ? 'green' : 'black',
-                    }}
-                  >
-                    {task.task_name}{' '}
-                    {task.task_completed ? (
-                      <span
-                        role="img"
-                        aria-label="Completed"
-                        style={{ marginLeft: '5px' }}
-                      >
-                        ✅
-                      </span>
-                    ) : isOverdue ? (
-                      <span
-                        role="img"
-                        aria-label="Overdue"
-                        style={{ marginLeft: '5px', color: 'red' }}
-                      >
-                        ❌
-                      </span>
-                    ) : null}
-                  </div>
-                );
-              })}
+                        return (
+                          <div
+                            key={taskIndex}
+                            className="task-item"
+                            style={{
+                              color: isOverdue
+                                ? 'red'
+                                : task.task_completed
+                                  ? 'green'
+                                  : 'black',
+                            }}
+                          >
+                            {task.task_name}{' '}
+                            {task.task_completed ? (
+                              <span
+                                role="img"
+                                aria-label="Completed"
+                                style={{ marginLeft: '5px' }}
+                              >
+                                ✅
+                              </span>
+                            ) : isOverdue ? (
+                              <span
+                                role="img"
+                                aria-label="Overdue"
+                                style={{ marginLeft: '5px', color: 'red' }}
+                              >
+                                ❌
+                              </span>
+                            ) : null}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              )}
             </div>
-          )}
-        </>
-      )}
-    </div>
-  );
-})}
-
-
+          );
+        })}
       </div>
       {errorMessage && <div className="error-message">{errorMessage}</div>}
     </div>
