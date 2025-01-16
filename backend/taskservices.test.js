@@ -1,5 +1,7 @@
 import taskservices from './taskservices.js';
+import taskService from './taskservices';
 import Task from './Task.js';
+import taskModel from './Task.js';
 import { jest } from '@jest/globals';
 
 test('Is Jest working at all???', () => {
@@ -7,9 +9,6 @@ test('Is Jest working at all???', () => {
 
   expect(yes).toBeTruthy();
 });
-
-import taskService from './taskservices';
-import taskModel from './Task';
 
 jest.unstable_mockModule('./Task', () => ({
   // Mock the Task model
