@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import bcrypt from 'bcrypt';
 import taskServices from './taskservices.js';
 import userServices from './userservices.js';
 import mongoose from 'mongoose';
@@ -32,8 +33,12 @@ app.get('/users', async (req, res) => {
 });
 
 app.post('/users', async (req, res) => {
-  const user = req.body;
   try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedpassword = await bcrypt.hash(req.body.password, salt);
+    let user = new User();
+    user = req.body;
+    user.password = hashedpassword;
     const savedUser = await userServices.addUser(user);
     if (savedUser) res.status(201).send(savedUser);
     else res.status(500).send('User creation failed.');

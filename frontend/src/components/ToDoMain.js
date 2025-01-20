@@ -18,6 +18,8 @@ function ToDoMain() {
   const [isOpenDealWithTask, setIsOpenDealWithTask] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [isOpenDescription, setIsOpenDescription] = useState(false);
+  const [isCheckedViewCompletedTasks, setIsCheckedViewCompletedTasks] =
+    useState(false);
 
   const [sortDescDate, setSortDescDate] = useState(false);
   const [sortDescPoints, setSortDescPoints] = useState(false);
@@ -94,16 +96,16 @@ function ToDoMain() {
 
   // Toggle overlay visibility
   const toggleOverlayDealWithTask = (option, task) => {
-      setDealWithTaskText(option);
-      setIsOpenDealWithTask(!isOpenDealWithTask);
-      if (option === 'Edit Task') {
-        setTaskDate(task.task_due_date);
-        setDescription(task.task_description);
-        setPoints(task.points);
-        setPriority('');
-        setTitle(task.task_name);
-        setTaskId(task._id);
-      }
+    setDealWithTaskText(option);
+    setIsOpenDealWithTask(!isOpenDealWithTask);
+    if (option === 'Edit Task') {
+      setTaskDate(task.task_due_date);
+      setDescription(task.task_description);
+      setPoints(task.points);
+      setPriority('');
+      setTitle(task.task_name);
+      setTaskId(task._id);
+    }
   };
   const toggleOverlayFilter = () => setIsOpenFilter(!isOpenFilter);
   const toggleOverlayDescription = (desc) => {
@@ -242,6 +244,10 @@ function ToDoMain() {
     }
   }
 
+  const toggleViewCompletedTasks = () => {
+    setIsCheckedViewCompletedTasks((prevState) => !prevState);
+  };
+
   const { state } = useLocation();
   const { username, password } = state || {};
 
@@ -273,10 +279,14 @@ function ToDoMain() {
         .get(`http://localhost:8700/tasks/${data._id}`)
         .then((response) => {
           console.log(response.data);
-          setTasks(response.data.tasks || []); // Default to an empty array if no tasks
+          // Sort tasks by date before setting them so user can see immediately due tasks
+          const sortedTasks = (response.data.tasks || []).sort((a, b) => {
+            return new Date(a.task_due_date) - new Date(b.task_due_date); 
+          });
+          setTasks(sortedTasks); // Set sorted tasks
         })
         .catch((error) => {
-          // Only set error message if it's not a 404
+          // Handle errors gracefully
           if (error.response && error.response.status !== 404) {
             setErrorMessage('An error occurred while fetching the user data.');
           }
@@ -284,6 +294,7 @@ function ToDoMain() {
         });
     }
   }, [data?._id]);
+  
 
   return (
     <div>
@@ -360,16 +371,26 @@ function ToDoMain() {
       <div>
         {tasks.length > 0 ? (
           tasks
-            .filter((task) => !task.task_completed)
+            .filter(
+              (task) => isCheckedViewCompletedTasks || !task.task_completed,
+            )
+            //.sort((a, b) => new Date(a.task_due_date) - new Date(b.task_due_date)) // Sort by date to immediately see due tasks
             .map((task, index) => (
               <div key={index}>
-                <div className="task-container">
-                  {/* Temp implementation */}
+                <div
+                  className={`task-container ${task.task_completed ? 'completed-task' : ''}`}
+                >
                   <div
                     className="point-value"
-                    onMouseOver={() => handlePointsMouseOn(task._id)}
-                    onMouseOut={handlePointsMouseOut}
-                    onClick={() => handleCompleteTask(task._id)}
+                    onMouseOver={() =>
+                      !task.task_completed && handlePointsMouseOn(task._id)
+                    }
+                    onMouseOut={() =>
+                      !task.task_completed && handlePointsMouseOut()
+                    }
+                    onClick={() =>
+                      !task.task_completed && handleCompleteTask(task._id)
+                    }
                   >
                     {hoveredTaskId === task._id ? '✓' : `+${task.points}`}
                   </div>
@@ -381,11 +402,29 @@ function ToDoMain() {
                   >
                     {task.task_name}
                   </div>
-                  <div className="date">
+                  {/*Changes text to red if overdue*/}
+                  <div
+                    className="date"
+                    style={{
+                      color:
+                        task.task_due_date &&
+                        new Date(task.task_due_date) < new Date() &&
+                        task.task_completed !== true
+                          ? 'red'
+                          : 'inherit',
+                      fontWeight:
+                        task.task_due_date &&
+                        new Date(task.task_due_date) < new Date() &&
+                        task.task_completed !== true
+                          ? 'bold'
+                          : 'normal',
+                    }}
+                  >
                     {task.task_due_date
                       ? new Date(task.task_due_date).toLocaleDateString()
                       : '?'}
                   </div>
+
                   <img
                     src={trash_icon}
                     alt="trash_icon"
@@ -462,7 +501,7 @@ function ToDoMain() {
               onChange={handlePointsChange}
             />
           </div>
-          
+
           {/* Priority
           <div className="overlay-item-container">
             <div className="overlay-text-container">Priority:</div>
@@ -513,6 +552,25 @@ function ToDoMain() {
             // onChange={handleFilterChange}
           />
         </div>
+        <div>
+          <label>
+            Enable Viewing of Completed Tasks?
+            <input
+              type="checkbox"
+              checked={isCheckedViewCompletedTasks}
+              onChange={toggleViewCompletedTasks}
+            />
+          </label>
+        </div>
+        {/* auto sorts by date at beggining... kinda not needed now, and can already sort by date */}
+        {/* <label>
+          Prioritize Overdue?
+          <input
+            type="checkbox"
+            //checked={isChecked}
+            //onChange={handleCheckboxChange}
+          />
+        </label> */}
       </Overlay>
 
       {/* Logout Button */}
