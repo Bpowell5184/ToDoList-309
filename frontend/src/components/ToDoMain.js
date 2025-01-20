@@ -296,7 +296,16 @@ function ToDoMain() {
       {/* Display user data */}
       {data ? (
         <div className="data-container">
-          <p>Welcome {data.name}!</p>
+          <div className="userName">
+            <p>Welcome {data.name}!</p>
+          </div>
+          <div className="dlToggle">
+            <button
+              /*onClick = {}
+              className = "dark-mode-button"*/ >
+              <div>Dark Mode</div>
+              </button>
+            </div>
         </div>
       ) : (
         <p>No data available.</p>

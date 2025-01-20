@@ -1,7 +1,38 @@
+/* Sets dark/light mode based on user preference*/
+@media (prefers-color-scheme: dark){
+  /*body { background: #333; color: white; }*/
+}
+
+body {
+  --color-background: #fafafa;
+  --color-foreground: #1f2023;
+}
+
+.data-container{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  padding: 5px 20px;
+}
+
+.userName{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-55%);
+  text-align: center;
+}
+
+.dlToggle{
+  margin-left: auto;
+  transform: translateX(-20%);
+}
+
 .large-heading {
   font-size: 72px;
   font-weight: bold;
-  color: #241d1d;
+  /* color: #241d1d; */
+  color: color;
   text-align: center;
   margin: 20px 0;
   padding-bottom: 15px;
