@@ -88,13 +88,14 @@ app.get('/users/:userId', async (req, res) => {
 
 //add user
 app.post('/adduser', async (req, res) => {
-  const { username, name, password } = req.body;
-
-  if (!username || !name || !password) {
+  const { username, name, password} = req.body;
+  const salt = await bcrypt.genSalt(10);
+  const hashedpassword = await bcrypt.hash(password, salt);
+  if (!username || !name || !hashedpassword) {
     return res.status(400).send({ message: 'Missing required fields' });
   }
-
-  const user = { username, name, password };
+    
+  const user = { username, name, "password":hashedpassword};
 
   try {
     const savedUser = await userServices.addUser(user);
@@ -119,11 +120,16 @@ app.post('/getuser', async (req, res) => {
   }
 
   try {
-    const user = await userServices.getUser(username, password);
+    const user = await userServices.findUserByUsername(username);
     if (!user) {
       return res.status(404).send({ message: 'User not found' });
+    }else{
+        const isValid = await bcrypt.compare(password, user.password);
+        if(!isValid){
+            return res.status(401).send({ message: 'Invalid password' });
+        }
+        res.status(200).send({ message: 'User retrieved successfully', user });
     }
-    res.status(200).send({ message: 'User retrieved successfully', user });
   } catch (error) {
     console.error('Error retrieving user:', error);
     res

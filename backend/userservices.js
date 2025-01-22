@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import User from './User.js';
-
+import bcrypt from 'bcrypt';
 dotenv.config();
 
 mongoose
@@ -40,8 +40,8 @@ function getUsers(name) {
   return promise;
 }
 
-function findUserByName(name) {
-  return User.find({ name: name });
+function findUserByUsername(username) {
+  return User.findOne({ username: username });
 }
 
 function getUser(username, password) {
@@ -57,8 +57,17 @@ function getUser(username, password) {
 }
 
 function findUserByUsernameAndPassword(username, password) {
-  return User.findOne({ username, password }).then((user) => {
-    return user || null;
+  return User.findOne({ username}).then((user) => {
+    bcrypt.compare(password, user.password, function(err, res){
+        if(res){
+            return user;
+        }else{
+            throw new Error('Password was wrong');
+        }
+        if(err){
+           console.log(error);
+        }
+    });
   });
 }
 
@@ -75,7 +84,7 @@ export default {
   getUsers,
   getUser,
   findUserById,
-  findUserByName,
+  findUserByUsername,
   findUserByUsernameAndPassword,
   deleteUser,
 };
