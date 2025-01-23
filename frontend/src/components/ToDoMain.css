@@ -3,9 +3,29 @@
   /*body { background: #333; color: white; }*/
 }
 
+[data-theme="light"]{
+  --background-color: white;
+  --text-color: black;
+  --same-color: black;
+  --sort-container: rgb(149, 149, 168);
+  --points-cont: rgb(180, 212, 190);
+  --task-cont: rgba(231, 214, 116, 0.712);
+}
+
+[data-theme="dark"] {
+  --background-color: black;
+  --text-color: white;
+  --same-color: black;
+  --sort-container: #b0aaa5;
+  --points-cont: #419416;
+  /*--task-cont: #686e05;*/
+  --task-cont: rgba(231, 214, 116, 0.712);
+}
+
 body {
-  --color-background: #fafafa;
-  --color-foreground: #1f2023;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.7s, color 0.7s;
 }
 
 .data-container{
@@ -31,8 +51,7 @@ body {
 .large-heading {
   font-size: 72px;
   font-weight: bold;
-  /* color: #241d1d; */
-  color: color;
+  color: var(--text-color);
   text-align: center;
   margin: 20px 0;
   padding-bottom: 15px;
@@ -54,7 +73,7 @@ body {
   top: 20px;
   right: 50px;
   margin-bottom: 20px;
-  background-color: rgb(180, 212, 190);
+  background-color: var(--points-cont);
   border-radius: 20px;
   display: flex;
   align-items: flex-start;
@@ -82,7 +101,7 @@ body {
   align-items: center;
   width: 100%;
   height: 50px;
-  background-color: rgb(149, 149, 168);
+  background-color: var(--sort-container);
   margin: 0;
   padding: 0 0 px;
 }
@@ -93,6 +112,7 @@ body {
   text-align: left;
   margin-left: 5%;
   vertical-align: center;
+  color: var(--same-color);
 }
 
 .sort_date {
@@ -102,6 +122,7 @@ body {
   text-align: right;
   margin-left: auto;
   margin-right: 2cm;
+  color: var(--same-color);
 }
 
 .sort-task {
@@ -110,6 +131,7 @@ body {
   text-align: left;
   margin-left: 5%;
   vertical-align: center;
+  color: var(--same-color);
 }
 
 .sort-icon {
@@ -145,7 +167,8 @@ body {
   align-items: center;
   width: 100%;
   height: 200px;
-  background-color: rgba(231, 214, 116, 0.712);
+  background-color: var(--task-cont);
+  color: var(--same-color);
   margin: 0;
   padding: 0 0 px;
 }
@@ -256,6 +279,7 @@ body {
 }
 
 .overlay-text-container {
+  color: black;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -293,7 +317,7 @@ body {
 .separator {
   width: 100%;
   height: 6px;
-  background-color: black;
+  background-color: var(--text-color);
   margin: 0px 0;
 }
 
