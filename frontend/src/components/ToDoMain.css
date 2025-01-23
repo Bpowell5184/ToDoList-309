@@ -3,6 +3,15 @@
   /*body { background: #333; color: white; }*/
 }
 
+:root{
+  --background-color: white;
+  --text-color: black;
+  --same-color: black;
+  --sort-container: rgb(149, 149, 168);
+  --points-cont: rgb(180, 212, 190);
+  --task-cont: rgba(231, 214, 116, 0.712);
+}
+
 [data-theme="light"]{
   --background-color: white;
   --text-color: black;
