@@ -41,7 +41,11 @@ function ToDoMain() {
   const [data, setData] = useState(null); // Store user data
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const [hoveredTaskId, setHoveredTaskId] = useState(null); // Meant to manage which task is being 'hovered'
+  // Meant to manage which task is being 'hovered'
+  const [hoveredTaskId, setHoveredTaskId] = useState(null); 
+
+  // Manage Dark/Light Mode
+  const [theme, setTheme] = useState("light");
 
   // Handle changes in input fields
   const handleTitleChange = (event) => setTitle(event.target.value);
@@ -58,6 +62,14 @@ function ToDoMain() {
   const handlePointsMouseOut = () => {
     setHoveredTaskId(null);
   };
+
+  // Handle Theme Change
+  const handleThemeChange = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    // set new theme in html
+    document.documentElement.setAttribute("data-theme", newTheme);
+  }
 
   // Define method to remove task from frontend and call backend
   const handleCompleteTask = async (taskId) => {
@@ -307,7 +319,16 @@ function ToDoMain() {
       {/* Display user data */}
       {data ? (
         <div className="data-container">
-          <p>Welcome {data.name}!</p>
+          <div className="userName">
+            <p>Welcome {data.name}!</p>
+          </div>
+          <div className="dlToggle">
+            <button
+              onClick = {handleThemeChange}
+              className = "theme-button">
+              <div>Dark Mode</div>
+              </button>
+            </div>
         </div>
       ) : (
         <p>No data available.</p>
