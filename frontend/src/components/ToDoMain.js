@@ -73,6 +73,7 @@ function ToDoMain() {
 
   // Define method to remove task from frontend and call backend
   const handleCompleteTask = async (taskId) => {
+    setHoveredTaskId(null);
     try {
       const response = await axios.put(
         `http://localhost:8700/tasks/${taskId}`,
@@ -82,8 +83,13 @@ function ToDoMain() {
       );
       if (response.status === 200) {
         // Update frontend state to remove the task
+        
         setTasks((prevTasks) =>
-          prevTasks.filter((task) => task._id !== taskId),
+          prevTasks.map((task) =>
+            task._id === taskId
+              ? { ...task, task_completed: true } // Update the specific task
+              : task // Leave other tasks unchanged
+          )
         );
         console.log(`Task with ID ${taskId} marked as complete.`);
       } else {
