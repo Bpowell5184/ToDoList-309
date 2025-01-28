@@ -432,7 +432,7 @@ function ToDoMain() {
                     }}
                   >
                     {task.task_due_date
-                      ? new Date(task.task_due_date).toLocaleDateString()
+                      ? new Date(task.task_due_date).toLocaleString()
                       : '?'}
                   </div>
 
