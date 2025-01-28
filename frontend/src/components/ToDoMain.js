@@ -35,7 +35,7 @@ function ToDoMain() {
   const [Title, setTitle] = useState('');
   const [TaskDate, setTaskDate] = useState('');
   const [Points, setPoints] = useState('');
-  const [Priority, setPriority] = useState('');
+  const [Tags, setTags] = useState('');
   const [Description, setDescription] = useState('');
   const [dealWithTaskText, setDealWithTaskText] = useState('');
   const [data, setData] = useState(null); // Store user data
@@ -51,7 +51,7 @@ function ToDoMain() {
   const handleTitleChange = (event) => setTitle(event.target.value);
   const handleTaskDateChange = (event) => setTaskDate(event.target.value);
   const handlePointsChange = (event) => setPoints(event.target.value);
-  const handlePriorityChange = (event) => setPriority(event.target.value);
+  const handleTagsChange = (event) => setTags(event.target.value);
   const handleDescriptionChange = (event) => setDescription(event.target.value);
 
   // Handle dynamic rendering
@@ -107,7 +107,7 @@ function ToDoMain() {
     setTaskDate('');
     setDescription('');
     setPoints('');
-    setPriority('');
+    setTags('');
     setTitle('');
     toggleOverlayDealWithTask();
   };
@@ -120,7 +120,7 @@ function ToDoMain() {
       setTaskDate(task.task_due_date);
       setDescription(task.task_description);
       setPoints(task.points);
-      setPriority('');
+      setTags(task.task_tags);
       setTitle(task.task_name);
       setTaskId(task._id);
     }
@@ -185,7 +185,7 @@ function ToDoMain() {
             title: Title,
             task_due_date: TaskDate,
             points: Points,
-            priority: Priority,
+            task_tags: Tags,
             task_description: Description,
             task_name: Title,
           };
@@ -519,16 +519,16 @@ function ToDoMain() {
             />
           </div>
 
-          {/* Priority
+          {/* Tags */}
           <div className="overlay-item-container">
-            <div className="overlay-text-container">Priority:</div>
+            <div className="overlay-text-container">Tags:</div>
             <input
               type="text"
               className="text-input"
-              value={Priority}
-              onChange={handlePriorityChange}
+              value={Tags}
+              onChange={handleTagsChange}
             />
-          </div> */}
+          </div>
           {/* Description */}
           <div className="overlay-item-container">
             <div className="overlay-text-container">Description:</div>

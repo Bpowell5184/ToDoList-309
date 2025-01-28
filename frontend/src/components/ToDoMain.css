@@ -248,6 +248,7 @@ body {
   background-color: #064123;
   margin-top: 20px;
   cursor: pointer;
+  border-style: solid;
 }
 
 .add-task-button-text {
