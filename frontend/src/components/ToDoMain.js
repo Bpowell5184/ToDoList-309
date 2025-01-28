@@ -386,7 +386,6 @@ function ToDoMain() {
             .filter(
               (task) => isCheckedViewCompletedTasks || !task.task_completed,
             )
-            //.sort((a, b) => new Date(a.task_due_date) - new Date(b.task_due_date)) // Sort by date to immediately see due tasks
             .map((task, index) => (
               <div key={index}>
                 <div
@@ -495,7 +494,7 @@ function ToDoMain() {
           <div className="overlay-item-container">
             <div className="overlay-text-container">Date:</div>
             <input
-              type="date"
+              type="datetime-local"
               className="text-input"
               value={TaskDate}
               onChange={handleTaskDateChange}
