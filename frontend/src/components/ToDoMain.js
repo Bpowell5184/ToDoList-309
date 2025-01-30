@@ -27,7 +27,7 @@ function ToDoMain() {
 
   const [taskDateComparitor, setTaskDateComparitor] = useState('Time?');
 
-  const [tasks, setTasks] = useState([]); // State to manage all tasks
+  const [tasks, setTasks] = useState([]);
 
   //const navigate = useNavigate();
 
@@ -35,10 +35,10 @@ function ToDoMain() {
   const [Title, setTitle] = useState('');
   const [TaskDate, setTaskDate] = useState('');
   const [Points, setPoints] = useState('');
-  const [Tags, setTags] = useState('');
+  const [Tags, setTags] = useState([]);
   const [Description, setDescription] = useState('');
   const [dealWithTaskText, setDealWithTaskText] = useState('');
-  const [data, setData] = useState(null); // Store user data
+  const [data, setData] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
   // Meant to manage which task is being 'hovered'
@@ -173,7 +173,7 @@ function ToDoMain() {
           task_due_date: TaskDate,
           points: Points,
           task_description: Description,
-          task_tags: [],
+          task_tags: Tags,
         });
 
         console.log('Response:', response.data);
@@ -211,7 +211,7 @@ function ToDoMain() {
             task_due_date: TaskDate,
             points: Points,
             task_description: Description,
-            task_tags: [],
+            task_tags: Tags,
           },
         );
 
@@ -412,12 +412,16 @@ function ToDoMain() {
                     {hoveredTaskId === task._id ? '✓' : `+${task.points}`}
                   </div>
                   <div
-                    className="task-name"
-                    onClick={() =>
+                    className="task-name-container">
+                      <div className='task-name'
+                      onClick={() =>
                       toggleOverlayDescription(task.task_description)
-                    }
-                  >
-                    {task.task_name}
+                    }>
+                      {task.task_name}
+                        </div>
+                        <div className='task-tags'>
+                          {task.task_tags}
+                        </div>
                   </div>
                   {/*Changes text to red if overdue*/}
                   <div

@@ -196,15 +196,22 @@ body {
   cursor: pointer;
 }
 
-.task-name {
+
+.task-name-container {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 5%;
+}
+
+.task-name {
   font-size: 2.5vw;
   font-weight: bold;
-  text-align: left;
-  margin-left: 5%;
-  vertical-align: center;
-  justify-content: center;
-  align-items: center;
+}
+
+.task-tags {
+  font-size: 1.5vw;
+  font-weight: lighter;
 }
 
 .task-name:hover {
