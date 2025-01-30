@@ -379,7 +379,7 @@ function ToDoMain() {
           <img
             src={list_view_icon}
             alt="list_view_icon"
-            className="list_view_icon"
+            className="list-view-icon"
           />
         </Link>
       </div>
@@ -542,9 +542,9 @@ function ToDoMain() {
           <button
             className="add-task-button"
             onClick={handleTaskAction}
-            style={{ width: '150px', height: '50px' }}
+            style={{ width: '9vw', height: '9vh' }}
           >
-            <div className="add-task-button-text" style={{ fontSize: '24px' }}>
+            <div className="add-task-button-text" style={{ fontSize: '1.5vw' }}>
               {dealWithTaskText}
             </div>
           </button>
@@ -553,7 +553,7 @@ function ToDoMain() {
 
       {/* Filter Overlay */}
       <Overlay isOpen={isOpenFilter} onClose={toggleOverlayFilter}>
-        <div className="overlay-item-container">
+        {/* <div className="overlay-item-container">
           <div className="overlay-text-container">Date</div>
           <div className="dropdown">
             <span>{taskDateComparitor}</span>
@@ -568,7 +568,7 @@ function ToDoMain() {
             // value={dateComparitor} // Handle value change if needed
             // onChange={handleFilterChange}
           />
-        </div>
+        </div> */}
         <div>
           <label>
             Enable Viewing of Completed Tasks?

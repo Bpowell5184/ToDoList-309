@@ -116,7 +116,7 @@ const Calendar = () => {
 
   return (
     <div className="calendar-container">
-      <header>
+      <div className='header-calendar'>
         <img src={logo} alt="Logo" className="logo" />
         <h2>
           {currentDate.toLocaleString('default', { month: 'long' })}{' '}
@@ -135,7 +135,7 @@ const Calendar = () => {
             className="calendar-view-icon"
           />
         </Link>
-      </header>
+      </div>
 
       <div className="calendar-grid">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (

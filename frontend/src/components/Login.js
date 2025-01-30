@@ -48,7 +48,7 @@ function Login() {
     <div>
       <img src={logo} alt="Logo" className="logo" />
       <h1 className="large-heading">Log In</h1>
-      <hr className="title-divider" />
+      <hr className="title-divider-login" />
 
       <input
         type="text"

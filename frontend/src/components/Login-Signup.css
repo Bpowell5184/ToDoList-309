@@ -1,7 +1,7 @@
 .large-heading {
-  font-size: 72px;
+  font-size: 6vw;
   font-weight: bold;
-  color: #241d1d;
+  color: var(--text-color);
   text-align: center;
   margin: 20px 0;
   padding-bottom: 15px;
@@ -13,38 +13,38 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 128px;
+  width: 8vw;
   height: auto;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
-.title-divider {
+.title-divider-login {
   width: 100%;
-  height: 10px;
+  height: 2vh;
   background-color: #064123;
-  margin: 20px 0;
+  margin: 2vh 0;
 }
 
 .button {
   display: inline-block;
-  width: 140px;
-  height: 65px;
+  width: 10vw;
+  height: 8vh;
   margin-bottom: 10px;
   margin: 10px auto;
   border-radius: 5px;
-  font-size: 22px;
+  font-size: 1.5vw;
 }
 
 .button:hover {
-  background-color: #30704c; /* Darker shade on hover */
+  background-color: #538267; /* Darker shade on hover */
 }
 
 .text-input {
-  width: 300px;
-  padding: 10px;
+  width: 20vw;
+  padding: .9vw;
   margin: 10px auto;
   display: block;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 1vw;
 }
