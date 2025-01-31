@@ -39,7 +39,7 @@
 .day-header,
 .day-cell {
   text-align: center;
-  padding: .2vw;
+  padding: 0.2vw;
   background-color: #f0f0f0;
   border: 1px solid #ddd;
   min-width: 44px;
@@ -47,7 +47,7 @@
 
 .day-cell.past-date {
   text-align: center;
-  padding: .2vw;
+  padding: 0.2vw;
   background-color: #e2c1c1;
   border: 1px solid #ddd;
   min-width: 44px;
