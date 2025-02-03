@@ -1,9 +1,9 @@
 /* Sets dark/light mode based on user preference*/
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark){
   /*body { background: #333; color: white; }*/
 }
 
-:root {
+:root{
   --background-color: white;
   --text-color: black;
   --same-color: black;
@@ -12,7 +12,7 @@
   --task-cont: rgba(231, 214, 116, 0.712);
 }
 
-[data-theme='light'] {
+[data-theme="light"]{
   --background-color: white;
   --text-color: black;
   --same-color: black;
@@ -21,7 +21,7 @@
   --task-cont: rgba(231, 214, 116, 0.712);
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   --background-color: black;
   --text-color: white;
   --same-color: black;
@@ -34,12 +34,10 @@
 body {
   background-color: var(--background-color);
   color: var(--text-color);
-  transition:
-    background-color 0.7s,
-    color 0.7s;
+  transition: background-color 0.7s, color 0.7s;
 }
 
-.data-container {
+.data-container{
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -47,14 +45,14 @@ body {
   padding: 5px 20px;
 }
 
-.userName {
+.userName{
   position: absolute;
   left: 50%;
   transform: translateX(-55%);
   text-align: center;
 }
 
-.dlToggle {
+.dlToggle{
   margin-left: auto;
   transform: translateX(-20%);
 }
@@ -198,6 +196,7 @@ body {
   cursor: pointer;
 }
 
+
 .task-name-container {
   display: flex;
   flex-direction: column;
@@ -241,7 +240,7 @@ body {
   display: flex;
   height: 2vh;
   width: auto;
-  margin-right: 0.8vw;
+  margin-right: .8vw;
   cursor: pointer;
 }
 
@@ -251,7 +250,7 @@ body {
   height: 10vh;
   border-radius: 80px;
   border-color: black;
-  border-width: 0.7vh;
+  border-width: .7vh;
   background-color: #064123;
   margin-top: 1vh;
   cursor: pointer;
