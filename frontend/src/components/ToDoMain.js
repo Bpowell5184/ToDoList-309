@@ -25,8 +25,6 @@ function ToDoMain() {
   const [sortDescPoints, setSortDescPoints] = useState(false);
   const [sortDescTask, setSortDescTask] = useState(false);
 
-  const [taskDateComparitor, setTaskDateComparitor] = useState('Time?');
-
   const [tasks, setTasks] = useState([]);
 
   //const navigate = useNavigate();
@@ -40,19 +38,39 @@ function ToDoMain() {
   const [dealWithTaskText, setDealWithTaskText] = useState('');
   const [data, setData] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [tagsList, setTagsList] = useState([]);
+  const [uniqueTagsList, setuniqueTagsList] = useState([]);
 
   // Meant to manage which task is being 'hovered'
-  const [hoveredTaskId, setHoveredTaskId] = useState(null); 
+  const [hoveredTaskId, setHoveredTaskId] = useState(null);
 
   // Manage Dark/Light Mode
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState('light');
 
   // Handle changes in input fields
   const handleTitleChange = (event) => setTitle(event.target.value);
   const handleTaskDateChange = (event) => setTaskDate(event.target.value);
   const handlePointsChange = (event) => setPoints(event.target.value);
-  const handleTagsChange = (event) => setTags(event.target.value);
   const handleDescriptionChange = (event) => setDescription(event.target.value);
+
+  const addTag = () => {
+    if (Tags.length > 1 && !tagsList.includes(Tags)) {
+      setTagsList([...tagsList, Tags]); // Add tag to list if it's not empty and unique
+      setTags('#'); // Reset input
+    }
+  };
+
+  const handleTagsChange = (event) => {
+    let value = event.target.value;
+
+    value = value.toLowerCase();
+
+    if (!value.startsWith('#')) {
+      value = '#' + value.replace(/^#*/, '');
+    }
+
+    setTags(value);
+  };
 
   // Handle dynamic rendering
   const handlePointsMouseOn = (taskId) => {
@@ -65,11 +83,11 @@ function ToDoMain() {
 
   // Handle Theme Change
   const handleThemeChange = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
+    const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     // set new theme in html
-    document.documentElement.setAttribute("data-theme", newTheme);
-  }
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
 
   // Define method to remove task from frontend and call backend
   const handleCompleteTask = async (taskId) => {
@@ -83,13 +101,14 @@ function ToDoMain() {
       );
       if (response.status === 200) {
         // Update frontend state to remove the task
-        
+
         setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task._id === taskId
-              ? { ...task, task_completed: true } // Update the specific task
-              : task // Leave other tasks unchanged
-          )
+          prevTasks.map(
+            (task) =>
+              task._id === taskId
+                ? { ...task, task_completed: true } // Update the specific task
+                : task, // Leave other tasks unchanged
+          ),
         );
         console.log(`Task with ID ${taskId} marked as complete.`);
       } else {
@@ -108,6 +127,7 @@ function ToDoMain() {
     setDescription('');
     setPoints('');
     setTags('');
+    setTagsList([]);
     setTitle('');
     toggleOverlayDealWithTask();
   };
@@ -173,7 +193,7 @@ function ToDoMain() {
           task_due_date: TaskDate,
           points: Points,
           task_description: Description,
-          task_tags: Tags,
+          task_tags: tagsList,
         });
 
         console.log('Response:', response.data);
@@ -185,7 +205,7 @@ function ToDoMain() {
             title: Title,
             task_due_date: TaskDate,
             points: Points,
-            task_tags: Tags,
+            task_tags: tagsList,
             task_description: Description,
             task_name: Title,
           };
@@ -211,7 +231,7 @@ function ToDoMain() {
             task_due_date: TaskDate,
             points: Points,
             task_description: Description,
-            task_tags: Tags,
+            task_tags: tagsList,
           },
         );
 
@@ -270,6 +290,13 @@ function ToDoMain() {
   const { username, password } = state || {};
 
   useEffect(() => {
+    // Collect all unique tags from tasks
+    const allTags = tasks.flatMap((task) => task.task_tags);
+    const uniqueTags = [...new Set(allTags)];
+    setuniqueTagsList(uniqueTags);
+  }, [tasks]);
+
+  useEffect(() => {
     if (username && password) {
       axios
         .post('http://localhost:8700/getuser', { username, password })
@@ -299,7 +326,7 @@ function ToDoMain() {
           console.log(response.data);
           // Sort tasks by date before setting them so user can see immediately due tasks
           const sortedTasks = (response.data.tasks || []).sort((a, b) => {
-            return new Date(a.task_due_date) - new Date(b.task_due_date); 
+            return new Date(a.task_due_date) - new Date(b.task_due_date);
           });
           setTasks(sortedTasks); // Set sorted tasks
         })
@@ -312,7 +339,6 @@ function ToDoMain() {
         });
     }
   }, [data?._id]);
-  
 
   return (
     <div>
@@ -329,12 +355,10 @@ function ToDoMain() {
             <p>Welcome {data.name}!</p>
           </div>
           <div className="dlToggle">
-            <button
-              onClick = {handleThemeChange}
-              className = "theme-button">
+            <button onClick={handleThemeChange} className="theme-button">
               <div>Dark Mode</div>
-              </button>
-            </div>
+            </button>
+          </div>
         </div>
       ) : (
         <p>No data available.</p>
@@ -411,17 +435,23 @@ function ToDoMain() {
                   >
                     {hoveredTaskId === task._id ? '✓' : `+${task.points}`}
                   </div>
-                  <div
-                    className="task-name-container">
-                      <div className='task-name'
+                  <div className="task-name-container">
+                    <div
+                      className="task-name"
                       onClick={() =>
-                      toggleOverlayDescription(task.task_description)
-                    }>
+                        toggleOverlayDescription(task.task_description)
+                      }
+                    >
                       {task.task_name}
-                        </div>
-                        <div className='task-tags'>
-                          {task.task_tags}
-                        </div>
+                    </div>
+                    <div className="task-tags">
+                      {task.task_tags.map((tag, index) => (
+                        <span key={index} className="tag">
+                          {tag}
+                          {index < task.task_tags.length - 1 && ' '}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                   {/*Changes text to red if overdue*/}
                   <div
@@ -532,6 +562,33 @@ function ToDoMain() {
               value={Tags}
               onChange={handleTagsChange}
             />
+            <button
+              className="add-task-button"
+              onClick={addTag}
+              style={{ width: '5vw', height: '5vh' }}
+            >
+              <div
+                className="add-task-button-text"
+                style={{ fontSize: '.75vw' }}
+              >
+                Add Tag
+              </div>
+            </button>
+          </div>
+          <div>
+            <span style={{ fontSize: '1.2vw', fontWeight: 'bold' }}>
+              Current Tag List:
+            </span>
+            <div>
+              {tagsList.map((tag, index) => (
+                <span
+                  key={index}
+                  style={{ marginRight: '8px', fontSize: '1vw' }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
           {/* Description */}
           <div className="overlay-item-container">
@@ -557,22 +614,12 @@ function ToDoMain() {
 
       {/* Filter Overlay */}
       <Overlay isOpen={isOpenFilter} onClose={toggleOverlayFilter}>
-        {/* <div className="overlay-item-container">
-          <div className="overlay-text-container">Date</div>
-          <div className="dropdown">
-            <span>{taskDateComparitor}</span>
-            <div className="dropdown-content">
-              <p onClick={() => setTaskDateComparitor('Before')}>Before</p>
-              <p onClick={() => setTaskDateComparitor('After')}>After</p>
-            </div>
-          </div>
-          <input
-            type="text"
-            className="text-input"
-            // value={dateComparitor} // Handle value change if needed
-            // onChange={handleFilterChange}
-          />
-        </div> */}
+        <div>Include Only These Tags:</div>
+        <div>
+          {uniqueTagsList.map((tag, index) => (
+            <button key={index}>{tag}</button>
+          ))}
+        </div>
         <div>
           <label>
             Enable Viewing of Completed Tasks?
@@ -583,15 +630,6 @@ function ToDoMain() {
             />
           </label>
         </div>
-        {/* auto sorts by date at beggining... kinda not needed now, and can already sort by date */}
-        {/* <label>
-          Prioritize Overdue?
-          <input
-            type="checkbox"
-            //checked={isChecked}
-            //onChange={handleCheckboxChange}
-          />
-        </label> */}
       </Overlay>
 
       {/* Logout Button */}
