@@ -22,7 +22,7 @@ function Login() {
   const handleLogin = () => {
     // Send POST request to login
     axios
-      .post('http://localhost:8700/getuser', {
+      .post('http://todo.dylanwatanabe.com:8700/getuser', {
         username: username,
         password: password,
       })
