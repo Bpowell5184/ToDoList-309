@@ -9,6 +9,7 @@ import options from '.././assets/options.png';
 import Overlay from './';
 import axios from 'axios';
 import Toggle from 'react-toggle';
+import 'react-toggle/style.css'
 import './ToDoMain.css';
 
 function ToDoMain() {
@@ -46,9 +47,9 @@ function ToDoMain() {
   const [hoveredTaskId, setHoveredTaskId] = useState(null);
 
   // Manage Dark/Light Mode
-  const [theme, setTheme] = useState("light");
-
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
 
   // Handle changes in input fields
   const handleTitleChange = (event) => setTitle(event.target.value);
@@ -86,11 +87,18 @@ function ToDoMain() {
 
   // Handle Theme Change
   const handleThemeChange = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    // set new theme in html
-    document.documentElement.setAttribute('data-theme', newTheme);
+    setIsDark((prev) => {
+      const newTheme = !prev
+      document.documentElement.setAttribute("data-theme", newTheme ? "dark" : "light");
+      localStorage.setItem("theme", newTheme ? "dark" : "light");
+      return newTheme;
+    })
   };
+
+  // Keep user preference of dark/light mode
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  }, [isDark]);
 
   // Define method to remove task from frontend and call backend
   const handleCompleteTask = async (taskId) => {
@@ -364,15 +372,13 @@ function ToDoMain() {
             <p>Welcome {data.name}!</p>
           </div>
           <div className="dlToggle">
-            {/*<button
-              onClick = {handleThemeChange}
-              className = "theme-button">
-              <div>Dark Mode</div>
-              </button>*/}
               <Toggle
                 checked={isDark}
-                onChange={({ target }) => setIsDark(target.checked)}
-                icons={{ checked: "🌙", unchecked: "🔆" }}
+                onChange={handleThemeChange}
+                icons={{ 
+                  checked: <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: "4px" }}>🌙</span>,
+                  unchecked: <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: "4px" }}>☀️</span>,
+              }}
                 aria-label="Dark mode toggle"
               />
             </div>
