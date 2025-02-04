@@ -8,6 +8,7 @@ import trash_icon from '.././assets/trash_icon.png';
 import options from '.././assets/options.png';
 import Overlay from './';
 import axios from 'axios';
+import Toggle from 'react-toggle';
 import './ToDoMain.css';
 
 function ToDoMain() {
@@ -46,6 +47,8 @@ function ToDoMain() {
 
   // Manage Dark/Light Mode
   const [theme, setTheme] = useState("light");
+
+  const [isDark, setIsDark] = useState(true);
 
   // Handle changes in input fields
   const handleTitleChange = (event) => setTitle(event.target.value);
@@ -329,11 +332,17 @@ function ToDoMain() {
             <p>Welcome {data.name}!</p>
           </div>
           <div className="dlToggle">
-            <button
+            {/*<button
               onClick = {handleThemeChange}
               className = "theme-button">
               <div>Dark Mode</div>
-              </button>
+              </button>*/}
+              <Toggle
+                checked={isDark}
+                onChange={({ target }) => setIsDark(target.checked)}
+                icons={{ checked: "🌙", unchecked: "🔆" }}
+                aria-label="Dark mode toggle"
+              />
             </div>
         </div>
       ) : (
