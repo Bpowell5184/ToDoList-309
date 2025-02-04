@@ -26,7 +26,10 @@ const Calendar = () => {
   useEffect(() => {
     if (username && password) {
       axios
-        .post('http://localhost:8700/getuser', { username, password })
+        .post('http://todo.dylanwatanabe.com:8700/getuser', {
+          username,
+          password,
+        })
         .then((response) => {
           if (response.data.message === 'User not found') {
             setData(null);
@@ -48,7 +51,7 @@ const Calendar = () => {
   useEffect(() => {
     if (data?._id) {
       axios
-        .get(`http://localhost:8700/tasks/${data._id}`)
+        .get(`http://todo.dylanwatanabe.com:8700/tasks/${data._id}`)
         .then((response) => {
           const fetchedTasks = response.data.tasks || [];
 
