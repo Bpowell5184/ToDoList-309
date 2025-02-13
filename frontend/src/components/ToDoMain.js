@@ -58,30 +58,22 @@ function ToDoMain() {
   // handles filtering by tag
   const changeTagConstraint = (toggledTag, activityState) => {
     setSortTagList((prevSortTagList) => {
-      let updatedTagList;
-  
-      if (!activityState) {
-        // Remove the tag
-        updatedTagList = prevSortTagList.filter((tag) => tag !== toggledTag);
-      } else {
-        // Add the tag
-        updatedTagList = [...prevSortTagList, toggledTag];
-      }
-      // Ensure filtering is based on the original full task list
+      const updatedTagList = activityState
+        ? [...prevSortTagList, toggledTag] // Add tag
+        : prevSortTagList.filter((tag) => tag !== toggledTag); // Remove tag
+
       setTasks((prevTasks) =>
         prevTasks.map((task) => ({
           ...task,
           isVisible:
             updatedTagList.length === 0 ||
-            task.task_tags.some((tag) => updatedTagList.includes(tag)),
-        }))
+            task.task_tags.some((tag) => updatedTagList.includes(tag)), // Check if any tag matches
+        })),
       );
-  
+
       return updatedTagList;
     });
   };
-  
-  
 
   const addTag = () => {
     if (Tags.length > 1 && !tagsList.includes(Tags)) {
@@ -245,6 +237,7 @@ function ToDoMain() {
             task_tags: tagsList,
             task_description: Description,
             task_name: Title,
+            isVisible: true,
           };
 
           setTasks((prevTasks) => [...prevTasks, newTask]);
@@ -369,13 +362,13 @@ function ToDoMain() {
             return new Date(a.task_due_date) - new Date(b.task_due_date);
           });
 
-        // Visibility is used for tag filtering
-        const tasksWithVisibility = sortedTasks.map((task) => ({
-          ...task,
-          isVisible: true,
-        }));
+          // Visibility is used for tag filtering
+          const tasksWithVisibility = sortedTasks.map((task) => ({
+            ...task,
+            isVisible: true,
+          }));
 
-        setTasks(tasksWithVisibility); 
+          setTasks(tasksWithVisibility);
         })
         .catch((error) => {
           // Handle errors gracefully
@@ -462,7 +455,9 @@ function ToDoMain() {
           {tasks.length > 0 ? (
             tasks
               .filter(
-                (task) => isCheckedViewCompletedTasks || !task.task_completed,
+                (task) =>
+                  (isCheckedViewCompletedTasks || !task.task_completed) &&
+                  task.isVisible,
               )
               .map((task, index) => (
                 <motion.div
@@ -678,7 +673,12 @@ function ToDoMain() {
 
       {/* Filter Overlay */}
       <Overlay isOpen={isOpenFilter} onClose={toggleOverlayFilter}>
-        <div>Include Only These Tags:</div>
+        <div>
+          {uniqueTagsList.length > 0
+            ? 'Include Only These Tags:'
+            : 'No tags made yet. Add some tags to tasks to access the filter by tag feature.'}
+        </div>
+
         <div>
           {uniqueTagsList.map((tag, index) => (
             <button
@@ -686,13 +686,9 @@ function ToDoMain() {
               onClick={() =>
                 changeTagConstraint(tag, !sortTagList.includes(tag))
               }
-              className={
-                sortTagList.includes(tag)
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-300 text-black'
-              }
+              className={`tag-button ${sortTagList.includes(tag) ? 'selected' : 'unselected'}`}
             >
-              {sortTagList.includes(tag) ? `✔ ${tag}` : tag}{' '}
+              {tag}
             </button>
           ))}
         </div>
