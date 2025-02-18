@@ -270,7 +270,7 @@ body {
 }
 
 .overlay-text-container {
-  color: black;
+  color: --var(text-color);
   display: flex;
   justify-content: center;
   align-items: center;

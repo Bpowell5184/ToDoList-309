@@ -1,3 +1,5 @@
+@import url('./Global.css');
+
 .overlay__background {
   background-color: rgba(0, 0, 0, 0.5);
   width: 100vw;
@@ -10,7 +12,9 @@
 }
 
 .overlay__container {
-  background-color: white;
+  /*background-color: white;*/
+  background-color: var(--background-color);
+  color: var(--text-color);
   position: fixed;
   top: 0;
   right: 0;
