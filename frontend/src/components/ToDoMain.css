@@ -1,35 +1,9 @@
+@import url('./Global.css');
+
 /* Sets dark/light mode based on user preference*/
-@media (prefers-color-scheme: dark) {
+/*@media (prefers-color-scheme: dark) {
   /*body { background: #333; color: white; }*/
-}
-
-:root {
-  --background-color: white;
-  --text-color: black;
-  --same-color: black;
-  --sort-container: rgb(149, 149, 168);
-  --points-cont: rgb(180, 212, 190);
-  --task-cont: rgba(231, 214, 116, 0.712);
-}
-
-[data-theme='light'] {
-  --background-color: white;
-  --text-color: black;
-  --same-color: black;
-  --sort-container: rgb(149, 149, 168);
-  --points-cont: rgb(180, 212, 190);
-  --task-cont: rgba(231, 214, 116, 0.712);
-}
-
-[data-theme='dark'] {
-  --background-color: black;
-  --text-color: white;
-  --same-color: black;
-  --sort-container: #b0aaa5;
-  --points-cont: #419416;
-  /*--task-cont: #686e05;*/
-  --task-cont: rgba(231, 214, 116, 0.712);
-}
+/*}*/
 
 body {
   background-color: var(--background-color);
@@ -296,7 +270,7 @@ body {
 }
 
 .overlay-text-container {
-  color: black;
+  color: --var(text-color);
   display: flex;
   justify-content: center;
   align-items: center;
