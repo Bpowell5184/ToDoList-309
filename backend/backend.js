@@ -149,6 +149,10 @@ app.post('/getuser', async (req, res) => {
             return res.status(401).send({ message: 'Invalid password' });
         }
         const token = generateAccessToken(username);
+        if (!token) {
+            return res.status(500).json({ message: 'Failed to generate token' });
+        }
+        console.log('token generated: ', token);
         res.status(200).json({token, user});
     }
   } catch (error) {
