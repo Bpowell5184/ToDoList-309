@@ -188,7 +188,7 @@ function ToDoMain() {
     if (dealWithTaskText === 'Add Task') {
       try {
         const response = await axios.post(
-          'http://todo.dylanwatanabe.com:8700/tasks',
+          'http://localhost:8700/tasks',
           {
             userid: data?._id,
             task_name: Title,
@@ -228,7 +228,7 @@ function ToDoMain() {
     } else if (dealWithTaskText === 'Edit Task') {
       try {
         const response = await axios.put(
-          `http://todo.dylanwatanabe.com:8700/tasks/${TaskId}`,
+          `http://localhost:8700/tasks/${TaskId}`,
           {
             task_name: Title,
             task_due_date: TaskDate,
@@ -264,7 +264,7 @@ function ToDoMain() {
   async function handleDeleteTask(task_id) {
     try {
       const response = await axios.delete(
-        `http://todo.dylanwatanabe.com:8700/tasks/${task_id}`,
+        `http://localhost:8700/tasks/${task_id}`,
       );
 
       console.log('Response:', response.data);
@@ -302,7 +302,7 @@ function ToDoMain() {
   useEffect(() => {
     if (username && password) {
       axios
-        .post('http://todo.dylanwatanabe.com:8700/getuser', {
+        .post('http://localhost:8700/getuser', {
           username,
           password,
         })
@@ -327,7 +327,7 @@ function ToDoMain() {
   useEffect(() => {
     if (data?._id) {
       axios
-        .get(`http://todo.dylanwatanabe.com:8700/tasks/${data._id}`)
+        .get(`http://localhost:8700/tasks/${data._id}`)
         .then((response) => {
           console.log(response.data);
           // Sort tasks by date before setting them so user can see immediately due tasks

@@ -26,7 +26,7 @@ function Signup() {
   const handleSignup = () => {
     // Send POST request to create the user
     axios
-      .post('http://todo.dylanwatanabe.com:8700/adduser', {
+      .post('http://localhost:8700/adduser', {
         username: username,
         name: name,
         password: password,
