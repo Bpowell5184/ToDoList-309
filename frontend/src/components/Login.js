@@ -27,8 +27,8 @@ function Login() {
         password: password,
       })
       .then((response) => {
-        console.log('Response:', response.data);
-        if (response.data.message.includes('User retrieved successfully')) {
+        if(response.data.token){
+          localStorage.setItem('token', response.data.token);  
           setSuccessMessage('Success!');
           setErrorMessage(null);
           navigate('/todomain', { state: { username, password } });
@@ -43,6 +43,10 @@ function Login() {
         setErrorMessage('An error occurred while logging in.');
       });
   };
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Remove JWT
+    navigate('/login');
+}   ;
 
   return (
     <div>

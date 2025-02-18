@@ -33,7 +33,8 @@ function Signup() {
       })
       .then((response) => {
         console.log('Response:', response.data);
-        if (response.data.message === 'User added successfully') {
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
           setSuccessMessage('Account created successfully!');
           setErrorMessage(null);
         } else {

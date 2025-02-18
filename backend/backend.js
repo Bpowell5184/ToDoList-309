@@ -6,6 +6,9 @@ import userServices from './userservices.js';
 import mongoose from 'mongoose';
 import User from './User.js';
 import Task from './Task.js';
+import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
+dotenv.config();
 const app = express();
 const port = 8700;
 
@@ -15,6 +18,24 @@ app.use(cors());
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Not sure any of this works as it was from before updates to userservices and taskservices:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function generateAccessToken(username) {
+  return jwt.sign({ username: username }, process.env.TOKEN_SECRET, {
+    expiresIn: "600s",
+  });
+}
+const authenticateToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) return res.status(403).json({ message: 'No token provided' });
+
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(401).json({ message: 'Invalid token' });
+    req.user = user;
+    next();
+  });
+};
+
 app.get('/', async (req, res) => {
   res.status(200).send('Welcome to the Backend');
 });
@@ -99,10 +120,9 @@ app.post('/adduser', async (req, res) => {
 
   try {
     const savedUser = await userServices.addUser(user);
-    res.status(201).send({
-      message: 'User added successfully',
-      user: savedUser,
-    });
+    const token = generateAccessToken(username);
+    console.log("JWT: ", token);
+    res.status(201).send({token, user: savedUser});
   } catch (error) {
     console.error('Error adding user:', error);
     res
@@ -128,7 +148,8 @@ app.post('/getuser', async (req, res) => {
         if(!isValid){
             return res.status(401).send({ message: 'Invalid password' });
         }
-        res.status(200).send({ message: 'User retrieved successfully', user });
+        const token = generateAccessToken(username);
+        res.status(200).json({token, user});
     }
   } catch (error) {
     console.error('Error retrieving user:', error);
@@ -181,7 +202,7 @@ app.delete('/deleteuser/:id', async (req, res) => {
 });
 
 /// Task endpoints
-app.post('/tasks', async (req, res) => {
+app.post('/tasks', authenticateToken, async (req, res) => {
   const {
     userid,
     task_name,
@@ -330,7 +351,100 @@ app.put('/tasks/:taskid/incomplete', async (req, res) => {
       .send({ message: 'An error occurred while updating the task status.' });
   }
 });
+// Add tag to a task
+app.put('/tasks/:taskid/tags', async (req, res) => {
+  const { taskid } = req.params;
+  const { tag } = req.body;
 
+  try {
+    const updatedTask = await taskServices.addTag(taskid, tag);
+    if (!updatedTask) {
+      return res.status(404).send({ message: 'Task not found.' });
+    }
+    res.status(200).send({
+      message: 'Tag added successfully.',
+      task: updatedTask,
+    });
+  } catch (error) {
+    console.error('Error adding tag:', error);
+    res.status(500).send({ message: 'An error occurred while adding the tag.' });
+  }
+});
+
+// Delete tag from a task
+app.delete('/tasks/:taskid/tags', async (req, res) => {
+  const { taskid } = req.params;
+  const { tag } = req.body;
+
+  try {
+    const updatedTask = await taskServices.deleteTag(taskid, tag);
+    if (!updatedTask) {
+      return res.status(404).send({ message: 'Task not found.' });
+    }
+    res.status(200).send({
+      message: 'Tag deleted successfully.',
+      task: updatedTask,
+    });
+  } catch (error) {
+    console.error('Error deleting tag:', error);
+    res.status(500).send({ message: 'An error occurred while deleting the tag.' });
+  }
+});
+
+// Clear all tags from a task
+app.put('/tasks/:taskid/cleartags', async (req, res) => {
+  const { taskid } = req.params;
+
+  try {
+    const updatedTask = await taskServices.clearTags(taskid);
+    if (!updatedTask) {
+      return res.status(404).send({ message: 'Task not found.' });
+    }
+    res.status(200).send({
+      message: 'All tags cleared successfully.',
+      task: updatedTask,
+    });
+  } catch (error) {
+    console.error('Error clearing tags:', error);
+    res.status(500).send({ message: 'An error occurred while clearing the tags.' });
+  }
+});
+
+// Filter tasks by tags
+app.get('/tasks', async (req, res) => {
+  const { tags } = req.query;
+
+  try {
+    const filteredTasks = await taskServices.filterTasksByTags(tags);
+    res.status(200).send({
+      message: 'Tasks retrieved successfully.',
+      tasks: filteredTasks,
+    });
+  } catch (error) {
+    console.error('Error filtering tasks by tags:', error);
+    res.status(500).send({ message: 'An error occurred while filtering tasks by tags.' });
+  }
+});
+////////////////////
+////////AUTH STUFF
+///////////////////
+function authenticateUser(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    console.log("No token received");
+    return res.status(401).end();
+  } else {
+      try {
+          const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+          console.log("Decoded token: ", decoded);
+          next();
+      } catch (error) {
+        console.log(error);
+        return res.status(401).end();
+       }
+  }
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Tests for current implementation:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
