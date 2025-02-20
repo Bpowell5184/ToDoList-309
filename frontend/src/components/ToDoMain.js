@@ -15,7 +15,7 @@ import './ToDoMain.css';
 import './Overlay.css';
 
 function ToDoMain() {
-  const [Points_Day] = useState('0');
+  const [Points_Total, setPointsTotal] = useState('1');
 
   const [currentDescription, setIsCurrentDescription] = useState('');
 
@@ -36,11 +36,12 @@ function ToDoMain() {
   const [TaskId, setTaskId] = useState('');
   const [Title, setTitle] = useState('');
   const [TaskDate, setTaskDate] = useState('');
-  const [Points, setPoints] = useState('');
+  const [Points, setPoints] = useState(1);
   const [Tags, setTags] = useState([]);
   const [Description, setDescription] = useState('');
   const [dealWithTaskText, setDealWithTaskText] = useState('');
   const [data, setData] = useState(null);
+  const [addTaskOverlayErrorMessage, setAddTaskOverlayErrorMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null);
   const [tagsList, setTagsList] = useState([]);
   const [uniqueTagsList, setuniqueTagsList] = useState([]);
@@ -81,6 +82,10 @@ function ToDoMain() {
   };
 
   const addTag = () => {
+    if (Tags.length > 15) {
+      setAddTaskOverlayErrorMessage('Tags cannot have length greater than 15');
+      return;
+    }
     if (Tags.length > 1 && !tagsList.includes(Tags)) {
       setTagsList([...tagsList, Tags]); // Add tag to list if it's not empty and unique
       setTags('#'); // Reset input
@@ -159,10 +164,11 @@ function ToDoMain() {
   const resetAddTaskState = () => {
     setTaskDate('');
     setDescription('');
-    setPoints('');
+    setPoints(1);
     setTags('');
     setTagsList([]);
     setTitle('');
+    setAddTaskOverlayErrorMessage(null)
     toggleOverlayDealWithTask();
   };
 
@@ -223,6 +229,29 @@ function ToDoMain() {
 
   // Deal with task change, in edit or addition
   async function handleTaskAction() {
+    if (Title.length === 0) {
+      setAddTaskOverlayErrorMessage('Enter a task name');
+      return;
+    }
+    if (Title.length >= 50) {
+      setAddTaskOverlayErrorMessage('Title name too long');
+      return;
+    }
+    if (!TaskDate) {
+      setAddTaskOverlayErrorMessage('Please input a date');
+      return;
+     }
+    if (Points >= 50 || Points <= 0) {
+      setAddTaskOverlayErrorMessage('Points can not be negative or zero; Points for one task cannot be greater than 50');
+      return;
+    }
+    if (!Points) {
+     setPoints(1);
+    }
+    if (!Description) {
+      setAddTaskOverlayErrorMessage('Please add a description')
+      return;
+    }
     if (dealWithTaskText === 'Add Task') {
       try {
         const response = await axios.post(
@@ -260,7 +289,8 @@ function ToDoMain() {
         }
       } catch (error) {
         console.error('Error adding task to user:', error);
-        setErrorMessage('An error occurred while adding task.');
+        setAddTaskOverlayErrorMessage('An error occurred while adding task.');
+        return;
       }
 
       resetAddTaskState();
@@ -283,8 +313,10 @@ function ToDoMain() {
           setErrorMessage(null);
           setTasks((prevTasks) =>
             prevTasks.map((task) =>
-              task._id === TaskId ? response.data.task : task,
-            ),
+              task._id === TaskId
+                ? { ...task, ...response.data.task } // Merge old task properties with updated task
+                : task
+            )
           );
         } else {
           setErrorMessage(
@@ -336,6 +368,14 @@ function ToDoMain() {
     const allTags = tasks.flatMap((task) => task.task_tags);
     const uniqueTags = [...new Set(allTags)];
     setuniqueTagsList(uniqueTags);
+  }, [tasks]);
+
+  useEffect(() => {
+    // Calculate the total points from completed tasks
+    const totalPoints = tasks
+      .filter(task => task.task_completed) // Filter only completed tasks
+      .reduce((sum, task) => sum + task.points, 0); // Sum up their points
+    setPointsTotal(totalPoints);
   }, [tasks]);
 
   useEffect(() => {
@@ -396,7 +436,7 @@ function ToDoMain() {
     <div>
       <img src={logo} alt="Logo" className="logo" />
       <div className="points_container">
-        <div className="points_text">Points: {Points_Day}</div>
+        <div className="points_text">Points: {Points_Total}</div>
       </div>
       <h1 className="large-heading">To-Do</h1>
 
@@ -677,6 +717,7 @@ function ToDoMain() {
               onChange={handleDescriptionChange}
             />
           </div>
+          {addTaskOverlayErrorMessage && <div className="error-message">{addTaskOverlayErrorMessage}</div>}
           <button
             className="add-task-button"
             onClick={handleTaskAction}

@@ -20,29 +20,40 @@ function Login() {
   };
 
   const handleLogin = () => {
-    // Send POST request to login
+    if (!username || !password) {
+      setErrorMessage('Please enter a username and password.');
+      return;
+    }
+  
     axios
-      .post('http://todo.dylanwatanabe.com:8700/getuser', {
-        username: username,
-        password: password,
-      })
+      .post('http://todo.dylanwatanabe.com:8700/getuser', { username, password })
       .then((response) => {
         console.log('Response:', response.data);
-        if (response.data.message.includes('User retrieved successfully')) {
-          setSuccessMessage('Success!');
-          setErrorMessage(null);
-          navigate('/todomain', { state: { username, password } });
-        } else {
-          setSuccessMessage(null);
-          setErrorMessage(response.data.message || 'An error occurred.');
-        }
+        setSuccessMessage('Success!');
+        setErrorMessage(null);
+        navigate('/todomain', { state: { username, password } });
       })
       .catch((error) => {
         console.error('Error logging in user:', error);
+  
+        if (error.response) {
+          if (error.response.status === 404) {
+            setErrorMessage('Username not found');
+          } else if (error.response.status === 401) {
+            setErrorMessage('Password not valid');
+          } else {
+            setErrorMessage('An error occurred. Please try again.');
+          }
+        } else if (error.request) {
+          setErrorMessage('No response from server. Please check your connection.');
+        } else {
+          setErrorMessage('Request failed. Please try again.');
+        }
+  
         setSuccessMessage(null);
-        setErrorMessage('An error occurred while logging in.');
       });
   };
+  
 
   return (
     <div>
