@@ -94,7 +94,8 @@ function ToDoMain() {
     setHoveredTaskId(null);
     try {
       const response = await axios.put(
-        `http://todo.dylanwatanabe.com:8700/tasks/${taskId}`,
+        `http://localhost:8700/tasks/${taskId}`,
+
         {
           task_completed: true,
         },
@@ -307,9 +308,10 @@ function ToDoMain() {
           password,
         })
         .then((response) => {
-          if (response.data.message === 'User not found') {
-            setData(null);
-            setErrorMessage('User not found');
+          if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            setData(response.data.user); 
+            setErrorMessage(null);
           } else if (response.data.message.includes('error')) {
             setData(null);
             setErrorMessage('Server-side error');

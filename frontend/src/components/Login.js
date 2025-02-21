@@ -31,7 +31,7 @@ function Login() {
           localStorage.setItem('token', response.data.token);  
           setSuccessMessage('Success!');
           setErrorMessage(null);
-          navigate('/todomain', { state: { username, password } });
+          navigate('/todomain', { state: { username, password, token: response.data.token } });
         } else {
           setSuccessMessage(null);
           setErrorMessage(response.data.message || 'An error occurred.');

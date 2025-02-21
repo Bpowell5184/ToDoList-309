@@ -206,7 +206,7 @@ app.delete('/deleteuser/:id', async (req, res) => {
 });
 
 /// Task endpoints
-app.post('/tasks', authenticateToken, async (req, res) => {
+app.post('/tasks', async (req, res) => {
   const {
     userid,
     task_name,
