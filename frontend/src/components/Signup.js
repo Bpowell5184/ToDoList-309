@@ -24,7 +24,27 @@ function Signup() {
   };
 
   const handleSignup = () => {
-    // Send POST request to create the user
+
+    if (!username || !password || !name) {
+      setErrorMessage('Please enter a username and password and name.');
+      return;
+    }
+    if (username.length <= 4) {
+      setErrorMessage('Username must be 5 or more characters.')
+      return;
+    }
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    const upperCaseRegex = /[A-Z]/;
+    const lowerCaseRegex = /[a-z]/;
+    if (
+      password.length <= 5 ||
+      !specialCharRegex.test(password) ||
+      !upperCaseRegex.test(password) ||
+      !lowerCaseRegex.test(password)
+    ) {
+      setErrorMessage('Password must be at least 6 characters long and include an uppercase letter, a lowercase letter, and a special character.');
+      return;
+    }
     axios
       .post('http://localhost:8700/adduser', {
         username: username,
@@ -33,6 +53,7 @@ function Signup() {
       })
       .then((response) => {
         console.log('Response:', response.data);
+
         if (response.data.token) {
           localStorage.setItem('token', response.data.token);
           setSuccessMessage('Account created successfully!');
@@ -44,8 +65,17 @@ function Signup() {
       })
       .catch((error) => {
         console.error('Error creating user:', error);
-        setSuccessMessage(null);
-        setErrorMessage('An error occurred while creating the user.');
+        if (error.response) {
+          if (error.response.status === 500) {
+            setErrorMessage('Username Already taken');
+          } else {
+            setErrorMessage('An error occurred. Please try again.');
+          }
+        } else if (error.request) {
+          setErrorMessage('No response from server. Please check your connection.');
+        } else {
+          setErrorMessage('Request failed. Please try again.');
+        }
       });
   };
 

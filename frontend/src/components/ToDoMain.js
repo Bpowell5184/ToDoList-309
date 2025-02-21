@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link /*useNavigate*/ } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import logo from '.././assets/logo.png';
 import sort_carrot from '.././assets/sort_carrot.png';
 import filter_icon from '.././assets/filter_icon.png';
@@ -8,10 +9,13 @@ import trash_icon from '.././assets/trash_icon.png';
 import options from '.././assets/options.png';
 import Overlay from './';
 import axios from 'axios';
+import Toggle from 'react-toggle';
+import 'react-toggle/style.css'
 import './ToDoMain.css';
+import './Overlay.css';
 
 function ToDoMain() {
-  const [Points_Day] = useState('0');
+  const [Points_Total, setPointsTotal] = useState('1');
 
   const [currentDescription, setIsCurrentDescription] = useState('');
 
@@ -32,20 +36,24 @@ function ToDoMain() {
   const [TaskId, setTaskId] = useState('');
   const [Title, setTitle] = useState('');
   const [TaskDate, setTaskDate] = useState('');
-  const [Points, setPoints] = useState('');
+  const [Points, setPoints] = useState(1);
   const [Tags, setTags] = useState([]);
   const [Description, setDescription] = useState('');
   const [dealWithTaskText, setDealWithTaskText] = useState('');
   const [data, setData] = useState(null);
+  const [addTaskOverlayErrorMessage, setAddTaskOverlayErrorMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null);
   const [tagsList, setTagsList] = useState([]);
   const [uniqueTagsList, setuniqueTagsList] = useState([]);
+  const [sortTagList, setSortTagList] = useState([]);
 
   // Meant to manage which task is being 'hovered'
   const [hoveredTaskId, setHoveredTaskId] = useState(null);
 
   // Manage Dark/Light Mode
-  const [theme, setTheme] = useState('light');
+  const [isDark, setIsDark] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
 
   // Handle changes in input fields
   const handleTitleChange = (event) => setTitle(event.target.value);
@@ -53,7 +61,31 @@ function ToDoMain() {
   const handlePointsChange = (event) => setPoints(event.target.value);
   const handleDescriptionChange = (event) => setDescription(event.target.value);
 
+  // handles filtering by tag
+  const changeTagConstraint = (toggledTag, activityState) => {
+    setSortTagList((prevSortTagList) => {
+      const updatedTagList = activityState
+        ? [...prevSortTagList, toggledTag] // Add tag
+        : prevSortTagList.filter((tag) => tag !== toggledTag); // Remove tag
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => ({
+          ...task,
+          isVisible:
+            updatedTagList.length === 0 ||
+            task.task_tags.some((tag) => updatedTagList.includes(tag)), // Check if any tag matches
+        })),
+      );
+
+      return updatedTagList;
+    });
+  };
+
   const addTag = () => {
+    if (Tags.length > 15) {
+      setAddTaskOverlayErrorMessage('Tags cannot have length greater than 15');
+      return;
+    }
     if (Tags.length > 1 && !tagsList.includes(Tags)) {
       setTagsList([...tagsList, Tags]); // Add tag to list if it's not empty and unique
       setTags('#'); // Reset input
@@ -83,11 +115,18 @@ function ToDoMain() {
 
   // Handle Theme Change
   const handleThemeChange = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    // set new theme in html
-    document.documentElement.setAttribute('data-theme', newTheme);
+    setIsDark((prev) => {
+      const newTheme = !prev
+      document.documentElement.setAttribute("data-theme", newTheme ? "dark" : "light");
+      localStorage.setItem("theme", newTheme ? "dark" : "light");
+      return newTheme;
+    })
   };
+
+  // Keep user preference of dark/light mode
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  }, [isDark]);
 
   // Define method to remove task from frontend and call backend
   const handleCompleteTask = async (taskId) => {
@@ -126,10 +165,11 @@ function ToDoMain() {
   const resetAddTaskState = () => {
     setTaskDate('');
     setDescription('');
-    setPoints('');
+    setPoints(1);
     setTags('');
     setTagsList([]);
     setTitle('');
+    setAddTaskOverlayErrorMessage(null)
     toggleOverlayDealWithTask();
   };
 
@@ -141,9 +181,13 @@ function ToDoMain() {
       setTaskDate(task.task_due_date);
       setDescription(task.task_description);
       setPoints(task.points);
-      setTags(task.task_tags);
+      setTagsList(task.task_tags);
       setTitle(task.task_name);
       setTaskId(task._id);
+    }
+
+    if (option === 'Close') {
+      resetAddTaskState();
     }
   };
   const toggleOverlayFilter = () => setIsOpenFilter(!isOpenFilter);
@@ -186,6 +230,29 @@ function ToDoMain() {
 
   // Deal with task change, in edit or addition
   async function handleTaskAction() {
+    if (Title.length === 0) {
+      setAddTaskOverlayErrorMessage('Enter a task name');
+      return;
+    }
+    if (Title.length >= 50) {
+      setAddTaskOverlayErrorMessage('Title name too long');
+      return;
+    }
+    if (!TaskDate) {
+      setAddTaskOverlayErrorMessage('Please input a date');
+      return;
+     }
+    if (Points >= 50 || Points <= 0) {
+      setAddTaskOverlayErrorMessage('Points can not be negative or zero; Points for one task cannot be greater than 50');
+      return;
+    }
+    if (!Points) {
+     setPoints(1);
+    }
+    if (!Description) {
+      setAddTaskOverlayErrorMessage('Please add a description')
+      return;
+    }
     if (dealWithTaskText === 'Add Task') {
       try {
         const response = await axios.post(
@@ -212,6 +279,7 @@ function ToDoMain() {
             task_tags: tagsList,
             task_description: Description,
             task_name: Title,
+            isVisible: true,
           };
 
           setTasks((prevTasks) => [...prevTasks, newTask]);
@@ -222,7 +290,8 @@ function ToDoMain() {
         }
       } catch (error) {
         console.error('Error adding task to user:', error);
-        setErrorMessage('An error occurred while adding task.');
+        setAddTaskOverlayErrorMessage('An error occurred while adding task.');
+        return;
       }
 
       resetAddTaskState();
@@ -245,8 +314,10 @@ function ToDoMain() {
           setErrorMessage(null);
           setTasks((prevTasks) =>
             prevTasks.map((task) =>
-              task._id === TaskId ? response.data.task : task,
-            ),
+              task._id === TaskId
+                ? { ...task, ...response.data.task } // Merge old task properties with updated task
+                : task
+            )
           );
         } else {
           setErrorMessage(
@@ -301,6 +372,14 @@ function ToDoMain() {
   }, [tasks]);
 
   useEffect(() => {
+    // Calculate the total points from completed tasks
+    const totalPoints = tasks
+      .filter(task => task.task_completed) // Filter only completed tasks
+      .reduce((sum, task) => sum + task.points, 0); // Sum up their points
+    setPointsTotal(totalPoints);
+  }, [tasks]);
+
+  useEffect(() => {
     if (username && password) {
       axios
         .post('http://localhost:8700/getuser', {
@@ -336,7 +415,14 @@ function ToDoMain() {
           const sortedTasks = (response.data.tasks || []).sort((a, b) => {
             return new Date(a.task_due_date) - new Date(b.task_due_date);
           });
-          setTasks(sortedTasks); // Set sorted tasks
+
+          // Visibility is used for tag filtering
+          const tasksWithVisibility = sortedTasks.map((task) => ({
+            ...task,
+            isVisible: true,
+          }));
+
+          setTasks(tasksWithVisibility);
         })
         .catch((error) => {
           // Handle errors gracefully
@@ -352,7 +438,7 @@ function ToDoMain() {
     <div>
       <img src={logo} alt="Logo" className="logo" />
       <div className="points_container">
-        <div className="points_text">Points: {Points_Day}</div>
+        <div className="points_text">Points: {Points_Total}</div>
       </div>
       <h1 className="large-heading">To-Do</h1>
 
@@ -363,10 +449,16 @@ function ToDoMain() {
             <p>Welcome {data.name}!</p>
           </div>
           <div className="dlToggle">
-            <button onClick={handleThemeChange} className="theme-button">
-              <div>Dark Mode</div>
-            </button>
-          </div>
+              <Toggle
+                checked={isDark}
+                onChange={handleThemeChange}
+                icons={{ 
+                  checked: <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: "4px" }}>🌙</span>,
+                  unchecked: <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: "4px" }}>☀️</span>,
+              }}
+                aria-label="Dark mode toggle"
+              />
+            </div>
         </div>
       ) : (
         <p>No data available.</p>
@@ -419,91 +511,110 @@ function ToDoMain() {
 
       {/* Dynamically Render Tasks */}
       <div>
-        {tasks.length > 0 ? (
-          tasks
-            .filter(
-              (task) => isCheckedViewCompletedTasks || !task.task_completed,
-            )
-            .map((task, index) => (
-              <div key={index}>
-                <div
-                  className={`task-container ${task.task_completed ? 'completed-task' : ''}`}
+        <AnimatePresence>
+          {tasks.length > 0 ? (
+            tasks
+              .filter(
+                (task) =>
+                  (isCheckedViewCompletedTasks || !task.task_completed) &&
+                  task.isVisible,
+              )
+              .map((task, index) => (
+                <motion.div
+                  key={task._id}
+                  initial={{ opacity: 0, x: -50 }} // Fade in from left
+                  animate={{ opacity: 1, x: 0 }} // Animate into position
+                  exit={{ opacity: 0, x: 50 }} // Exit animation: fade out to right
+                  transition={{ duration: 0.4 }}
                 >
                   <div
-                    className="point-value"
-                    onMouseOver={() =>
-                      !task.task_completed && handlePointsMouseOn(task._id)
-                    }
-                    onMouseOut={() =>
-                      !task.task_completed && handlePointsMouseOut()
-                    }
-                    onClick={() =>
-                      !task.task_completed && handleCompleteTask(task._id)
-                    }
+                    className={`task-container ${task.task_completed ? 'completed-task' : ''}`}
                   >
-                    {hoveredTaskId === task._id ? '✓' : `+${task.points}`}
-                  </div>
-                  <div className="task-name-container">
                     <div
-                      className="task-name"
+                      className="point-value"
+                      onMouseOver={() =>
+                        !task.task_completed && handlePointsMouseOn(task._id)
+                      }
+                      onMouseOut={() =>
+                        !task.task_completed && handlePointsMouseOut()
+                      }
                       onClick={() =>
-                        toggleOverlayDescription(task.task_description)
+                        !task.task_completed && handleCompleteTask(task._id)
                       }
                     >
-                      {task.task_name}
+                      {hoveredTaskId === task._id ? '✓' : `+${task.points}`}
                     </div>
-                    <div className="task-tags">
-                      {task.task_tags.map((tag, index) => (
-                        <span key={index} className="tag">
-                          {tag}
-                          {index < task.task_tags.length - 1 && ' '}
-                        </span>
-                      ))}
+                    <div className="task-name-container">
+                      <div
+                        className="task-name"
+                        onClick={() =>
+                          toggleOverlayDescription(task.task_description)
+                        }
+                      >
+                        {task.task_name}
+                      </div>
+                      <div className="task-tags">
+                        {task.task_tags.map((tag, index) => (
+                          <span key={index} className="tag">
+                            {tag}
+                            {index < task.task_tags.length - 1 && ' '}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  {/*Changes text to red if overdue*/}
-                  <div
-                    className="date"
-                    style={{
-                      color:
-                        task.task_due_date &&
-                        new Date(task.task_due_date) < new Date() &&
-                        task.task_completed !== true
-                          ? 'red'
-                          : 'inherit',
-                      fontWeight:
-                        task.task_due_date &&
-                        new Date(task.task_due_date) < new Date() &&
-                        task.task_completed !== true
-                          ? 'bold'
-                          : 'normal',
-                    }}
-                  >
-                    {task.task_due_date
-                      ? new Date(task.task_due_date).toLocaleString()
-                      : '?'}
+                    {/*Changes text to red if overdue*/}
+                    <div
+                      className="date"
+                      style={{
+                        color:
+                          task.task_due_date &&
+                          new Date(task.task_due_date) < new Date() &&
+                          task.task_completed !== true
+                            ? 'red'
+                            : 'inherit',
+                        fontWeight:
+                          task.task_due_date &&
+                          new Date(task.task_due_date) < new Date() &&
+                          task.task_completed !== true
+                            ? 'bold'
+                            : 'normal',
+                      }}
+                    >
+                      {task.task_due_date
+                        ? new Date(task.task_due_date).toLocaleString()
+                        : '?'}
+                    </div>
+
+                    <img
+                      src={trash_icon}
+                      alt="trash_icon"
+                      onClick={() => handleDeleteTask(task._id)}
+                      className="trash-icon"
+                    />
+                    <img
+                      src={options}
+                      alt="options"
+                      onClick={() =>
+                        toggleOverlayDealWithTask('Edit Task', task)
+                      }
+                      className="options-icon"
+                    />
                   </div>
 
-                  <img
-                    src={trash_icon}
-                    alt="trash_icon"
-                    onClick={() => handleDeleteTask(task._id)}
-                    className="trash-icon"
+                  <motion.div
+                    className="separator"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    exit={{ scaleX: 0 }}
+                    transition={{ duration: 0.4 }}
+                    style={{ originX: 0.5 }} // Ensures it scales from the center
                   />
-                  <img
-                    src={options}
-                    alt="options"
-                    onClick={() => toggleOverlayDealWithTask('Edit Task', task)}
-                    className="options-icon"
-                  />
-                </div>
-
-                <div className="separator"></div>
-              </div>
-            ))
-        ) : (
-          <p>No tasks available.</p>
-        )}
+                </motion.div>
+              ))
+          ) : (
+            <p>No tasks available.</p>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Description Overlay */}
@@ -527,7 +638,7 @@ function ToDoMain() {
         {/* Add Task Overlay */}
         <Overlay
           isOpen={isOpenDealWithTask}
-          onClose={toggleOverlayDealWithTask}
+          onClose={() => toggleOverlayDealWithTask('Close')}
         >
           <div className="overlay-item-container">
             <div className="overlay-text-container">Title:</div>
@@ -608,6 +719,7 @@ function ToDoMain() {
               onChange={handleDescriptionChange}
             />
           </div>
+          {addTaskOverlayErrorMessage && <div className="error-message">{addTaskOverlayErrorMessage}</div>}
           <button
             className="add-task-button"
             onClick={handleTaskAction}
@@ -622,10 +734,23 @@ function ToDoMain() {
 
       {/* Filter Overlay */}
       <Overlay isOpen={isOpenFilter} onClose={toggleOverlayFilter}>
-        <div>Include Only These Tags:</div>
+        <div>
+          {uniqueTagsList.length > 0
+            ? 'Include Only These Tags:'
+            : 'No tags made yet. Add some tags to tasks to access the filter by tag feature.'}
+        </div>
+
         <div>
           {uniqueTagsList.map((tag, index) => (
-            <button key={index}>{tag}</button>
+            <button
+              key={index}
+              onClick={() =>
+                changeTagConstraint(tag, !sortTagList.includes(tag))
+              }
+              className={`tag-button ${sortTagList.includes(tag) ? 'selected' : 'unselected'}`}
+            >
+              {tag}
+            </button>
           ))}
         </div>
         <div>

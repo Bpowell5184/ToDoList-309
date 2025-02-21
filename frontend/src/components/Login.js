@@ -20,9 +20,13 @@ function Login() {
   };
 
   const handleLogin = () => {
-    // Send POST request to login
+    if (!username || !password) {
+      setErrorMessage('Please enter a username and password.');
+      return;
+    }
+  
     axios
-      .post('http://localhost:8700/getuser', {
+      .post('http://todo.dylanwatanabe.com:8700/getuser', {
         username: username,
         password: password,
       })
@@ -39,14 +43,29 @@ function Login() {
       })
       .catch((error) => {
         console.error('Error logging in user:', error);
+  
+        if (error.response) {
+          if (error.response.status === 404) {
+            setErrorMessage('Username not found');
+          } else if (error.response.status === 401) {
+            setErrorMessage('Password not valid');
+          } else {
+            setErrorMessage('An error occurred. Please try again.');
+          }
+        } else if (error.request) {
+          setErrorMessage('No response from server. Please check your connection.');
+        } else {
+          setErrorMessage('Request failed. Please try again.');
+        }
+  
         setSuccessMessage(null);
-        setErrorMessage('An error occurred while logging in.');
       });
   };
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove JWT
+    localStorage.removeItem('token'); 
     navigate('/login');
 }   ;
+
 
   return (
     <div>
