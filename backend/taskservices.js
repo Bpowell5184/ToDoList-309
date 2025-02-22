@@ -166,6 +166,33 @@ function addTask(task) {
   const promise = taskToAdd.save();
   return promise;
 }
+function findTasksByTag(tag) {
+  return Task.find({ task_tags: tag });
+}
+function filterTasksByTags(tags) {
+  return Task.find({ task_tags: { $all: tags } });
+}
+function addTaskTag(taskId, tag) {
+  return Task.findByIdAndUpdate(
+    taskId,
+    { $addToSet: { task_tags: tag } },
+    { new: true }
+  );
+}
+function removeTaskTag(taskId, tag) {
+  return Task.findByIdAndUpdate(
+    taskId,
+    { $pull: { task_tags: tag } },
+    { new: true } 
+  );
+}
+function clearTaskTags(taskId) {
+  return Task.findByIdAndUpdate(
+    taskId,
+    { $set: { task_tags: [] } },
+    { new: true }
+  );
+}
 
 export default {
   addTask,
@@ -175,4 +202,9 @@ export default {
   findTaskByUserId,
   setTaskFalse,
   setTaskTrue,
+  findTasksByTag,
+  addTaskTag,
+  removeTaskTag,
+  clearTaskTags,
+  filterTasksByTags,
 };

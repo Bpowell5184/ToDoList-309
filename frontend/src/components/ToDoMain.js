@@ -31,7 +31,7 @@ function ToDoMain() {
 
   const [tasks, setTasks] = useState([]);
 
-  //const navigate = useNavigate();
+ //const navigate = useNavigate();
 
   const [TaskId, setTaskId] = useState('');
   const [Title, setTitle] = useState('');
@@ -133,7 +133,8 @@ function ToDoMain() {
     setHoveredTaskId(null);
     try {
       const response = await axios.put(
-        `http://todo.dylanwatanabe.com:8700/tasks/${taskId}`,
+        `http://localhost:8700/tasks/${taskId}`,
+
         {
           task_completed: true,
         },
@@ -255,7 +256,7 @@ function ToDoMain() {
     if (dealWithTaskText === 'Add Task') {
       try {
         const response = await axios.post(
-          'http://todo.dylanwatanabe.com:8700/tasks',
+          'http://localhost:8700/tasks',
           {
             userid: data?._id,
             task_name: Title,
@@ -297,7 +298,7 @@ function ToDoMain() {
     } else if (dealWithTaskText === 'Edit Task') {
       try {
         const response = await axios.put(
-          `http://todo.dylanwatanabe.com:8700/tasks/${TaskId}`,
+          `http://localhost:8700/tasks/${TaskId}`,
           {
             task_name: Title,
             task_due_date: TaskDate,
@@ -335,7 +336,7 @@ function ToDoMain() {
   async function handleDeleteTask(task_id) {
     try {
       const response = await axios.delete(
-        `http://todo.dylanwatanabe.com:8700/tasks/${task_id}`,
+        `http://localhost:8700/tasks/${task_id}`,
       );
 
       console.log('Response:', response.data);
@@ -381,14 +382,15 @@ function ToDoMain() {
   useEffect(() => {
     if (username && password) {
       axios
-        .post('http://todo.dylanwatanabe.com:8700/getuser', {
+        .post('http://localhost:8700/getuser', {
           username,
           password,
         })
         .then((response) => {
-          if (response.data.message === 'User not found') {
-            setData(null);
-            setErrorMessage('User not found');
+          if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            setData(response.data.user); 
+            setErrorMessage(null);
           } else if (response.data.message.includes('error')) {
             setData(null);
             setErrorMessage('Server-side error');
@@ -406,7 +408,7 @@ function ToDoMain() {
   useEffect(() => {
     if (data?._id) {
       axios
-        .get(`http://todo.dylanwatanabe.com:8700/tasks/${data._id}`)
+        .get(`http://localhost:8700/tasks/${data._id}`)
         .then((response) => {
           console.log(response.data);
           // Sort tasks by date before setting them so user can see immediately due tasks

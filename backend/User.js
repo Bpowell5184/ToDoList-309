@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+import validator from 'validator';
 const UserSchema = new mongoose.Schema(
   {
     username: {
@@ -25,10 +25,21 @@ const UserSchema = new mongoose.Schema(
       required: true,
       trim: true,
       validate(value) {
-        if (value.length < 2)
-          throw new Error('Password must be at least 2 characters');
+        if (!validator.isStrongPassword(value, {
+            minLength: 8,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1,
+          })
+        ) {
+          throw new Error(
+            'Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character'
+          );
+        }
       },
     },
+
   },
   { collection: 'users' },
 );

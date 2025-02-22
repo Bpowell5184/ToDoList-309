@@ -46,14 +46,16 @@ function Signup() {
       return;
     }
     axios
-      .post('http://todo.dylanwatanabe.com:8700/adduser', {
+      .post('http://localhost:8700/adduser', {
         username: username,
         name: name,
         password: password,
       })
       .then((response) => {
         console.log('Response:', response.data);
-        if (response.status === 201) {
+
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
           setSuccessMessage('Account created successfully!');
           setErrorMessage(null);
         } else {

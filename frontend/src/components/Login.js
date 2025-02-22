@@ -26,12 +26,20 @@ function Login() {
     }
   
     axios
-      .post('http://todo.dylanwatanabe.com:8700/getuser', { username, password })
+      .post('http://localhost:8700/getuser', {
+        username: username,
+        password: password,
+      })
       .then((response) => {
-        console.log('Response:', response.data);
-        setSuccessMessage('Success!');
-        setErrorMessage(null);
-        navigate('/todomain', { state: { username, password } });
+        if(response.data.token){
+          localStorage.setItem('token', response.data.token);  
+          setSuccessMessage('Success!');
+          setErrorMessage(null);
+          navigate('/todomain', { state: { username, password, token: response.data.token } });
+        } else {
+          setSuccessMessage(null);
+          setErrorMessage(response.data.message || 'An error occurred.');
+        }
       })
       .catch((error) => {
         console.error('Error logging in user:', error);
@@ -53,7 +61,11 @@ function Login() {
         setSuccessMessage(null);
       });
   };
-  
+  const handleLogout = () => {
+    localStorage.removeItem('token'); 
+    navigate('/login');
+}   ;
+
 
   return (
     <div>
