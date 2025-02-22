@@ -26,7 +26,7 @@ function Login() {
     }
   
     axios
-      .post('http://todo.dylanwatanabe.com:8700/getuser', {
+      .post('http://localhost:8700/getuser', {
         username: username,
         password: password,
       })
