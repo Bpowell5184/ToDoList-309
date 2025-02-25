@@ -10,7 +10,7 @@ import options from '.././assets/options.png';
 import Overlay from './';
 import axios from 'axios';
 import Toggle from 'react-toggle';
-import 'react-toggle/style.css'
+import 'react-toggle/style.css';
 import './ToDoMain.css';
 import './Overlay.css';
 
@@ -41,7 +41,8 @@ function ToDoMain() {
   const [Description, setDescription] = useState('');
   const [dealWithTaskText, setDealWithTaskText] = useState('');
   const [data, setData] = useState(null);
-  const [addTaskOverlayErrorMessage, setAddTaskOverlayErrorMessage] = useState(null)
+  const [addTaskOverlayErrorMessage, setAddTaskOverlayErrorMessage] =
+    useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [tagsList, setTagsList] = useState([]);
   const [uniqueTagsList, setuniqueTagsList] = useState([]);
@@ -52,7 +53,7 @@ function ToDoMain() {
 
   // Manage Dark/Light Mode
   const [isDark, setIsDark] = useState(() => {
-    return localStorage.getItem("theme") === "dark";
+    return localStorage.getItem('theme') === 'dark';
   });
 
   // Handle changes in input fields
@@ -92,6 +93,10 @@ function ToDoMain() {
     }
   };
 
+  const removeTag = (index) => {
+    setTagsList((prevTags) => prevTags.filter((_, i) => i !== index));
+  };
+
   const handleTagsChange = (event) => {
     let value = event.target.value;
 
@@ -116,16 +121,22 @@ function ToDoMain() {
   // Handle Theme Change
   const handleThemeChange = () => {
     setIsDark((prev) => {
-      const newTheme = !prev
-      document.documentElement.setAttribute("data-theme", newTheme ? "dark" : "light");
-      localStorage.setItem("theme", newTheme ? "dark" : "light");
+      const newTheme = !prev;
+      document.documentElement.setAttribute(
+        'data-theme',
+        newTheme ? 'dark' : 'light',
+      );
+      localStorage.setItem('theme', newTheme ? 'dark' : 'light');
       return newTheme;
-    })
+    });
   };
 
   // Keep user preference of dark/light mode
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+    document.documentElement.setAttribute(
+      'data-theme',
+      isDark ? 'dark' : 'light',
+    );
   }, [isDark]);
 
   // Define method to remove task from frontend and call backend
@@ -168,7 +179,7 @@ function ToDoMain() {
     setTags('');
     setTagsList([]);
     setTitle('');
-    setAddTaskOverlayErrorMessage(null)
+    setAddTaskOverlayErrorMessage(null);
     toggleOverlayDealWithTask();
   };
 
@@ -240,16 +251,18 @@ function ToDoMain() {
     if (!TaskDate) {
       setAddTaskOverlayErrorMessage('Please input a date');
       return;
-     }
+    }
     if (Points >= 50 || Points <= 0) {
-      setAddTaskOverlayErrorMessage('Points can not be negative or zero; Points for one task cannot be greater than 50');
+      setAddTaskOverlayErrorMessage(
+        'Points can not be negative or zero; Points for one task cannot be greater than 50',
+      );
       return;
     }
     if (!Points) {
-     setPoints(1);
+      setPoints(1);
     }
     if (!Description) {
-      setAddTaskOverlayErrorMessage('Please add a description')
+      setAddTaskOverlayErrorMessage('Please add a description');
       return;
     }
     if (dealWithTaskText === 'Add Task') {
@@ -273,7 +286,7 @@ function ToDoMain() {
           const newTask = {
             _id: response.data.task._id,
             title: Title,
-            task_due_date: TaskDate,
+            task_due_date: new Date(new Date(TaskDate).getTime() - 8 * 60 * 60 * 1000).toISOString(), // Scuffed to only work in PT but honestly idk how else to fix this
             points: Points,
             task_tags: tagsList,
             task_description: Description,
@@ -315,8 +328,8 @@ function ToDoMain() {
             prevTasks.map((task) =>
               task._id === TaskId
                 ? { ...task, ...response.data.task } // Merge old task properties with updated task
-                : task
-            )
+                : task,
+            ),
           );
         } else {
           setErrorMessage(
@@ -373,7 +386,7 @@ function ToDoMain() {
   useEffect(() => {
     // Calculate the total points from completed tasks
     const totalPoints = tasks
-      .filter(task => task.task_completed) // Filter only completed tasks
+      .filter((task) => task.task_completed) // Filter only completed tasks
       .reduce((sum, task) => sum + task.points, 0); // Sum up their points
     setPointsTotal(totalPoints);
   }, [tasks]);
@@ -447,16 +460,40 @@ function ToDoMain() {
             <p>Welcome {data.name}!</p>
           </div>
           <div className="dlToggle">
-              <Toggle
-                checked={isDark}
-                onChange={handleThemeChange}
-                icons={{ 
-                  checked: <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: "4px" }}>🌙</span>,
-                  unchecked: <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: "4px" }}>☀️</span>,
+            <Toggle
+              checked={isDark}
+              onChange={handleThemeChange}
+              icons={{
+                checked: (
+                  <span
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '100%',
+                      marginTop: '4px',
+                    }}
+                  >
+                    🌙
+                  </span>
+                ),
+                unchecked: (
+                  <span
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '100%',
+                      marginTop: '4px',
+                    }}
+                  >
+                    ☀️
+                  </span>
+                ),
               }}
-                aria-label="Dark mode toggle"
-              />
-            </div>
+              aria-label="Dark mode toggle"
+            />
+          </div>
         </div>
       ) : (
         <p>No data available.</p>
@@ -579,7 +616,9 @@ function ToDoMain() {
                       }}
                     >
                       {task.task_due_date
-                        ? new Date(task.task_due_date).toLocaleString()
+                        ? new Date(task.task_due_date).toLocaleString('en-US', {
+                            timeZone: 'UTC',
+                          })
                         : '?'}
                     </div>
 
@@ -698,15 +737,19 @@ function ToDoMain() {
             </span>
             <div>
               {tagsList.map((tag, index) => (
-                <span
-                  key={index}
-                  style={{ marginRight: '8px', fontSize: '1vw' }}
-                >
+                <span key={index} className="tag-menu-text">
                   {tag}
+                  <button
+                    className="tag-menu-delete-button"
+                    onClick={() => removeTag(index)}
+                  >
+                    ✕
+                  </button>
                 </span>
               ))}
             </div>
           </div>
+
           {/* Description */}
           <div className="overlay-item-container">
             <div className="overlay-text-container">Description:</div>
@@ -717,7 +760,9 @@ function ToDoMain() {
               onChange={handleDescriptionChange}
             />
           </div>
-          {addTaskOverlayErrorMessage && <div className="error-message">{addTaskOverlayErrorMessage}</div>}
+          {addTaskOverlayErrorMessage && (
+            <div className="error-message">{addTaskOverlayErrorMessage}</div>
+          )}
           <button
             className="add-task-button"
             onClick={handleTaskAction}

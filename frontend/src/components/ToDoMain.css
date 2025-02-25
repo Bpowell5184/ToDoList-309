@@ -350,3 +350,29 @@ body {
   color: black;
   border: 1px solid #9ca3af;
 }
+
+.tag-menu-text {
+  margin-right: 8px;
+  font-size: 1vw;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+}
+
+.tag-menu-delete-button {
+  margin-left: 5px;
+  cursor: pointer;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+}

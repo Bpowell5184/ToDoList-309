@@ -24,9 +24,12 @@ function Login() {
       setErrorMessage('Please enter a username and password.');
       return;
     }
-  
+
     axios
-      .post('http://todo.dylanwatanabe.com:8700/getuser', { username, password })
+      .post('http://todo.dylanwatanabe.com:8700/getuser', {
+        username,
+        password,
+      })
       .then((response) => {
         console.log('Response:', response.data);
         setSuccessMessage('Success!');
@@ -35,7 +38,7 @@ function Login() {
       })
       .catch((error) => {
         console.error('Error logging in user:', error);
-  
+
         if (error.response) {
           if (error.response.status === 404) {
             setErrorMessage('Username not found');
@@ -45,15 +48,16 @@ function Login() {
             setErrorMessage('An error occurred. Please try again.');
           }
         } else if (error.request) {
-          setErrorMessage('No response from server. Please check your connection.');
+          setErrorMessage(
+            'No response from server. Please check your connection.',
+          );
         } else {
           setErrorMessage('Request failed. Please try again.');
         }
-  
+
         setSuccessMessage(null);
       });
   };
-  
 
   return (
     <div>

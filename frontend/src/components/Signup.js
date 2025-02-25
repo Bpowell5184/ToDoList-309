@@ -24,13 +24,12 @@ function Signup() {
   };
 
   const handleSignup = () => {
-
     if (!username || !password || !name) {
       setErrorMessage('Please enter a username and password and name.');
       return;
     }
     if (username.length <= 4) {
-      setErrorMessage('Username must be 5 or more characters.')
+      setErrorMessage('Username must be 5 or more characters.');
       return;
     }
     const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
@@ -42,7 +41,9 @@ function Signup() {
       !upperCaseRegex.test(password) ||
       !lowerCaseRegex.test(password)
     ) {
-      setErrorMessage('Password must be at least 6 characters long and include an uppercase letter, a lowercase letter, and a special character.');
+      setErrorMessage(
+        'Password must be at least 6 characters long and include an uppercase letter, a lowercase letter, and a special character.',
+      );
       return;
     }
     axios
@@ -70,7 +71,9 @@ function Signup() {
             setErrorMessage('An error occurred. Please try again.');
           }
         } else if (error.request) {
-          setErrorMessage('No response from server. Please check your connection.');
+          setErrorMessage(
+            'No response from server. Please check your connection.',
+          );
         } else {
           setErrorMessage('Request failed. Please try again.');
         }
