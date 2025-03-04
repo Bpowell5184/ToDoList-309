@@ -16,6 +16,7 @@
   background-color: var(--background-color);
   color: var(--text-color);
   position: fixed;
+  border: 3px solid var(--text-color);
   top: 0;
   right: 0;
   bottom: 0;
@@ -36,6 +37,7 @@
 .overlay__close:after {
   display: inline-block;
   content: '\00d7';
+  color: var(--text-color);
 }
 
 .overlay__close {
