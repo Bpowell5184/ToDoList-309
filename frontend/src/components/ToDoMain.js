@@ -13,6 +13,8 @@ import Toggle from 'react-toggle';
 import 'react-toggle/style.css'
 import './ToDoMain.css';
 import './Overlay.css';
+import './SettingsOverlay.css';
+import { MdSettings } from "react-icons/md";
 
 function ToDoMain() {
   const [Points_Day] = useState('0');
@@ -30,8 +32,6 @@ function ToDoMain() {
   const [sortDescTask, setSortDescTask] = useState(false);
 
   const [tasks, setTasks] = useState([]);
-
-  //const navigate = useNavigate();
 
   const [TaskId, setTaskId] = useState('');
   const [Title, setTitle] = useState('');
@@ -406,7 +406,7 @@ function ToDoMain() {
           <div className="userName">
             <p>Welcome {data.name}!</p>
           </div>
-          <div className="dlToggle">
+          {/*<div className="dlToggle">
               <Toggle
                 checked={isDark}
                 onChange={handleThemeChange}
@@ -416,6 +416,11 @@ function ToDoMain() {
               }}
                 aria-label="Dark mode toggle"
               />
+            </div>*/}
+            <div className="settingsMenu">
+              <button className="settings-button">
+                <MdSettings/>
+              </button>
             </div>
         </div>
       ) : (
