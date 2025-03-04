@@ -7,7 +7,7 @@ export function Overlay({ isOpen, onClose, children }) {
     <Fragment>
       {isOpen && (
         <div className="overlay">
-          <div className="overlay__background" onClick={onClose} />
+          <div className="overlay__background" onClick={(e) => e.stopPropagation()}/>
           <div className="overlay__container">
             <div className="overlay__controls">
               <button
