@@ -24,6 +24,7 @@ function ToDoMain() {
   const [isOpenDealWithTask, setIsOpenDealWithTask] = useState(false);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [isOpenDescription, setIsOpenDescription] = useState(false);
+  const [isOpenSettings, setIsOpenSettings] = useState(false);
   const [isCheckedViewCompletedTasks, setIsCheckedViewCompletedTasks] =
     useState(false);
 
@@ -188,6 +189,8 @@ function ToDoMain() {
     setIsOpenDescription(!isOpenDescription);
     setIsCurrentDescription(desc);
   };
+
+  const toggleOverlaySettings = () => setIsOpenSettings(!isOpenSettings);
 
   const sortByParam = (param) => {
     if (param === 'Date') {
@@ -418,7 +421,7 @@ function ToDoMain() {
               />
             </div>*/}
             <div className="settingsMenu">
-              <button className="settings-button">
+              <button className="settings-button" onClick={toggleOverlaySettings}>
                 <MdSettings/>
               </button>
             </div>
@@ -727,10 +730,99 @@ function ToDoMain() {
         </div>
       </Overlay>
 
-      {/* Logout Button */}
-      <Link to="/login">
-        <button>Log Out</button>
-      </Link>
+      {/* Settings Overlay */}
+      <Overlay isOpen={isOpenSettings} onClose={toggleOverlaySettings}>
+        <div className="settings-modal">
+
+          <h2 className="overlay-title">Settings</h2>
+
+          {/* Appearance and Theme */}
+          <div className="overlay-section">
+            <h3>Appearance & Theme</h3>
+
+            {/* Dark Mode Toggle */}
+            <div className="dlToggle">
+                    <Toggle
+                      checked={isDark}
+                      onChange={handleThemeChange}
+                      icons={{ 
+                        checked: <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: "4px" }}>🌙</span>,
+                        unchecked: <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: "4px" }}>☀️</span>,
+                    }}
+                      aria-label="Dark mode toggle"
+                    />
+            </div>
+
+            {/* Custom Themes */}
+            <div className="overlay-item">
+              <label className="overlay-label">Theme:</label>
+              <select className="overlay-input">
+                <option>Default</option>
+                <option>Light</option>
+                <option>Dark</option>
+                <option>Cal Poly Green</option>
+              </select>
+            </div>
+
+            {/* Font Adjustments */}
+            <div className="overlay-item">
+              <label className="overlay-label">Font Size:</label>
+              <input type="range" min="12" max="24" step="1" className="overlay-slider" />
+            </div>
+
+            {/* Point Sound Effect */}
+            <div className="overlay-item">
+              <label className="overlay-label">Enable Point Sound:</label>
+              <Toggle />
+            </div>
+
+            {/* Custom VFX */}
+            <div className="overlay-item">
+              <label className="overlay-label">Enable Custom VFX:</label>
+              <Toggle />
+            </div>
+          </div>
+
+          {/* Task Preferences */}
+          <div className="overlay-section">
+            <h3>Task Preferences</h3>
+
+            {/* Default Due Date */}
+            <div className="overlay-item">
+              <label className="overlay-label">Default Due Date:</label>
+              <input type="date" className="overlay-input" />
+            </div>
+
+            {/* Default Time */}
+            <div className="overlay-item">
+              <label className="overlay-label">Default Time:</label>
+              <input type="time" className="overlay-input" />
+            </div>
+
+            {/* Default Points */}
+            <div className="overlay-item">
+              <label className="overlay-label">Default Points:</label>
+              <input type="number" min="1" max="10" className="overlay-input" />
+            </div>
+          </div>
+
+          {/* Account */}
+          <div className="overlay-section">
+            <h3>Account</h3>
+
+            {/* Change Password */}
+            <div className="overlay-item">
+              <label className="overlay-label">New Password:</label>
+              <input type="password" className="overlay-input" placeholder="Enter new password" />
+            </div>
+
+            {/* Logout Button */}
+            <Link to="/login">
+                <button>Log Out</button>
+            </Link>
+          </div>
+        </div>
+      </Overlay>
     </div>
   );
 }
