@@ -1,13 +1,28 @@
 @import url('./Global.css');
 
 .calendar-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
+  width: 100vw;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ddecdb, #abbea1);
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
-.logo {
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 0 10px;
+}
+
+.content-wrapper {
+  max-width: 70vw;
+  margin: 0 auto;
+}
+
+.calendar-logo {
   position: absolute;
   top: 0;
   left: 0;
@@ -17,105 +32,136 @@
 }
 
 .calendar-view-icon {
-  position: absolute;
-  margin-top: 2.6vh;
+  margin-top: 1vh;
   height: 6vh;
   width: auto;
-  right: 0px;
+  position: absolute;
+  right: 0;
+  top: 23vh;
 }
 
-.header {
+.calendar-controls {
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 10px;
-  font-size: 4vw;
+  align-items: center;
+  gap: 15px;
+}
+
+.month-title {
+  margin: 0 20px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+.nav-button {
+  padding: 8px 16px;
+  background-color: #064123;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.nav-button:hover {
+  background-color: #30704c;
+}
+
+.nav-button-text {
+  font-size: 14px;
+}
+
+.view-toggle-icon {
+  margin-top: 1vh;
+  height: 6vh;
+  width: auto;
+  position: absolute;
+  right: 0;
+  top: 23vh;
+}
+
+.view-toggle-icon:hover {
+  opacity: 0.8;
 }
 
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.2vw;
-}
-
-.day-header,
-.day-cell {
-  text-align: center;
-  padding: 0.2vw;
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
-  min-width: 44px;
-}
-
-.day-cell.past-date {
-  text-align: center;
-  padding: 0.2vw;
-  background-color: #e2c1c1;
-  border: 1px solid #ddd;
-  min-width: 44px;
-  color: #888;
+  gap: 8px;
+  width: 100%;
 }
 
 .day-header {
-  margin-top: 1vh;
-  /*color: var(--text-color);*/
-  color: black;
+  background-color: #f5f5f5;
+  padding: 10px;
+  text-align: center;
+  font-weight: 600;
+  color: #666;
+  border-bottom: 2px solid #ddd;
 }
 
 .day-cell {
   position: relative;
-  height: 12vh;
-  width: 8vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 120px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #eee;
+  padding: 8px;
+  transition: background-color 0.2s;
+}
+
+.day-cell.past-date {
+  background-color: rgba(248, 248, 248, 0.9);
+  color: #999;
+}
+
+.day-cell:hover {
+  background-color: rgba(240, 248, 255, 0.9);
 }
 
 .day-number {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  font-size: 0.6em;
+  top: 5px;
+  right: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 2px 6px;
+  border-radius: 10px;
 }
 
-.day-cell:hover {
-  background-color: #e0e0e0;
-  cursor: pointer;
-}
-
-.day-tasks {
-  margin-top: 5px;
-  font-size: 0.7em;
-  max-height: 50px;
+.tasks-container {
+  margin-top: 20px;
+  max-height: 90px;
   overflow-y: auto;
+  padding-right: 5px;
 }
 
 .task-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 4px;
+  padding: 4px 6px;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.task-text {
+  flex: 1;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 2px;
-  padding: 2px;
-  background-color: #f0f0f0;
-  border-radius: 3px;
 }
 
-.next-previous-button {
-  display: inline-block;
-  width: 8vw;
-  height: 6vh;
-  border-radius: 0px;
-  border-color: black;
-  border-width: 3px;
-  background-color: #064123;
-  margin-top: 20px;
-  cursor: pointer;
+.task-status {
+  flex-shrink: 0;
 }
 
-.next-previous-button-text {
-  font-size: 1.5vw;
-  color: rgb(223, 224, 226);
-}
-
-.next-previous-button:hover {
-  background-color: #30704c; /* Darker shade on hover */
+.error-message {
+  color: #ff4444;
+  margin-top: 15px;
+  text-align: center;
 }

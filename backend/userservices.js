@@ -57,16 +57,16 @@ function getUser(username, password) {
 }
 
 function findUserByUsernameAndPassword(username, password) {
-  return User.findOne({ username}).then((user) => {
-    bcrypt.compare(password, user.password, function(err, res){
-        if(res){
-            return user;
-        }else{
-            throw new Error('Password was wrong');
-        }
-        if(err){
-           console.log(error);
-        }
+  return User.findOne({ username }).then((user) => {
+    bcrypt.compare(password, user.password, function (err, res) {
+      if (res) {
+        return user;
+      } else {
+        throw new Error('Password was wrong');
+      }
+      if (err) {
+        console.log(error);
+      }
     });
   });
 }

@@ -24,13 +24,12 @@ function ToDoMain() {
   const [isOpenDescription, setIsOpenDescription] = useState(false);
   const [isCheckedViewCompletedTasks, setIsCheckedViewCompletedTasks] =
     useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [sortDescDate, setSortDescDate] = useState(false);
   const [sortDescPoints, setSortDescPoints] = useState(false);
   const [sortDescTask, setSortDescTask] = useState(false);
 
   const [tasks, setTasks] = useState([]);
-
   //const navigate = useNavigate();
 
   const [TaskId, setTaskId] = useState('');
@@ -286,7 +285,9 @@ function ToDoMain() {
           const newTask = {
             _id: response.data.task._id,
             title: Title,
-            task_due_date: new Date(new Date(TaskDate).getTime() - 8 * 60 * 60 * 1000).toISOString(), // Scuffed to only work in PT but honestly idk how else to fix this
+            task_due_date: new Date(
+              new Date(TaskDate).getTime() - 8 * 60 * 60 * 1000,
+            ).toISOString(), // Scuffed to only work in PT but honestly idk how else to fix this
             points: Points,
             task_tags: tagsList,
             task_description: Description,
@@ -391,8 +392,10 @@ function ToDoMain() {
     setPointsTotal(totalPoints);
   }, [tasks]);
 
+  // Fetch user data with loading state
   useEffect(() => {
     if (username && password) {
+      setIsLoading(true); // Start loading
       axios
         .post('http://todo.dylanwatanabe.com:8700/getuser', {
           username,
@@ -406,42 +409,39 @@ function ToDoMain() {
             setData(null);
             setErrorMessage('Server-side error');
           } else {
-            setData(response.data.user); // Use the user data directly
+            setData(response.data.user);
             setErrorMessage(null);
           }
         })
         .catch(() =>
           setErrorMessage('An error occurred while fetching the user data.'),
-        );
+        )
+        .finally(() => setIsLoading(false)); // Stop loading
     }
   }, [username, password]);
 
+  // Fetch tasks with loading state
   useEffect(() => {
     if (data?._id) {
+      setIsLoading(true); // Start loading
       axios
         .get(`http://todo.dylanwatanabe.com:8700/tasks/${data._id}`)
         .then((response) => {
-          console.log(response.data);
-          // Sort tasks by date before setting them so user can see immediately due tasks
-          const sortedTasks = (response.data.tasks || []).sort((a, b) => {
-            return new Date(a.task_due_date) - new Date(b.task_due_date);
-          });
-
-          // Visibility is used for tag filtering
+          const sortedTasks = (response.data.tasks || []).sort(
+            (a, b) => new Date(a.task_due_date) - new Date(b.task_due_date),
+          );
           const tasksWithVisibility = sortedTasks.map((task) => ({
             ...task,
             isVisible: true,
           }));
-
           setTasks(tasksWithVisibility);
         })
         .catch((error) => {
-          // Handle errors gracefully
           if (error.response && error.response.status !== 404) {
             setErrorMessage('An error occurred while fetching the user data.');
           }
-          // 404 means user has no tasks (yet)
-        });
+        })
+        .finally(() => setIsLoading(false)); // Stop loading
     }
   }, [data?._id]);
 
@@ -660,6 +660,24 @@ function ToDoMain() {
           <div className="overlay-text-container">{currentDescription}</div>
         </div>
       </Overlay>
+
+      {/* Loading Overlay with Animation */}
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Overlay isOpen={isLoading} onClose={() => {}}>
+              <div className="overlay-item-container">
+                <div className="overlay-text-container">Loading...</div>
+              </div>
+            </Overlay>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {errorMessage && <div className="error-message">{errorMessage}</div>}
 

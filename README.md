@@ -30,7 +30,6 @@ within the /frontend folder. To run use:
 npm run lint
 npm run format
 
-
 Temporary Remote Deployment:
 https://personal-website-vhdi.vercel.app/login
 
