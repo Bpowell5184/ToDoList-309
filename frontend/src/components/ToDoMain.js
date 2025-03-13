@@ -554,7 +554,7 @@ function ToDoMain() {
                   (isCheckedViewCompletedTasks || !task.task_completed) &&
                   task.isVisible,
               )
-              .map((task, index) => (
+              .map((task) => (
                 <motion.div
                   key={task._id}
                   initial={{ opacity: 0, x: -50 }} // Fade in from left
