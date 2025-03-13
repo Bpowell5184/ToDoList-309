@@ -19,9 +19,7 @@ test('Does Task Schema Work?', () => {
   const result = new Task(mocktask);
 
   expect(result).toBeTruthy();
-  //expect(result.userid).toBe(new Types.ObjectId('673583c7b0e8bc99a79e5230'));
   expect(result.task_name).toMatch('myTask');
-  //expect(result.task_due_date.toMatch(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)));
   expect(result.task_tags[0]).toMatch('myTag');
   expect(result.task_description).toMatch('Hi.');
   expect(result.task_completed).toBeFalsy();
