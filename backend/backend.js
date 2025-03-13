@@ -9,11 +9,7 @@ const app = express();
 const port = process.env.PORT || 8700;
 
 app.use(express.json());
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use(cors());
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Not sure any of this works as it was from before updates to userservices and taskservices:
@@ -116,6 +112,9 @@ app.post('/adduser', async (req, res) => {
 
 // get user by username and password
 app.post('/getuser', async (req, res) => {
+  console.log("Received request body:", req.body);
+  console.log("Mongoose Query:", { username: req.body.username });
+
   const { username, password } = req.body;
 
   if (!username || !password) {
