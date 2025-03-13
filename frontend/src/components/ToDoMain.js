@@ -143,7 +143,7 @@ function ToDoMain() {
     setHoveredTaskId(null);
     try {
       const response = await axios.put(
-        'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${taskId}',
+        `learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${taskId}`,
         {
           task_completed: true,
         },
@@ -311,7 +311,7 @@ function ToDoMain() {
     } else if (dealWithTaskText === 'Edit Task') {
       try {
         const response = await axios.put(
-          'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${TaskId}',
+          `learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${TaskId}`,
           {
             task_name: Title,
             task_due_date: TaskDate,
@@ -349,7 +349,7 @@ function ToDoMain() {
   async function handleDeleteTask(task_id) {
     try {
       const response = await axios.delete(
-        'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${task_id}',
+        `learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${task_id}`,
       );
 
       console.log('Response:', response.data);
