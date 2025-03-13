@@ -48,7 +48,7 @@ function Signup() {
     }
     axios
       .post(
-        'https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/adduser',
+        'https://backend-6hjp.onrender.com/adduser',
         {
           username: username,
           name: name,

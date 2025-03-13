@@ -27,7 +27,7 @@ function Login() {
 
     axios
       .post(
-        'https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser',
+        'https://backend-6hjp.onrender.com/getuser',
         {
           username,
           password,
