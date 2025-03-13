@@ -26,10 +26,13 @@ function Login() {
     }
 
     axios
-      .post('learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser', {
-        username,
-        password,
-      })
+      .post(
+        'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser',
+        {
+          username,
+          password,
+        },
+      )
       .then((response) => {
         console.log('Response:', response.data);
         setSuccessMessage('Success!');

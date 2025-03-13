@@ -47,11 +47,14 @@ function Signup() {
       return;
     }
     axios
-      .post('learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/adduser', {
-        username: username,
-        name: name,
-        password: password,
-      })
+      .post(
+        'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/adduser',
+        {
+          username: username,
+          name: name,
+          password: password,
+        },
+      )
       .then((response) => {
         console.log('Response:', response.data);
         if (response.status === 201) {

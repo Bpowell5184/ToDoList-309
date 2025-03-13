@@ -28,10 +28,13 @@ const Calendar = () => {
     if (username && password) {
       setIsLoading(true); // Start loading
       axios
-        .post('learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser', {
-          username,
-          password,
-        })
+        .post(
+          'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser',
+          {
+            username,
+            password,
+          },
+        )
         .then((response) => {
           if (response.data.message === 'User not found') {
             setData(null);
@@ -55,7 +58,9 @@ const Calendar = () => {
     if (data?._id) {
       setIsLoading(true); // Start loading
       axios
-        .get(`learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${data._id}`)
+        .get(
+          'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${data._id}',
+        )
         .then((response) => {
           const fetchedTasks = response.data.tasks || [];
           const taskMap = {};
