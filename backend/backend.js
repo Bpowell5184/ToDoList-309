@@ -6,7 +6,7 @@ import userServices from './userservices.js';
 import User from './User.js';
 import Task from './Task.js';
 const app = express();
-const port = 8700;
+const port = process.env.PORT || 8700;
 
 app.use(express.json());
 app.use(cors());
@@ -382,5 +382,5 @@ app.get('/addtask', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  console.log(`Server running on port ${port}`);
 });
