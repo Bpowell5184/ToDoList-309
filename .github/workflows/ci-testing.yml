@@ -13,5 +13,6 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: cd backend && node backend.js
-      - run: cd frontend && npm start
+      - run: npm run lint
+      - run: cd backend && npm install
+      - run: cd frontend && npm install
