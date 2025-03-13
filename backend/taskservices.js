@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 
 mongoose.set('debug', true);
 dotenv.config();
+
+//console.log("MONGODB_URI:", process.env.MONGODB_URI);
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
