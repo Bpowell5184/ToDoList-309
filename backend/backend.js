@@ -3,7 +3,6 @@ import cors from 'cors';
 import bcrypt from 'bcrypt';
 import taskServices from './taskservices.js';
 import userServices from './userservices.js';
-import mongoose from 'mongoose';
 import User from './User.js';
 import Task from './Task.js';
 const app = express();

@@ -2,7 +2,6 @@ import userservices from './userservices.js';
 import User from './User.js';
 import { jest } from '@jest/globals';
 import { MongoClient } from 'mongodb';
-import dotenv from 'dotenv';
 
 test('Is Jest working at all???', () => {
   const yes = true;

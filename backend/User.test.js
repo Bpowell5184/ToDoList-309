@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import User from './User.js';
 
 test('Is Jest working at all???', () => {
