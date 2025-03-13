@@ -28,7 +28,7 @@ const Calendar = () => {
     if (username && password) {
       setIsLoading(true); // Start loading
       axios
-        .post('http://todo.dylanwatanabe.com:8700/getuser', {
+        .post('learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser', {
           username,
           password,
         })
@@ -55,7 +55,7 @@ const Calendar = () => {
     if (data?._id) {
       setIsLoading(true); // Start loading
       axios
-        .get(`http://todo.dylanwatanabe.com:8700/tasks/${data._id}`)
+        .get(`learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${data._id}`)
         .then((response) => {
           const fetchedTasks = response.data.tasks || [];
           const taskMap = {};

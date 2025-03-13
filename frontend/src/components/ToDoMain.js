@@ -143,7 +143,7 @@ function ToDoMain() {
     setHoveredTaskId(null);
     try {
       const response = await axios.put(
-        `http://todo.dylanwatanabe.com:8700/tasks/${taskId}`,
+        `learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${taskId}`,
         {
           task_completed: true,
         },
@@ -267,7 +267,7 @@ function ToDoMain() {
     if (dealWithTaskText === 'Add Task') {
       try {
         const response = await axios.post(
-          'http://todo.dylanwatanabe.com:8700/tasks',
+          'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks',
           {
             userid: data?._id,
             task_name: Title,
@@ -311,7 +311,7 @@ function ToDoMain() {
     } else if (dealWithTaskText === 'Edit Task') {
       try {
         const response = await axios.put(
-          `http://todo.dylanwatanabe.com:8700/tasks/${TaskId}`,
+          `learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${TaskId}`,
           {
             task_name: Title,
             task_due_date: TaskDate,
@@ -349,7 +349,7 @@ function ToDoMain() {
   async function handleDeleteTask(task_id) {
     try {
       const response = await axios.delete(
-        `http://todo.dylanwatanabe.com:8700/tasks/${task_id}`,
+        `learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${task_id}`,
       );
 
       console.log('Response:', response.data);
@@ -397,7 +397,7 @@ function ToDoMain() {
     if (username && password) {
       setIsLoading(true); // Start loading
       axios
-        .post('http://todo.dylanwatanabe.com:8700/getuser', {
+        .post('learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser', {
           username,
           password,
         })
@@ -425,7 +425,7 @@ function ToDoMain() {
     if (data?._id) {
       setIsLoading(true); // Start loading
       axios
-        .get(`http://todo.dylanwatanabe.com:8700/tasks/${data._id}`)
+        .get(`learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${data._id}`)
         .then((response) => {
           const sortedTasks = (response.data.tasks || []).sort(
             (a, b) => new Date(a.task_due_date) - new Date(b.task_due_date),

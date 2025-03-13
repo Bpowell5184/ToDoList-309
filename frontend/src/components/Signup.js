@@ -47,7 +47,7 @@ function Signup() {
       return;
     }
     axios
-      .post('http://todo.dylanwatanabe.com:8700/adduser', {
+      .post('learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/adduser', {
         username: username,
         name: name,
         password: password,

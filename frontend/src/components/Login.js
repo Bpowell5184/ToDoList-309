@@ -26,7 +26,7 @@ function Login() {
     }
 
     axios
-      .post('http://todo.dylanwatanabe.com:8700/getuser', {
+      .post('learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser', {
         username,
         password,
       })
