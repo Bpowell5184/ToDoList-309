@@ -30,7 +30,7 @@ within the /frontend folder. To run use:
 npm run lint
 npm run format
 
-Temporary Remote Deployment:
-https://personal-website-vhdi.vercel.app/login
+Deployment:
+todolist-309.onrender.com
 
 To start, sign up for an account, login, and then make and manage some tasks!
