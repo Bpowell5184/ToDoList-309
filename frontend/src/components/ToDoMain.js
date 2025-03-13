@@ -143,7 +143,7 @@ function ToDoMain() {
     setHoveredTaskId(null);
     try {
       const response = await axios.put(
-        `learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${taskId}`,
+        `https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${taskId}`,
         {
           task_completed: true,
         },
@@ -267,7 +267,7 @@ function ToDoMain() {
     if (dealWithTaskText === 'Add Task') {
       try {
         const response = await axios.post(
-          'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks',
+          'https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks',
           {
             userid: data?._id,
             task_name: Title,
@@ -311,7 +311,7 @@ function ToDoMain() {
     } else if (dealWithTaskText === 'Edit Task') {
       try {
         const response = await axios.put(
-          `learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${TaskId}`,
+          `https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${TaskId}`,
           {
             task_name: Title,
             task_due_date: TaskDate,
@@ -349,7 +349,7 @@ function ToDoMain() {
   async function handleDeleteTask(task_id) {
     try {
       const response = await axios.delete(
-        `learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${task_id}`,
+        `https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${task_id}`,
       );
 
       console.log('Response:', response.data);
@@ -398,7 +398,7 @@ function ToDoMain() {
       setIsLoading(true); // Start loading
       axios
         .post(
-          'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser',
+          'https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser',
           {
             username,
             password,
@@ -429,7 +429,7 @@ function ToDoMain() {
       setIsLoading(true); // Start loading
       axios
         .get(
-          `learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${data._id}`,
+          `https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${data._id}`,
         )
         .then((response) => {
           const sortedTasks = (response.data.tasks || []).sort(

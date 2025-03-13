@@ -29,7 +29,7 @@ const Calendar = () => {
       setIsLoading(true); // Start loading
       axios
         .post(
-          'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser',
+          'https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser',
           {
             username,
             password,
@@ -59,7 +59,7 @@ const Calendar = () => {
       setIsLoading(true); // Start loading
       axios
         .get(
-          `learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${data._id}`,
+          `https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${data._id}`,
         )
         .then((response) => {
           const fetchedTasks = response.data.tasks || [];

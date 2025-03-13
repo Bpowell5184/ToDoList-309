@@ -48,7 +48,7 @@ function Signup() {
     }
     axios
       .post(
-        'learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/adduser',
+        'https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/adduser',
         {
           username: username,
           name: name,
