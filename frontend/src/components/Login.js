@@ -27,19 +27,24 @@ function Login() {
 
     axios
       .post(
-        'https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser',
+        'http://localhost:8700/getuser',
         {
           username,
           password,
         },
       )
       .then((response) => {
-        console.log('Response:', response.data);
-        setSuccessMessage('Success!');
-        setErrorMessage(null);
-        navigate('/todomain', { state: { username, password } });
+        if(response.data.token){
+          localStorage.setItem('token', response.data.token);  
+          setSuccessMessage('Success!');
+          setErrorMessage(null);
+          navigate('/todomain', { state: { username, password, token: response.data.token } });
+        } else {
+          setSuccessMessage(null);
+          setErrorMessage(response.data.message || 'An error occurred.');
+        }
       })
-      .catch((error) => {
+        .catch((error) => {
         console.error('Error logging in user:', error);
 
         if (error.response) {
@@ -61,7 +66,10 @@ function Login() {
         setSuccessMessage(null);
       });
   };
-
+const handleLogout = () => {
+    localStorage.removeItem('token'); 
+    navigate('/login');
+}   ;
   return (
     <div>
       <img src={logo} alt="Logo" className="logo" />

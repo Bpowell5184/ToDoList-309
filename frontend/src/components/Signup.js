@@ -48,7 +48,7 @@ function Signup() {
     }
     axios
       .post(
-        'https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/adduser',
+        'https://localhost:8700/adduser',
         {
           username: username,
           name: name,
@@ -57,7 +57,8 @@ function Signup() {
       )
       .then((response) => {
         console.log('Response:', response.data);
-        if (response.status === 201) {
+       if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
           setSuccessMessage('Account created successfully!');
           setErrorMessage(null);
         } else {
@@ -65,7 +66,7 @@ function Signup() {
           setErrorMessage(response.data.message || 'An error occurred.');
         }
       })
-      .catch((error) => {
+       .catch((error) => {
         console.error('Error creating user:', error);
         if (error.response) {
           if (error.response.status === 500) {
