@@ -1,4 +1,4 @@
-const BACKEND_URL = 'http://localhost:8700';
+const BACKEND_URL = 'https://backend-6hjp.onrender.com';
 
 describe('Backend (REST API) is listening', () => {
   context('Backend loads and runs successfully', () => {

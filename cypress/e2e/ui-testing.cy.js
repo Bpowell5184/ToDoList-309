@@ -1,5 +1,5 @@
-const FRONTEND_URL = 'http://localhost:3000';
-const BACKEND_URL = 'http://localhost:8700';
+const FRONTEND_URL = 'https://todolist-309.onrender.com';
+const BACKEND_URL = 'https://backend-6hjp.onrender.com';
 
 describe('Adding a new User', () => {
   context('GIVEN the SignUp Site is running properly', () => {
