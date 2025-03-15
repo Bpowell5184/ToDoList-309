@@ -143,7 +143,7 @@ function ToDoMain() {
     setHoveredTaskId(null);
     try {
       const response = await axios.put(
-        `https://localhost:8700/tasks/${taskId}`,
+        `http://localhost:9700/tasks/${taskId}`,
         {
           task_completed: true,
         },
@@ -267,7 +267,7 @@ function ToDoMain() {
     if (dealWithTaskText === 'Add Task') {
       try {
         const response = await axios.post(
-          'https://localhost:8700/tasks',
+          'http://localhost:9700/tasks',
           {
             userid: data?._id,
             task_name: Title,
@@ -311,7 +311,7 @@ function ToDoMain() {
     } else if (dealWithTaskText === 'Edit Task') {
       try {
         const response = await axios.put(
-          `https://localhost:8700/tasks/${TaskId}`,
+          `http://localhost:9700/tasks/${TaskId}`,
           {
             task_name: Title,
             task_due_date: TaskDate,
@@ -349,7 +349,7 @@ function ToDoMain() {
   async function handleDeleteTask(task_id) {
     try {
       const response = await axios.delete(
-        `http://localhost:8700/tasks/${task_id}`,
+        `http://localhost:9700/tasks/${task_id}`,
       );
 
       console.log('Response:', response.data);
@@ -398,7 +398,7 @@ function ToDoMain() {
       setIsLoading(true); // Start loading
       axios
         .post(
-          'http://localhost:8700/getuser',
+          'http://localhost:9700/getuser',
           {
             username,
             password,
@@ -430,7 +430,7 @@ function ToDoMain() {
       setIsLoading(true); // Start loading
       axios
         .get(
-          `http://localhost:8700/tasks/${data._id}`,
+          `http://localhost:9700/tasks/${data._id}`,
         )
         .then((response) => {
           const sortedTasks = (response.data.tasks || []).sort(

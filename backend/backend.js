@@ -7,7 +7,7 @@ import User from './User.js';
 import jwt from "jsonwebtoken";
 import Task from './Task.js';
 const app = express();
-const port = 8700;
+const port = 9700;
 
 app.use(express.json());
 app.use(cors());
@@ -149,7 +149,7 @@ app.post('/getuser', async (req, res) => {
             return res.status(500).json({ message: 'Failed to generate token' });
         }
         console.log('token generated: ', token);
-        res.status(200).json({token, user});
+        res.status(200).json({token, user: user});
     }
   } catch (error) {
     console.error('Error retrieving user:', error);
