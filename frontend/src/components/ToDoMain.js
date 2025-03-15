@@ -143,7 +143,7 @@ function ToDoMain() {
     setHoveredTaskId(null);
     try {
       const response = await axios.put(
-        `https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${taskId}`,
+        `http://localhost:9700/tasks/${taskId}`,
         {
           task_completed: true,
         },
@@ -267,7 +267,7 @@ function ToDoMain() {
     if (dealWithTaskText === 'Add Task') {
       try {
         const response = await axios.post(
-          'https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks',
+          'http://localhost:9700/tasks',
           {
             userid: data?._id,
             task_name: Title,
@@ -311,7 +311,7 @@ function ToDoMain() {
     } else if (dealWithTaskText === 'Edit Task') {
       try {
         const response = await axios.put(
-          `https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${TaskId}`,
+          `http://localhost:9700/tasks/${TaskId}`,
           {
             task_name: Title,
             task_due_date: TaskDate,
@@ -349,7 +349,7 @@ function ToDoMain() {
   async function handleDeleteTask(task_id) {
     try {
       const response = await axios.delete(
-        `https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${task_id}`,
+        `http://localhost:9700/tasks/${task_id}`,
       );
 
       console.log('Response:', response.data);
@@ -398,16 +398,17 @@ function ToDoMain() {
       setIsLoading(true); // Start loading
       axios
         .post(
-          'https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser',
+          'http://localhost:9700/getuser',
           {
             username,
             password,
           },
         )
         .then((response) => {
-          if (response.data.message === 'User not found') {
-            setData(null);
-            setErrorMessage('User not found');
+         if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            setData(response.data.user); 
+            setErrorMessage(null);
           } else if (response.data.message.includes('error')) {
             setData(null);
             setErrorMessage('Server-side error');
@@ -415,7 +416,7 @@ function ToDoMain() {
             setData(response.data.user);
             setErrorMessage(null);
           }
-        })
+        }) 
         .catch(() =>
           setErrorMessage('An error occurred while fetching the user data.'),
         )
@@ -429,7 +430,7 @@ function ToDoMain() {
       setIsLoading(true); // Start loading
       axios
         .get(
-          `https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${data._id}`,
+          `http://localhost:9700/tasks/${data._id}`,
         )
         .then((response) => {
           const sortedTasks = (response.data.tasks || []).sort(
