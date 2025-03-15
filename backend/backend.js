@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import taskServices from './taskservices.js';
 import userServices from './userservices.js';
 import User from './User.js';
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 import Task from './Task.js';
 const app = express();
 const port = 9700;
@@ -17,7 +17,7 @@ app.use(cors());
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function generateAccessToken(username) {
   return jwt.sign({ username: username }, process.env.TOKEN_SECRET, {
-    expiresIn: "600s",
+    expiresIn: '600s',
   });
 }
 const authenticateToken = (req, res, next) => {
@@ -117,8 +117,8 @@ app.post('/adduser', async (req, res) => {
   try {
     const savedUser = await userServices.addUser(user);
     const token = generateAccessToken(username);
-    console.log("JWT: ", token);
-    res.status(201).send({token, user: savedUser});
+    console.log('JWT: ', token);
+    res.status(201).send({ token, user: savedUser });
   } catch (error) {
     console.error('Error adding user:', error);
     res
@@ -138,18 +138,18 @@ app.post('/getuser', async (req, res) => {
     const user = await userServices.findUserByUsername(username);
     if (!user) {
       return res.status(404).send({ message: 'User not found' });
-    }else{
-        console.log("made it here");
-        const isValid = await bcrypt.compare(password, user.password);
-        if(!isValid){
-            return res.status(401).send({ message: 'Invalid password' });
-        }
-        const token = generateAccessToken(username);
-        if (!token) {
-            return res.status(500).json({ message: 'Failed to generate token' });
-        }
-        console.log('token generated: ', token);
-        res.status(200).json({token, user: user});
+    } else {
+      console.log('made it here');
+      const isValid = await bcrypt.compare(password, user.password);
+      if (!isValid) {
+        return res.status(401).send({ message: 'Invalid password' });
+      }
+      const token = generateAccessToken(username);
+      if (!token) {
+        return res.status(500).json({ message: 'Failed to generate token' });
+      }
+      console.log('token generated: ', token);
+      res.status(200).json({ token, user: user });
     }
   } catch (error) {
     console.error('Error retrieving user:', error);
@@ -355,20 +355,20 @@ app.put('/tasks/:taskid/incomplete', async (req, res) => {
 ////////AUTH STUFF
 ///////////////////
 function authenticateUser(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
   if (!token) {
-    console.log("No token received");
+    console.log('No token received');
     return res.status(401).end();
   } else {
-      try {
-          const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
-          console.log("Decoded token: ", decoded);
-          next();
-      } catch (error) {
-        console.log(error);
-        return res.status(401).end();
-       }
+    try {
+      const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+      console.log('Decoded token: ', decoded);
+      next();
+    } catch (error) {
+      console.log(error);
+      return res.status(401).end();
+    }
   }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
