@@ -10,11 +10,13 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "backtest": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "backtest": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "cyp:e2e": "npx cypress run --spec cypress/e2e/ui-testing.cy.js && npx cypress run --spec cypress/e2e/api-testing.cy.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "cypress": "^14.1.0",
     "prettier": "^3.4.2"
   },
   "dependencies": {
