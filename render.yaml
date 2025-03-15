@@ -1,0 +1,11 @@
+services:
+  - name: backend
+    type: web
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: npm run start:backend
+    envVars:
+      - key: MONGODB_URI
+        sync: false

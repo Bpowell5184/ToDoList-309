@@ -29,7 +29,7 @@ const Calendar = () => {
       setIsLoading(true); // Start loading
       axios
         .post(
-          'https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/getuser',
+          'https://backend-6hjp.onrender.com/getuser',
           {
             username,
             password,
@@ -59,7 +59,7 @@ const Calendar = () => {
       setIsLoading(true); // Start loading
       axios
         .get(
-          `https://learnbytodoing-d3e3cqcrdrevhycb.westus-01.azurewebsites.net/tasks/${data._id}`,
+          `https://backend-6hjp.onrender.com/tasks/${data._id}`,
         )
         .then((response) => {
           const fetchedTasks = response.data.tasks || [];

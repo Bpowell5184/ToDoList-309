@@ -143,7 +143,7 @@ function ToDoMain() {
     setHoveredTaskId(null);
     try {
       const response = await axios.put(
-        `http://localhost:9700/tasks/${taskId}`,
+        `https://backend-6hjp.onrender.com/tasks/${taskId}`,
         {
           task_completed: true,
         },
@@ -266,14 +266,17 @@ function ToDoMain() {
     }
     if (dealWithTaskText === 'Add Task') {
       try {
-        const response = await axios.post('http://localhost:9700/tasks', {
-          userid: data?._id,
-          task_name: Title,
-          task_due_date: TaskDate,
-          points: Points,
-          task_description: Description,
-          task_tags: tagsList,
-        });
+        const response = await axios.post(
+          'https://backend-6hjp.onrender.com/tasks',
+          {
+            userid: data?._id,
+            task_name: Title,
+            task_due_date: TaskDate,
+            points: Points,
+            task_description: Description,
+            task_tags: tagsList,
+          },
+        );
 
         console.log('Response:', response.data);
 
@@ -308,7 +311,7 @@ function ToDoMain() {
     } else if (dealWithTaskText === 'Edit Task') {
       try {
         const response = await axios.put(
-          `http://localhost:9700/tasks/${TaskId}`,
+          `https://backend-6hjp.onrender.com/tasks/${TaskId}`,
           {
             task_name: Title,
             task_due_date: TaskDate,
@@ -346,7 +349,7 @@ function ToDoMain() {
   async function handleDeleteTask(task_id) {
     try {
       const response = await axios.delete(
-        `http://localhost:9700/tasks/${task_id}`,
+        `https://backend-6hjp.onrender.com/tasks/${task_id}`,
       );
 
       console.log('Response:', response.data);
@@ -394,14 +397,17 @@ function ToDoMain() {
     if (username && password) {
       setIsLoading(true); // Start loading
       axios
-        .post('http://localhost:9700/getuser', {
-          username,
-          password,
-        })
+        .post(
+          'https://backend-6hjp.onrender.com/getuser',
+          {
+            username,
+            password,
+          },
+        )
         .then((response) => {
-          if (response.data.token) {
+         if (response.data.token) {
             localStorage.setItem('token', response.data.token);
-            setData(response.data.user);
+            setData(response.data.user); 
             setErrorMessage(null);
           } else if (response.data.message.includes('error')) {
             setData(null);
@@ -410,7 +416,7 @@ function ToDoMain() {
             setData(response.data.user);
             setErrorMessage(null);
           }
-        })
+        }) 
         .catch(() =>
           setErrorMessage('An error occurred while fetching the user data.'),
         )
@@ -423,7 +429,9 @@ function ToDoMain() {
     if (data?._id) {
       setIsLoading(true); // Start loading
       axios
-        .get(`http://localhost:9700/tasks/${data._id}`)
+        .get(
+          `https://backend-6hjp.onrender.com/tasks/${data._id}`,
+        )
         .then((response) => {
           const sortedTasks = (response.data.tasks || []).sort(
             (a, b) => new Date(a.task_due_date) - new Date(b.task_due_date),
