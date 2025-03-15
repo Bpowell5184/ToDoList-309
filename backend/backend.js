@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import taskServices from './taskservices.js';
 import userServices from './userservices.js';
 import User from './User.js';
+import jwt from "jsonwebtoken";
 import Task from './Task.js';
 const app = express();
 const port = process.env.PORT || 8700;
@@ -14,6 +15,23 @@ app.use(cors());
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Not sure any of this works as it was from before updates to userservices and taskservices:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function generateAccessToken(username) {
+  return jwt.sign({ username: username }, process.env.TOKEN_SECRET, {
+    expiresIn: "600s",
+  });
+}
+const authenticateToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) return res.status(403).json({ message: 'No token provided' });
+
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+    if (err) return res.status(401).json({ message: 'Invalid token' });
+    req.user = user;
+    next();
+  });
+};
+
 app.get('/', async (req, res) => {
   res.status(200).send('Welcome to the Backend');
 });
@@ -98,10 +116,9 @@ app.post('/adduser', async (req, res) => {
 
   try {
     const savedUser = await userServices.addUser(user);
-    res.status(201).send({
-      message: 'User added successfully',
-      user: savedUser,
-    });
+    const token = generateAccessToken(username);
+    console.log("JWT: ", token);
+    res.status(201).send({token, user: savedUser});
   } catch (error) {
     console.error('Error adding user:', error);
     res
@@ -109,7 +126,6 @@ app.post('/adduser', async (req, res) => {
       .send({ message: 'An error occurred while adding the user.' });
   }
 });
-
 // get user by username and password
 app.post('/getuser', async (req, res) => {
   console.log("Received request body:", req.body);
@@ -125,12 +141,18 @@ app.post('/getuser', async (req, res) => {
     const user = await userServices.findUserByUsername(username);
     if (!user) {
       return res.status(404).send({ message: 'User not found' });
-    } else {
-      const isValid = await bcrypt.compare(password, user.password);
-      if (!isValid) {
-        return res.status(401).send({ message: 'Invalid password' });
-      }
-      res.status(200).send({ message: 'User retrieved successfully', user });
+    }else{
+        console.log("made it here");
+        const isValid = await bcrypt.compare(password, user.password);
+        if(!isValid){
+            return res.status(401).send({ message: 'Invalid password' });
+        }
+        const token = generateAccessToken(username);
+        if (!token) {
+            return res.status(500).json({ message: 'Failed to generate token' });
+        }
+        console.log('token generated: ', token);
+        res.status(200).json({token, user: user});
     }
   } catch (error) {
     console.error('Error retrieving user:', error);
@@ -332,7 +354,26 @@ app.put('/tasks/:taskid/incomplete', async (req, res) => {
       .send({ message: 'An error occurred while updating the task status.' });
   }
 });
-
+////////////////////
+////////AUTH STUFF
+///////////////////
+function authenticateUser(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (!token) {
+    console.log("No token received");
+    return res.status(401).end();
+  } else {
+      try {
+          const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+          console.log("Decoded token: ", decoded);
+          next();
+      } catch (error) {
+        console.log(error);
+        return res.status(401).end();
+       }
+  }
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Tests for current implementation:
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

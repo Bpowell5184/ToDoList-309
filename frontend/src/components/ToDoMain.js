@@ -405,9 +405,10 @@ function ToDoMain() {
           },
         )
         .then((response) => {
-          if (response.data.message === 'User not found') {
-            setData(null);
-            setErrorMessage('User not found');
+         if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            setData(response.data.user); 
+            setErrorMessage(null);
           } else if (response.data.message.includes('error')) {
             setData(null);
             setErrorMessage('Server-side error');
@@ -415,7 +416,7 @@ function ToDoMain() {
             setData(response.data.user);
             setErrorMessage(null);
           }
-        })
+        }) 
         .catch(() =>
           setErrorMessage('An error occurred while fetching the user data.'),
         )
