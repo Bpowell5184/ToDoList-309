@@ -397,17 +397,14 @@ function ToDoMain() {
     if (username && password) {
       setIsLoading(true); // Start loading
       axios
-        .post(
-          'https://backend-6hjp.onrender.com/getuser',
-          {
-            username,
-            password,
-          },
-        )
+        .post('https://backend-6hjp.onrender.com/getuser', {
+          username,
+          password,
+        })
         .then((response) => {
-         if (response.data.token) {
+          if (response.data.token) {
             localStorage.setItem('token', response.data.token);
-            setData(response.data.user); 
+            setData(response.data.user);
             setErrorMessage(null);
           } else if (response.data.message.includes('error')) {
             setData(null);
@@ -416,7 +413,7 @@ function ToDoMain() {
             setData(response.data.user);
             setErrorMessage(null);
           }
-        }) 
+        })
         .catch(() =>
           setErrorMessage('An error occurred while fetching the user data.'),
         )
@@ -429,9 +426,7 @@ function ToDoMain() {
     if (data?._id) {
       setIsLoading(true); // Start loading
       axios
-        .get(
-          `https://backend-6hjp.onrender.com/tasks/${data._id}`,
-        )
+        .get(`https://backend-6hjp.onrender.com/tasks/${data._id}`)
         .then((response) => {
           const sortedTasks = (response.data.tasks || []).sort(
             (a, b) => new Date(a.task_due_date) - new Date(b.task_due_date),

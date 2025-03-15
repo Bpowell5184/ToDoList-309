@@ -28,13 +28,10 @@ const Calendar = () => {
     if (username && password) {
       setIsLoading(true); // Start loading
       axios
-        .post(
-          'https://backend-6hjp.onrender.com/getuser',
-          {
-            username,
-            password,
-          },
-        )
+        .post('https://backend-6hjp.onrender.com/getuser', {
+          username,
+          password,
+        })
         .then((response) => {
           if (response.data.message === 'User not found') {
             setData(null);
@@ -58,9 +55,7 @@ const Calendar = () => {
     if (data?._id) {
       setIsLoading(true); // Start loading
       axios
-        .get(
-          `https://backend-6hjp.onrender.com/tasks/${data._id}`,
-        )
+        .get(`https://backend-6hjp.onrender.com/tasks/${data._id}`)
         .then((response) => {
           const fetchedTasks = response.data.tasks || [];
           const taskMap = {};

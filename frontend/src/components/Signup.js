@@ -47,17 +47,14 @@ function Signup() {
       return;
     }
     axios
-      .post(
-        'https://backend-6hjp.onrender.com/adduser',
-        {
-          username: username,
-          name: name,
-          password: password,
-        },
-      )
+      .post('https://backend-6hjp.onrender.com/adduser', {
+        username: username,
+        name: name,
+        password: password,
+      })
       .then((response) => {
         console.log('Response:', response.data);
-       if (response.data.token) {
+        if (response.data.token) {
           localStorage.setItem('token', response.data.token);
           setSuccessMessage('Account created successfully!');
           setErrorMessage(null);
@@ -66,7 +63,7 @@ function Signup() {
           setErrorMessage(response.data.message || 'An error occurred.');
         }
       })
-       .catch((error) => {
+      .catch((error) => {
         console.error('Error creating user:', error);
         if (error.response) {
           if (error.response.status === 500) {
